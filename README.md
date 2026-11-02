@@ -1,0 +1,2 @@
+# EquipmentManagementSystem_Document
+備品管理システムの設計書や資料を管理する
