@@ -22,7 +22,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 - [ ] 同じタスクで画面も作るなら、Client のフォルダも読み書きできる（`/add-dir ../EquipmentManagementSystem_Client`）。このタスクは、最後まで同じリポジトリで起動して進める（CLAUDE.md 7章）。
 - [ ] 自分の担当の機能か（Document の `internaldesign/実装タスク一覧.md` の分担と Jira の担当者）。担当でなければ、止めて人に確かめる。
 - [ ] 「先にやるタスク」（実装タスク一覧.md）が終わっている。終わっていなければ、人に知らせる。
-- [ ] Git の作業は何もしない（CLAUDE.md 7章）。
+- [ ] 作業用のブランチ（`feature/<課題キー>`。release/main から）で作業している。マージ・release/main への push・強制 push はしない（CLAUDE.md 7章）。
 - [ ] 作業記録 `output/<タスク名>/` があれば、`作業メモ.md` と `変更ファイル一覧.md` を読んで続きから始める。なければ作る（形は deliver-zip の skill の「作業記録の形」）。
 
 ## 1. 設計書を読む

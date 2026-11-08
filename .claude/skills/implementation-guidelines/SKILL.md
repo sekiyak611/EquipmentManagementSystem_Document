@@ -258,7 +258,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 
 ## 12. Claude の振る舞い
 
-- Git の作業は何もしない（状態を見るだけのコマンドも動かさない。CLAUDE.md 7章）。
+- Git でしてよいのは、作業用のブランチの作成・commit・push・プルリクエストの作成まで。マージ・release/main への push・強制 push・歴史の書き換えはしない（CLAUDE.md 7章）。
 - 頼まれていない大きな作り直しをしない。
 - 新しいライブラリを足さない。
 - テスト専用の equipment_test は、テストのたびに作り直してよい（CLAUDE.md 6章）。開発用の equipment_dev やほかのデータを消す・初期化する、ファイルを消すなど、元に戻せない操作は、何が起きるかを説明して人の許可を得る。
