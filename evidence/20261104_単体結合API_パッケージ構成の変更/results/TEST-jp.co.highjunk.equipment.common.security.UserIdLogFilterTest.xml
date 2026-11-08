@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jp.co.highjunk.equipment.common.security.UserIdLogFilterTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-04T12:23:49.104Z" hostname="vm" time="0.006">
+  <properties/>
+  <testcase name="ログインしていないときは、ユーザIDを付けない" classname="jp.co.highjunk.equipment.common.security.UserIdLogFilterTest" time="0.002"/>
+  <testcase name="ログインしている人のユーザIDが、処理の間だけログに付き、終わったら消える" classname="jp.co.highjunk.equipment.common.security.UserIdLogFilterTest" time="0.002"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

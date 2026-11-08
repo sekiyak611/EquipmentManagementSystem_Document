@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jp.co.highjunk.equipment.common.config.AppPropertiesTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-03T15:08:02.806Z" hostname="vm" time="6.241">
+  <properties/>
+  <testcase name="テストの設定では、テスト用の切り替えが有効になる" classname="jp.co.highjunk.equipment.common.config.AppPropertiesTest" time="0.766"/>
+  <testcase name="記録に出ても、秘密の値は見えない" classname="jp.co.highjunk.equipment.common.config.AppPropertiesTest" time="0.013"/>
+  <testcase name="時計は日本時間" classname="jp.co.highjunk.equipment.common.config.AppPropertiesTest" time="0.007"/>
+  <testcase name="日付は 2026-11-02、日時は 2026-11-25T09:00:00+09:00 の形で返す" classname="jp.co.highjunk.equipment.common.config.AppPropertiesTest" time="0.005"/>
+  <testcase name="設定値が docs/API設計.md 6章のとおりに読み込まれる" classname="jp.co.highjunk.equipment.common.config.AppPropertiesTest" time="0.006"/>
+  <system-out><![CDATA[15:08:02.967 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.config.AppPropertiesTest]: AppPropertiesTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:08:03.138 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.config.AppPropertiesTest
+15:08:03.258 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.config.AppPropertiesTest]: AppPropertiesTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+15:08:03.263 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.config.AppPropertiesTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.2)
+
+2026-11-04T00:08:03.866+09:00 INFO  userId=- [Test worker] j.c.h.e.c.config.AppPropertiesTest - Starting AppPropertiesTest using Java 21.0.12.1 with PID 6313 (started by root in /home/claude/work3/EquipmentManagementSystem_Server)
+2026-11-04T00:08:03.869+09:00 INFO  userId=- [Test worker] j.c.h.e.c.config.AppPropertiesTest - The following 1 profile is active: "test"
+2026-11-04T00:08:04.076+09:00 INFO  userId=- [background-preinit] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 9.1.5.Final
+2026-11-04T00:08:06.081+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-11-04T00:08:06.493+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@6a0e97fc
+2026-11-04T00:08:06.496+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-11-04T00:08:06.529+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.0)
+2026-11-04T00:08:06.681+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped pre-schema database level objects (execution time 00:00.004s)
+2026-11-04T00:08:06.704+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.017s)
+2026-11-04T00:08:06.714+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.008s)
+2026-11-04T00:08:06.717+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped post-schema database level objects (execution time 00:00.002s)
+2026-11-04T00:08:06.725+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.0)
+2026-11-04T00:08:06.749+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table `equipment_test`.`flyway_schema_history` does not exist yet
+2026-11-04T00:08:06.754+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbValidate - Successfully validated 0 migrations (execution time 00:00.011s)
+2026-11-04T00:08:06.755+09:00 WARN  userId=- [Test worker] o.f.core.internal.command.DbValidate - No migrations found. Are your locations set up correctly?
+2026-11-04T00:08:06.774+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table `equipment_test`.`flyway_schema_history` ...
+2026-11-04T00:08:06.850+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Current version of schema `equipment_test`: << Empty Schema >>
+2026-11-04T00:08:06.856+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Schema `equipment_test` is up to date. No migration necessary.
+2026-11-04T00:08:07.729+09:00 INFO  userId=- [Test worker] o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-11-04T00:08:08.224+09:00 INFO  userId=- [Test worker] j.c.h.e.c.config.AppPropertiesTest - Started AppPropertiesTest in 4.885 seconds (process running for 6.673)
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/root/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.18.15/de6980bb799c25bb1fe9e6c434201299cb5e694e/byte-buddy-agent-1.18.15.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

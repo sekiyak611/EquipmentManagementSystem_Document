@@ -1,16 +1,12 @@
 {
   "permissions": {
     "deny": [
-      "Bash(git push)",
-      "Bash(git push *)",
-      "Bash(git merge)",
-      "Bash(git merge *)",
-      "Bash(git pull)",
-      "Bash(git pull *)",
-      "Bash(git commit)",
-      "Bash(git commit *)",
-      "Bash(gh pr merge)",
-      "Bash(gh pr merge *)"
+      "Bash(git)",
+      "Bash(git *)",
+      "Bash(gh)",
+      "Bash(gh *)",
+      "Read(./.git/**)",
+      "Edit(./.git/**)"
     ]
   }
 }
