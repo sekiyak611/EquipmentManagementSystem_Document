@@ -2,13 +2,13 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.5 2026-11-08 |
-| Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面） |
+| 版 | v1.6 2026-11-08 |
+| Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md 4・5章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
 ## 1. 概要
 
-全部の機能が使う土台。この資料には、ZPOP-21で作った次のものを書く。
+全部の機能が使う土台。この資料には、ZPOP-21・22・122 で作った次のものを書く。
 
 | まとまり | 中身 | 状態 |
 |---|---|---|
@@ -24,6 +24,7 @@
 | common.calendar | 祝日・催促日の計算、「今月確認済み」の判定 | 未作成（ZPOP-39 で章を足す） |
 | common.passwordlink | パスワード設定用のリンク | 未作成（ZPOP-28 で章を足す） |
 | common.web | 組み立てた画面（Client）をサーバーから配る | 作成済み（ZPOP-22）。3.9 |
+| テーブルと最初のデータ | Flyway の SQL（db/migration） | 作成済み（ZPOP-122）。詳細設計 [テーブル.md](テーブル.md) |
 | common.constant | Enum（決まった値だけを持つ型）をまとめる場所 | 作成済み（2026-11-04）。今は HealthState だけ。各機能が足していく（2.3） |
 | 画面（Client）の共通部品 | common/api、common/components、common/format、common/theme | 作成済み（ZPOP-22）。11章。common/auth はログイン（ZPOP-25）で作る |
 
@@ -44,6 +45,7 @@
 | （いちばん上） | EquipmentApplication | アプリを起動する入口。設定値のクラス（@ConfigurationProperties）を自動で探す。UserDetailsServiceAutoConfiguration は使わない（10章の5） |
 | common.config | AppProperties | 設定値（application.yml の `app:` の下）を読み込む入れ物。起動時に値の入力チェックをする |
 | common.config | ClockConfig | 日本時間の時計（java.time.Clock）を Bean として1つ用意する |
+| common.config | InitialAdminEmailCallback | Flyway が当て始める前に、最初の総務の担当者のメールアドレスの設定があるかを確かめる（ZPOP-122。詳細設計 [テーブル.md](テーブル.md) 5章） |
 | common.security | SecurityConfig | Spring Security の設定。ログインなしで呼べるAPI、CSRF対策、401・403の返し方 |
 | common.security | CsrfCookieFilter | どのリクエストでも、CSRFの合言葉をクッキー（XSRF-TOKEN）で渡すフィルター |
 | common.security | UserIdLogFilter | ログの1行ごとに、操作した人のユーザIDを付けるフィルター |
@@ -242,7 +244,7 @@ common には mapper（データベースを読み書きする部品）はない
 | 接続のオプション | `connectionTimeZone=+09:00`、`forceConnectionTimeZoneToSession=true`、`characterEncoding=UTF-8` | データベースとのやり取りを日本時間にそろえる。`+` はアドレスの中で `%2B` と書く |
 | つながるまで待つ時間 | 5秒（`spring.datasource.hikari.connection-timeout: 5000`） | 見張り役は10秒で失敗とみなすので、それより短くする（health/A-08_動いているかを答える.md） |
 | 列名の合わせ方 | `mybatis.configuration.map-underscore-to-camel-case: true` | 列名 last_confirmed_on を、Javaの名前 lastConfirmedOn に自動で合わせる |
-| テーブルを作るSQLの置き場所 | `classpath:db/migration`（src/main/resources/db/migration） | ZPOP-23 で作る。今は空なので、起動時に Flyway が「No migrations found」と WARN を出す（問題はない） |
+| テーブルを作るSQLの置き場所 | `classpath:db/migration`（src/main/resources/db/migration） | ZPOP-122 で作った（V1：テーブル、V2：最初のデータ）。作りは詳細設計 [テーブル.md](テーブル.md) |
 | テストのときのテーブル | TestFlywayConfig が、テストを始める前に Flyway で消して（clean）作り直す（migrate） | テスト方針 4章。消すことは test プロファイルだけ許す（`spring.flyway.clean-disabled: false`） |
 
 ## 5. 入力チェック
@@ -500,3 +502,4 @@ EquipmentManagementSystem_Client/
 | v1.3 | 2026-11-04 | パッケージ構成の変更：common.constant（Enum の置き場所）を足し、mapper・dto・Enum の置き場所（2.3）を書いた |
 | v1.4 | 2026-11-08 | 詳細設計の形の変更（README v2.0）に合わせて、health の詳細設計の場所を health/A-08_動いているかを答える.md に直した。common.md そのものの形は変えていない |
 | v1.5 | 2026-11-08 | ディレクトリ構成の変更（service を interface と Impl に分け、業務チェックを validator に置く）に合わせて、5章の業務チェックの書き場所を validator に直した |
+| v1.6 | 2026-11-08 | ZPOP-122：テーブルと最初のデータを作ったので、1章・2.1・4章に、テーブル.md への案内と InitialAdminEmailCallback を足した |

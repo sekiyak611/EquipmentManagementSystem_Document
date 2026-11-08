@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jp.co.highjunk.equipment.common.web.SpaWebConfigTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-08T13:39:09.099Z" hostname="vm" time="0.108">
+  <properties/>
+  <testcase name="/api/ で始まる存在しないアドレスは、今までどおり 404 の JSON" classname="jp.co.highjunk.equipment.common.web.SpaWebConfigTest" time="0.007"/>
+  <testcase name="トップ（/）では index.html に回す（Spring Boot の最初のページの仕組み。実際のサーバーでは index.html が返る）" classname="jp.co.highjunk.equipment.common.web.SpaWebConfigTest" time="0.012"/>
+  <testcase name="&quot;/loans&quot;" classname="jp.co.highjunk.equipment.common.web.SpaWebConfigTest" time="0.022"/>
+  <testcase name="&quot;/equipment/12&quot;" classname="jp.co.highjunk.equipment.common.web.SpaWebConfigTest" time="0.009"/>
+  <testcase name="&quot;/login&quot;" classname="jp.co.highjunk.equipment.common.web.SpaWebConfigTest" time="0.004"/>
+  <testcase name="A-08 は今までどおり JSON を返す" classname="jp.co.highjunk.equipment.common.web.SpaWebConfigTest" time="0.006"/>
+  <testcase name="名前に「.」を含むのにファイルがないアドレスは 404" classname="jp.co.highjunk.equipment.common.web.SpaWebConfigTest" time="0.008"/>
+  <system-out><![CDATA[2026-11-08T22:39:09.101+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.web.SpaWebConfigTest]: SpaWebConfigTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-08T22:39:09.115+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.web.SpaWebConfigTest
+2026-11-08T22:39:09.120+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.web.SpaWebConfigTest]: SpaWebConfigTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-08T22:39:09.123+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.web.SpaWebConfigTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
