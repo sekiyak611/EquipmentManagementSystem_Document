@@ -33,7 +33,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 
 ### 2.1 先に今のプロジェクトを知る
 
-- お手本の controller・service・mapper・dto・テスト、詳細設計（common.md、お手本の .md）を読んでから書く。
+- お手本の controller・service（interface と Impl）・validator・mapper・dto・テスト、詳細設計（common.md、お手本の .md）を読んでから書く。
 - 使う部品が common にすでにあるかを先に探す。common にあるものを機能の中に作り直さない。
 - ライブラリの版は build.gradle・package.json のとおり。新しいライブラリを足さない（CLAUDE.md 3章）。
 
@@ -80,7 +80,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 
 ### 3.3 1つの部品に1つの役目（SRP）
 
-- controller は受け取って返すだけ、service は業務のルール、mapper はデータベース（CLAUDE.md 4.1・5章）。
+- controller は受け取って返すだけ、service（ServiceImpl）は業務のルール、validator は業務チェック（データベースの中身や業務のルールと照らして確かめ、守れなければ例外を投げる。読むだけ）、mapper はデータベース（CLAUDE.md 4.1・5章）。入力の形のチェックは dto の印で行い、Validator に書かない。
 - ただし、機械的に細かく分けない。分けることで読みやすく・直しやすくなるときに分ける。
 
 ### 3.4 簡単に保つ（KISS）・今いらないものは作らない（YAGNI）
@@ -140,7 +140,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 
 ### 5.3 トランザクション（まとめて確定・まとめて取り消し）
 
-- 2つ以上の書き換えを1つの操作として行う service のメソッドに `@Transactional` を付ける（CLAUDE.md 5章）。
+- 2つ以上の書き換えを1つの操作として行う ServiceImpl のメソッドに `@Transactional` を付ける（CLAUDE.md 5章）。Validator の呼び出しもこの中に入れ、確かめてから書き換えるまでを1つのまとまりにする。interface の `<機能名>Service` には付けない。
 - 何も付けないと、SQL が1本ずつその場で確定する。途中で失敗すると、半分だけ変わったデータが残る。
 - `@Transactional` は、実行時の例外（RuntimeException）が起きると元に戻す。common.error の例外は実行時の例外。
 - 同じクラスの中のメソッドから呼んだメソッドの `@Transactional` は効かない（Spring の仕組みのため）。外から呼ばれる public のメソッドに付ける。

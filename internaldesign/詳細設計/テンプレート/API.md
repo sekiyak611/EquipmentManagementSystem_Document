@@ -30,7 +30,8 @@ API詳細設計のテンプレート。1つの API に1ファイル。
 | 権限項目 | XXX（データ設計 5.3 のコード）／ ログイン ／ なし |
 | 使う画面 | S-xx（[S-xx_….md](S-xx_….md)） |
 | controller のメソッド | XxxController#xxx |
-| service のメソッド | XxxService#xxx |
+| service のメソッド | XxxService#xxx（中身は XxxServiceImpl） |
+| validator のメソッド | XxxValidator#xxx ／ なし（業務チェックがない） |
 
 ## 2. リクエスト定義
 
@@ -97,31 +98,38 @@ dto：`dto.<機能名>.XxxResponse`
 
 ## 4. 処理フロー
 
-<!-- 受け取る → 入力チェック → 権限の確認 → 処理 → 返す、の順に番号で書く。順番が大事なものは Mermaid の図も描く。 -->
+<!-- 受け取る → 入力チェック → 権限の確認 → 業務チェック → 書き換え → 返す、の順に番号で書く。順番が大事なものは Mermaid の図も描く。業務チェックがなければ Validator の行と参加者を消す。 -->
 
 1. controller が受け取る。`@Valid` で入力チェック（6章）。
 2. `@PreAuthorize` で権限項目を確かめる（10章）。
-3. service が …
-4. …
-5. `ApiResponse.ok(…)` で返す。
+3. controller が XxxService#xxx を呼ぶ（中身は XxxServiceImpl。`@Transactional` を付けるなら、ここから8章の範囲）。
+4. ServiceImpl が XxxValidator#xxx を呼び、業務チェックをする（5章・6章）。守れなければ例外を投げる（9章）。
+5. ServiceImpl が mapper で書き換える（7章）。
+6. `ApiResponse.ok(…)` で返す。
 
 ```mermaid
 sequenceDiagram
     participant 画面
     participant Controller
-    participant Service
+    participant ServiceImpl
+    participant Validator
     participant Mapper
     participant MySQL
     画面->>Controller: …
+    Controller->>ServiceImpl: xxx(…)（XxxService を通して呼ぶ）
+    ServiceImpl->>Validator: xxx(…)
+    Validator->>Mapper: select… ／ count…
+    ServiceImpl->>Mapper: insert ／ update…
 ```
 
 ## 5. 条件分岐・業務ルール
 
-<!-- 機能全体のファイルの 1.3 のルール（R-x）と、この API だけのルール。どこで守るかを書く。 -->
+<!-- 機能全体のファイルの 1.3 のルール（R-x）と、この API だけのルール。どこで守るかを書く。確かめて止めるもの（業務チェック）は XxxValidator、決まりに沿って値を作る・書き換えるものは XxxServiceImpl（CLAUDE.md 5章）。 -->
 
 | No. | 条件・ルール | 写したもと | 守る場所（クラス.メソッド） | 守れないとき | 同じルールを書いているほかの機能 |
 |---|---|---|---|---|---|
-| 1 | … | 機能一覧 ○章 ／ R-1 | XxxService#xxx | 9章の No.x | なし ／ mine |
+| 1 | （例）使われている種別は消せない | 機能一覧 ○章 ／ R-1 | XxxValidator#xxx | 9章の No.x | なし ／ mine |
+| 2 | （例）消すときは deleted_at に今の日時を入れる | データ設計 ○章 | XxxServiceImpl#xxx | ― | なし |
 
 ## 6. バリデーション仕様
 
@@ -131,7 +139,7 @@ sequenceDiagram
 |---|---|---|---|
 | name | 必須 | 「…」 | dto の `@NotBlank` |
 | name | 50文字まで | 「…」 | dto の `@Size(max = 50)` |
-| name | ほかと重ならない | 「…」 | service（データベースを見て確かめる） |
+| name | ほかと重ならない | 「…」 | XxxValidator#xxx（業務チェック。データベースを見て確かめる） |
 
 ## 7. DB操作仕様
 
@@ -150,7 +158,7 @@ sequenceDiagram
 
 | 項目 | 内容 |
 |---|---|
-| @Transactional | 付ける ／ 付けない（書き換えが1つだけ、または読むだけ）。付けるメソッド：XxxService#xxx |
+| @Transactional | 付ける ／ 付けない（書き換えが1つだけ、または読むだけ）。付けるメソッド：XxxServiceImpl#xxx（Validator の呼び出しも、この中に入る） |
 | 楽観ロック（version） | 使う ／ 使わない。古い version のときは 409（API設計 2.7） |
 | 同時に操作されたとき | … |
 | Slack を送るタイミング | 送らない ／ 書き込みが確定してから（11章） |
@@ -172,7 +180,7 @@ sequenceDiagram
 |---|---|
 | ログイン | 要る ／ 要らない |
 | 権限項目 | `@PreAuthorize("hasAuthority('XXX')")` |
-| 対象の確かめ（IDOR） | ID を受け取らない ／ （例）貸出履歴の借用者が、ログインしている人かを XxxService で確かめる。違えば 9章の No.x |
+| 対象の確かめ（IDOR） | ID を受け取らない ／ （例）貸出履歴の借用者が、ログインしている人かを XxxValidator で確かめる（ServiceImpl から呼ぶ）。違えば 9章の No.x |
 
 ## 11. 外部API連携仕様
 

@@ -141,7 +141,7 @@ mapper と dto は、機能のパッケージの外にまとめて置く。そ�
 
 | パッケージ | 中身 |
 |---|---|
-| 機能（例：loan） | controller（APIの入口）、service（業務のルール）、model（テーブルの1行の形）の3つに分ける |
+| 機能（例：loan） | controller（APIの入口）、service（業務のルール）、validator（業務チェック）、model（テーブルの1行の形）の4つに分ける。service には、interface（インターフェース＝メソッドの名前・受け取る値・返す値だけを決めた型）の `<機能名>Service` と、中身を書いた `<機能名>ServiceImpl` を並べて置く。業務チェックがない機能（例：health）は、validator を作らない |
 | mapper.<機能名>（例：mapper.loan） | MyBatisでデータベースを読み書きする部品（インターフェース） |
 | dto.<機能名>（例：dto.loan） | APIで受け取る値・返す値の形 |
 | common.constant | Enum（上の表） |
@@ -150,7 +150,8 @@ mapper と dto は、機能のパッケージの外にまとめて置く。そ�
 jp.co.highjunk.equipment
 ├─ loan/
 │  ├─ controller/   LoanController
-│  ├─ service/      LoanService
+│  ├─ service/      LoanService（interface）、LoanServiceImpl（中身）
+│  ├─ validator/    LoanValidator（業務チェック）
 │  └─ model/        Loan（テーブルの1行）
 ├─ mapper/
 │  └─ loan/         LoanMapper
@@ -211,9 +212,17 @@ EquipmentManagementSystem_Client/
 - テスト用の切り替え（Slackの偽物、送った内容を読み出すAPI）は、本番の設定で動かないようにする。
 
 **サーバー（Java）**
-- パッケージは 4.1 のとおり機能ごとに分ける。業務のルールは service に書き、controller には書かない。
+- パッケージは 4.1 のとおり機能ごとに分ける。業務のルールは service（`<機能名>ServiceImpl`）に、業務チェックは validator に書き、controller には書かない。
+- service は、interface の `<機能名>Service` と、中身の `<機能名>ServiceImpl`（`implements <機能名>Service`）に分け、同じ service パッケージに置く。`@Service` は ServiceImpl に付ける。controller は interface（`<機能名>Service`）を受け取って使い、ServiceImpl を直接使わない。
+- 確かめることは、次の2つに分ける。
+  - **入力チェック**：受け取った値だけで分かるもの（必須、文字数、形式、数の範囲など）。dto の印（`@NotBlank`・`@Size` など）と、controller の `@Valid` で確かめる。
+  - **業務チェック**：データベースの中身や業務のルールと照らして確かめるもの（例：同じ名前の種別がもうある、使われている種別は消せない、すでに貸し出されている、その人が操作してよい対象か）。`<機能名>/validator/` の `<名前>Validator` に書く。
+- Validator の決まり
+  - `@Component` を付ける。ServiceImpl から、書き換えの前に呼ぶ（ServiceImpl の `@Transactional` の中で呼び、確かめてから書き換えるまでを1つのまとまりにする）。controller からは呼ばない。
+  - 守れないときは、common.error の例外（BusinessRuleException・NotFoundException・ConflictException など。投げる例外と文は、その API の詳細設計 9章）を投げる。
+  - 読むだけにする（mapper の `select…`・`count…` だけを使う）。書き換えは ServiceImpl で行う。確かめるために読んだ行（model）は、返して ServiceImpl で使ってよい（同じ行を2回読まないため）。
 - Controller は1つの機能に1つだけ。URLの頭が違うAPI（例：auth の `/api/auth/...` と `/api/me/password`）も、同じControllerに書く。
-- 機能は、その機能の中だけで完結させる。ほかの機能の service・model と、mapper・dto の下のほかの機能のパッケージ（例：loan から mapper.equipment、dto.equipment）は使わない。使ってよいのは、自分の機能の mapper.<機能名>・dto.<機能名> と、common の部品だけ。
+- 機能は、その機能の中だけで完結させる。ほかの機能の service・validator・model と、mapper・dto の下のほかの機能のパッケージ（例：loan から mapper.equipment、dto.equipment）は使わない。使ってよいのは、自分の機能の mapper.<機能名>・dto.<機能名> と、common の部品だけ。
 - mapper.<機能名> が使ってよいのは、同じ機能の model と common だけ。dto.<機能名> が使ってよいのは common だけ（common.constant の Enum など）。
 - common から機能のパッケージ（mapper・dto の下も含む）を使わない。循環（AがBを使い、BもAを使う形）を作らない。
 - 2つ以上の機能で使う業務のルール（4.1の common.calendar・common.passwordlink）は、common に1つだけ置き、書き写さない。
@@ -223,13 +232,13 @@ EquipmentManagementSystem_Client/
 - 1件ずつSQLを出さない（N+1問題＝一覧の件数だけSQLが出てしまう問題を防ぐ）。IDをまとめて集め、`IN`（MyBatisの `<foreach>`）で1回で読む。
 - 今の日時は、直接取らずに java.time.Clock から取る（テストで日時を止められるようにするため）。
 - APIごとに、必要な権限項目をサーバー側で必ず確かめる（例：@PreAuthorize("hasAuthority('EQUIPMENT_UPDATE')")）。権限項目のコードは docs/データ設計.md の5.3。
-- 入力チェックは画面設計のとおりに、サーバー側でも必ず行う。画面側のチェックだけに頼らない。
+- 画面設計に書かれたチェック（入力チェックと業務チェック）は、サーバー側でも必ず行う。画面側のチェックだけに頼らない。
 - 編集するAPIは、楽観ロック（version 列）で、ほかの人が先に保存していたら 409 を返す。
 - SQLは MyBatis の XML に書く。値は必ずパラメータ（#{}）で渡し、文字をつなげてSQLを作らない（SQLインジェクション＝外から入れた文字でデータベースを操られる攻撃を防ぐため）。
 - 削除は論理削除（deleted_at）。一覧や検索では、削除済みの行を出さない。
-- 2つ以上の書き換え（INSERT・UPDATE・DELETE）を1つの操作として行う処理は、service のメソッドに `@Transactional` を付け、途中で失敗したら全部を元に戻す。controller・mapper には付けない。
+- 2つ以上の書き換え（INSERT・UPDATE・DELETE）を1つの操作として行う処理は、ServiceImpl のメソッドに `@Transactional` を付け、途中で失敗したら全部を元に戻す。controller・validator・mapper と、interface の `<機能名>Service` には付けない。
 - Slack の送信は、`@Transactional` の中で行わない。データベースへの書き込みが確定してから送る（送ったのにデータベースは元に戻った、を防ぐため）。送るのに失敗したときの扱いは、その機能の設計書・詳細設計に従う。
-- 操作する対象（備品・貸出など）の ID を画面から受け取る API は、権限項目の確認に加えて、その人が操作してよい対象かを service で確かめる（例：B-03 の返す・B-04 の確認したは、ログインしている人が借りている備品だけを対象にする。B-04 は docs/API設計.md 4.7 のとおり、ほかの人の備品が含まれていたら 403）。ID を書き換えて他人のデータを読む・変えることを防ぐため（IDOR と呼ばれる穴）。
+- 操作する対象（備品・貸出など）の ID を画面から受け取る API は、権限項目の確認に加えて、その人が操作してよい対象かを validator で確かめる（業務チェックの1つ。ServiceImpl から呼ぶ）（例：B-03 の返す・B-04 の確認したは、ログインしている人が借りている備品だけを対象にする。B-04 は docs/API設計.md 4.7 のとおり、ほかの人の備品が含まれていたら 403）。ID を書き換えて他人のデータを読む・変えることを防ぐため（IDOR と呼ばれる穴）。
 
 **画面（React）**
 - スマートフォン優先の画面（S-01〜S-06、S-19）は、スマートフォンの画面を先に作る。
@@ -245,13 +254,15 @@ EquipmentManagementSystem_Client/
 
 | もの | 付け方 | 例 |
 |---|---|---|
-| controller・service | `<機能名>Controller`・`<機能名>Service` | CategoryController、CategoryService |
+| controller | `<機能名>Controller` | CategoryController |
+| service | interface は `<機能名>Service`、中身は `<機能名>ServiceImpl` | CategoryService、CategoryServiceImpl |
+| validator | 語尾を `Validator` にする。基本は `<機能名>Validator`。確かめることが多ければ、対象ごとに分けてよい | CategoryValidator、LoanValidator |
 | mapper | `<テーブルの名前>Mapper`（機能の中でテーブルが2つ以上なら、テーブルごとに分けてよい） | CategoryMapper、LoanMapper |
 | mapper のメソッド | 読む：`select…`（1件は `selectById`、まとめては `selectByIds`）、数える：`count…`、足す：`insert`、変える：`update…`、論理削除：`markDeleted` | selectById、countByName、markDeleted |
 | model（テーブルの1行） | テーブルの名前の単数形 | Category（categories）、Loan（loans） |
 | dto | 受け取る値は `…Request`、返す値は `…Response` | CategoryCreateRequest、CategoryResponse |
 | Enum | 意味を表す名前。値は大文字と「_」で、API設計・データ設計の値と同じ文字 | EquipmentStatus.MANAGED（データ設計の管理状態 MANAGED） |
-| テスト（Server） | API のテストは `<機能名>ApiTest`、単体テストは `<テストするクラス>Test` | CategoryApiTest、ReminderDateCalculatorTest |
+| テスト（Server） | API のテストは `<機能名>ApiTest`、単体テストは `<テストするクラス>Test` | CategoryApiTest、CategoryValidatorTest、ReminderDateCalculatorTest |
 | 画面（Client） | 画面は `…Page.tsx`、部品は役目を表す名前の `.tsx`（どちらも PascalCase） | CategoryListPage.tsx、CategoryForm.tsx |
 | api.ts の関数 | 読む：`get…`、足す：`create…`、変える：`update…`、消す：`delete…`（camelCase＝最初の単語だけ小文字） | getCategories、createCategory |
 | types.ts の型 | Server の dto と同じ名前 | CategoryResponse |
@@ -346,7 +357,7 @@ npx playwright test
 
 **お手本**
 
-- 新しい機能は、category（種別管理。ZPOP-33）を手本にして、同じ書き方で作る。category ができるまでは、health（A-08）の controller・service と、mapper.health・dto.health の書き方に合わせる。詳細設計も、Document の internaldesign/詳細設計/ の category/（できるまでは health/）を手本にする。
+- 新しい機能は、category（種別管理。ZPOP-33）を手本にして、同じ書き方で作る。category ができるまでは、health（A-08）の controller・service（HealthService と HealthServiceImpl）と、mapper.health・dto.health の書き方に合わせる（health には業務チェックがないため、validator の書き方は 5章の決まりに従う）。詳細設計も、Document の internaldesign/詳細設計/ の category/（できるまでは health/）を手本にする。
 
 **担当**
 

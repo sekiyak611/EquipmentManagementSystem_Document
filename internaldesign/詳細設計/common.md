@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.4 2026-11-08 |
+| 版 | v1.5 2026-11-08 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md 4・5章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -252,7 +252,7 @@ common には、入力チェックそのものはない。各機能で入力チ�
 - 受け取る値の形（dto）の項目に、入力チェックの印（`@NotBlank`・`@Size` など。Bean Validation と呼ぶ）を付け、controller の引数に `@Valid` を付ける。
 - 印の `message` には、画面設計のメッセージをそのまま書く。例：`@NotBlank(message = "ユーザー名は必須です。")`
 - 誤りがあれば、GlobalExceptionHandler が 400 と errors（入力欄ごとのメッセージ）に変えて返す（3.6）。
-- 印だけでは確かめられない決まり（「同じ管理番号がすでにある」など）は、service で確かめ、BusinessRuleException か、errors 付きの例外を投げる。
+- 印だけでは確かめられない決まり（「同じ管理番号がすでにある」など。業務チェックと呼ぶ）は、各機能の validator（`<機能名>/validator/<名前>Validator`）で確かめ、BusinessRuleException か、errors 付きの例外を投げる。Validator は ServiceImpl から呼ぶ（CLAUDE.md 5章）。
 
 設定値（AppProperties）は、起動時に入力チェックをする。値がなければ起動しない（3.7）。
 
@@ -499,3 +499,4 @@ EquipmentManagementSystem_Client/
 | v1.2 | 2026-11-03 | ZPOP-22：組み立てた画面を配る仕組み（3.9）と、画面（Client）の共通部品（11章）を足した |
 | v1.3 | 2026-11-04 | パッケージ構成の変更：common.constant（Enum の置き場所）を足し、mapper・dto・Enum の置き場所（2.3）を書いた |
 | v1.4 | 2026-11-08 | 詳細設計の形の変更（README v2.0）に合わせて、health の詳細設計の場所を health/A-08_動いているかを答える.md に直した。common.md そのものの形は変えていない |
+| v1.5 | 2026-11-08 | ディレクトリ構成の変更（service を interface と Impl に分け、業務チェックを validator に置く）に合わせて、5章の業務チェックの書き場所を validator に直した |

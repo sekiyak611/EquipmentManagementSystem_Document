@@ -54,7 +54,8 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<機能名
 | 作るもの | 置き場所 |
 |---|---|
 | controller（APIの入口） | `<機能名>/controller/`。1つの機能に1つだけ |
-| service（業務のルール） | `<機能名>/service/` |
+| service（業務のルール） | `<機能名>/service/` に、interface の `<機能名>Service` と、中身の `<機能名>ServiceImpl`（`@Service`）を並べて置く |
+| validator（業務チェック） | `<機能名>/validator/` の `<名前>Validator`（`@Component`）。業務チェックがない機能は作らない |
 | model（テーブルの1行の形） | `<機能名>/model/` |
 | mapper（データベースを読み書きする部品） | `mapper/<機能名>/`。SQLの XML は `src/main/resources/jp/co/highjunk/equipment/mapper/<機能名>/` |
 | dto（APIで受け取る値・返す値の形） | `dto/<機能名>/` |
@@ -65,19 +66,20 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<機能名
 
 **書きながら確かめること**（くわしくは CLAUDE.md 5章）
 
-- [ ] 業務のルールは service に書き、controller は受け取る・service を呼ぶ・返すだけ。
+- [ ] 業務のルールは ServiceImpl に書き、controller は受け取る・service を呼ぶ・返すだけ。controller は interface の `<機能名>Service` を使い、ServiceImpl を直接使わない。
+- [ ] 業務チェック（データベースの中身や業務のルールと照らして確かめるもの。例：重なり、使われているか、貸出中か、本人か）は Validator に書き、ServiceImpl から書き換えの前に呼んでいる。controller からは呼ばない。Validator は読むだけ（`select…`・`count…`）で、書き換えない。
 - [ ] 返す値は `ApiResponse`（ok・created・accepted）で包む。エラーは common.error の例外（BusinessRuleException、NotFoundException、ConflictException、CsvErrorException など）を投げ、自分で JSON を組み立てない。
 - [ ] すべての API に、必要な権限項目の確認（`@PreAuthorize("hasAuthority('…')")`）がある。コードはデータ設計 5.3 のもの。
-- [ ] ID を受け取る API は、その人が操作してよい対象かを service で確かめている（IDOR を防ぐ）。
+- [ ] ID を受け取る API は、その人が操作してよい対象かを Validator で確かめている（IDOR を防ぐ）。
 - [ ] 入力チェックを、画面設計のとおりにサーバー側でも行う（dto に `@NotBlank`・`@Size` などの印、controller の引数に `@Valid`）。メッセージは画面設計の文のまま。
-- [ ] 2つ以上の書き換えを1つの操作として行う service のメソッドに `@Transactional` を付けた。Slack の送信はその外で、書き込みが確定してから行う。
+- [ ] 2つ以上の書き換えを1つの操作として行う ServiceImpl のメソッドに `@Transactional` を付けた（Validator の呼び出しもこの中）。interface・controller・validator・mapper には付けない。Slack の送信はその外で、書き込みが確定してから行う。
 - [ ] 今の日時は `java.time.Clock` から取る（`LocalDate.now(clock)`）。`LocalDate.now()` のように直接取らない。
 - [ ] SQL は XML に書き、値は `#{}` で渡す（`${}` で文字をつなげない）。
 - [ ] SQL に JOIN とサブクエリ（SQLの中にもう1つ SELECT を入れる書き方）がない。複数のテーブルはテーブルごとに読み、Java で突き合わせる。
 - [ ] ループの中で mapper を呼んでいない（N+1 を防ぐ）。ID を集めて `IN`（`<foreach>`）で1回で読む。
 - [ ] 一覧・検索で、削除済みの行（`deleted_at` が入っている行）を出さない。削除は論理削除。
 - [ ] 編集する API は楽観ロック（`version` 列）で、ほかの人が先に保存していたら 409。
-- [ ] ほかの機能の service・model と、`mapper.<ほかの機能>`・`dto.<ほかの機能>` を import していない。使うのは自分の機能と common だけ。
+- [ ] ほかの機能の service・validator・model と、`mapper.<ほかの機能>`・`dto.<ほかの機能>` を import していない。使うのは自分の機能と common だけ。
 - [ ] 変えられる値（時刻・期限・回数）をプログラムに直接書かず、設定にしている（API設計 6章）。
 - [ ] ログに、パスワード・パスワード設定用のリンクの合言葉・Slack のトークンを出さない。
 - [ ] 貸出のルール、確認のルールを変えたら、ほかの機能の同じルールも同じように直した（テストは backend-test で直す。作業メモに書いておく）。

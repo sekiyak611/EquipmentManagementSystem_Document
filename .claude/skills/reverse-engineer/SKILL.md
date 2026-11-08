@@ -25,7 +25,7 @@ argument-hint: "[機能名（例：category）、API・画面の ID、または�
 
 | リポジトリ | 読むもの |
 |---|---|
-| Server | `<機能名>/`（controller・service・model）、`mapper/<機能名>/` と XML（`src/main/resources/jp/co/highjunk/equipment/mapper/<機能名>/`）、`dto/<機能名>/`、使っている `common.constant` の Enum と common の部品、`application*.yml` の使っている設定値、`src/test/java/jp/co/highjunk/equipment/<機能名>/` のテスト |
+| Server | `<機能名>/`（controller・service（interface と Impl）・validator・model）、`mapper/<機能名>/` と XML（`src/main/resources/jp/co/highjunk/equipment/mapper/<機能名>/`）、`dto/<機能名>/`、使っている `common.constant` の Enum と common の部品、`application*.yml` の使っている設定値、`src/test/java/jp/co/highjunk/equipment/<機能名>/` のテスト |
 | Client | `src/features/<機能名>/`（pages・components・api.ts・types.ts）、`src/routes.tsx` のその機能の行、使っている common の部品、`tests/<機能名>/` |
 
 ファイル・フォルダのパスが渡されたら、そのファイルと、そこから呼ばれている所まで読む。
@@ -39,7 +39,7 @@ argument-hint: "[機能名（例：category）、API・画面の ID、または�
 | ファイル | 1つずつ作る単位 | 書くもと |
 |---|---|---|
 | 機能全体 `<機能名>.md` | 機能に1つ | controller の API の一覧、routes.tsx の画面、`@Scheduled`、読んだクラス・ファイル、使っている Enum と common の部品、ほかの機能と同じテーブル・同じルールを使っている所 |
-| API詳細 `<APIのID>_<短い名前>.md` | controller のメソッド（API）ごと | URL・操作・`@PreAuthorize`、dto の項目と印、service の順番、mapper と XML の SQL、`@Transactional`、投げている例外、Slack を送る所、IDOR の確かめの有無 |
+| API詳細 `<APIのID>_<短い名前>.md` | controller のメソッド（API）ごと | URL・操作・`@PreAuthorize`、dto の項目と印、ServiceImpl の順番、Validator で確かめていること、mapper と XML の SQL、`@Transactional`、投げている例外、Slack を送る所、IDOR の確かめの有無 |
 | 画面詳細 `<画面のID>_<短い名前>.md` | pages の画面ごと | 部品の組み立て、項目と状態（useState）、入力チェック、ボタンの動き、読み込み中・0件・失敗の表示、api.ts の呼び出し、移り方、画面の文 |
 
 - API・画面の ID は、URL・画面のアドレスを API設計 3章・画面一覧 2章と照らして決める。どれにも当たらない API・画面は、ID を「なし」にしてファイル名を `なし_<短い名前>.md` にし、食い違い一覧の「設計書にない」に書く。
@@ -60,7 +60,7 @@ argument-hint: "[機能名（例：category）、API・画面の ID、または�
 | externaldesign/画面一覧.md | 画面のアドレス、移り方、スマートフォン優先か |
 | externaldesign/データ設計.md | 使っているテーブル・列・制約。論理削除・version の使い方 |
 | externaldesign/機能一覧.md | 業務のルールが抜けていないか、設計書にない動きがないか |
-| internaldesign/CLAUDE.md | 4.1・4.3（置き場所）、5章（JOIN・サブクエリ、N+1、Clock、`@PreAuthorize`、IDOR、`@Transactional`、Slack、`#{}`、論理削除、楽観ロック、ほかの機能を使わない、命名規則）、6章（テストの決まり） |
+| internaldesign/CLAUDE.md | 4.1・4.3（置き場所）、5章（service の interface と Impl、業務チェックは Validator、JOIN・サブクエリ、N+1、Clock、`@PreAuthorize`、IDOR、`@Transactional`、Slack、`#{}`、論理削除、楽観ロック、ほかの機能を使わない、命名規則）、6章（テストの決まり） |
 | internaldesign/テスト方針.md | API ごとの ①〜⑤ のテスト、画面のテストの大きさ |
 | すでにある詳細設計（あれば） | 書き起こした中身との違い |
 
@@ -92,7 +92,7 @@ output/loan_リバース_20261210/
 ## 設計書・決まりとの食い違い
 | No. | 種類 | API・画面 | 設計書・決まりの場所 | コードの場所 | 内容 | どちらに合わせるかの材料 |
 |---|---|---|---|---|---|---|
-| 1 | 設計書と違う | K-02 | API設計 v1.1 の4.7 | src/main/java/…/XxxService.java:42 | … | … |
+| 1 | 設計書と違う | K-02 | API設計 v1.1 の4.7 | src/main/java/…/XxxServiceImpl.java:42 | … | … |
 
 種類：
 - 設計書と違う：設計書と動きや文が違う
