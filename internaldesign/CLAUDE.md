@@ -45,10 +45,10 @@
 | サーバー | Java 21、Spring Boot、Spring Security、MyBatis、Gradle |
 | 画面 | React、TypeScript（JavaScriptに型の決まりを足した書き方）、MUI（画面の部品集） |
 | APIの形 | REST（URLで「もの」を、GET・POST・PUT・DELETEで「操作」を表す）。値はJSONでやり取りする（docs/API設計.md） |
-| データベース | MySQL 8。テーブルの作成・変更は Flyway |
+| データベース | MySQL 8.4（開発は 8.4.13。AWS は RDS for MySQL の 8.4 系）。テーブルの作成・変更は Flyway |
 | テスト | JUnit 5（単体・API）、Playwright（画面） |
-| 実行環境 | 開発は各自のPC（Temurin 21）。シナリオテストとリリースはAWS（Amazon Corretto 21）。AWSでは CloudFront → 内部用のALB → EC2 → RDS の形で動かす（docs/基本設計書.md 2・3章） |
-| 使わないもの | Docker、AI機能、メール送信（お知らせはすべてSlackのDM） |
+| 実行環境 | 開発は各自のPC（Temurin 21、MySQL 8.4.13、Node.js 24.12.0。版と入れ方は docs/環境構築手順書.md 1章）。シナリオテストとリリースはAWS（Amazon Corretto 21）。AWSでは CloudFront → 内部用のALB → EC2 → RDS の形で動かす（docs/基本設計書.md 2・3章） |
+| 使わないもの | Docker（2026-11-08 に、今は使わないと決めた。Docker への移行は保留中）、AI機能、メール送信（お知らせはすべてSlackのDM） |
 
 - ライブラリの版は、build.gradle と package.json に書いた版を使う。勝手に上げ下げしない。新しく足すときは、人に確かめる。
 - Spring Security は、CVE-2025-22228 の修正が入った版（6.4.4・6.3.8）以降を使う。
@@ -75,36 +75,8 @@
 | Document | brd/（要件定義）、externaldesign/（基本設計）、internaldesign/（詳細設計とこの共通の決まり）、evidence/（テストの証跡。docs/テスト方針.md の7章）、.claude/skills/（Claude Code の skill。4.4） |
 
 - Claude Codeは、Server か Client のフォルダで起動する。そのとき、Documentのフォルダも読み書きできるようにする（`claude --add-dir ../EquipmentManagementSystem_Document`、または起動したあとに `/add-dir ../EquipmentManagementSystem_Document`）。詳細設計と証跡は Document に書くため。
-- 見張り役（monitor。AWS Lambda、Java 21。docs/API設計.md 3.10）の置き場所は、見張り役のタスク（ZPOP-46）までに決める。
+- 見張り役（monitor。AWS Lambda、Java 21。docs/API設計.md 3.10）の置き場所は、見張り役のタスク（ZPOP-128）までに決める。
 - Documentの internaldesign/settings.json は、Server・Client の .claude/settings.json の見本。
-
-### 4.4 skill（Claude Code の作業の手順書）
-
-skill は、作業の順番とチェック表をまとめたファイル（SKILL.md）。Claude Code は、作業の内容に合うと判断したときに自動で読み込む。人が `/backend-impl 種別管理` のように名前を打って呼び出すこともできる（skill に渡すのは、タスク名か Jira の課題キー）。
-
-- 置き場所は Document の `.claude/skills/<skillの名前>/SKILL.md`。Server・Client で `--add-dir ../EquipmentManagementSystem_Document` を付けて起動すると、2人とも同じ skill を使える。各自のPCだけに skill を置かない（9章）。
-- skill には決まりを書き写さず、この CLAUDE.md と設計書の章を指す。skill と CLAUDE.md・設計書が食い違ったら、CLAUDE.md・設計書が正しい。
-
-| skill | 使うとき |
-|---|---|
-| backend-impl | Server の実装（設計書を読む → 詳細設計 → 実装。テストは書かない） |
-| backend-test | Server のテスト（単体・API）を書き、Server・Client のテストを全部動かす |
-| frontend-impl | Client の実装（設計書を読む → 詳細設計 → 実装。テストは書かない） |
-| frontend-test | Client のテスト（Playwright）を書き、Server・Client のテストを全部動かす |
-| detailed-design | 詳細設計を書く・直す・コードと突き合わせる |
-| backend-review | Server の実装のレビュー。コードは直さず、指摘の一覧を返す。作った会話とは別のエージェントで動く |
-| frontend-review | Client の実装のレビュー（同じ） |
-| deliver-zip | 最後のテスト、証跡、説明.md・変更ファイル一覧.md、zip（7章） |
-| reverse-engineer | コードから詳細設計を書き起こし、設計書との食い違いを一覧にする（設計書は直さない） |
-| implementation-guidelines | 実装・テスト・レビューのときの一般的な心得（読みやすさ、例外、型など）。この CLAUDE.md にない所で使う |
-| env-setup | 開発環境を作る・確かめる（Windows のPC） |
-
-1つのタスクは、人が次の順に skill を呼んで進める。skill どうしは自動でつながない（人がそれぞれの終わりに結果を確かめるため）。
-
-```
-/backend-impl 種別管理  →  /backend-test 種別管理  →  /backend-review 種別管理  →（指摘を直す）→  /deliver-zip 種別管理
-（画面も作るタスクは、backend の review のあとに /frontend-impl → /frontend-test → /frontend-review を挟む）
-```
 
 ### 4.1 サーバー（Server）のパッケージ
 
@@ -201,6 +173,40 @@ EquipmentManagementSystem_Client/
 - 各機能の中は、pages/（画面）、components/（その機能だけで使う部品）、api.ts（その機能のAPIの呼び出し）、types.ts（APIで受け渡す値の型）に分ける。
 - 画面からAPIを呼ぶときは、common/api の apiGet・apiPost・apiPut・apiDelete を使う。失敗すると ApiError（status・message・errors）が投げられる（詳細設計 common.md 11.3）。
 - ファイル名に画面ID（S-05 など）は入れない。
+
+### 4.4 skill（Claude Code の作業の手順書）
+
+skill は、作業の順番とチェック表をまとめたファイル（SKILL.md）。Claude Code は、作業の内容に合うと判断したときに自動で読み込む。人が `/backend-impl K-01_種別一覧` のように名前を打って呼び出すこともできる（skill に渡すのは、実装タスク一覧.md の「タスク名」か、Jira の課題キー）。
+
+- 置き場所は Document の `.claude/skills/<skillの名前>/SKILL.md`。Server・Client で `--add-dir ../EquipmentManagementSystem_Document` を付けて起動すると、2人とも同じ skill を使える。各自のPCだけに skill を置かない（9章）。
+- skill には決まりを書き写さず、この CLAUDE.md と設計書の章を指す。skill と CLAUDE.md・設計書が食い違ったら、CLAUDE.md・設計書が正しい。
+
+| skill | 使うとき |
+|---|---|
+| backend-impl | Server の実装（設計書を読む → 詳細設計 → 実装。テストは書かない） |
+| backend-test | Server のテスト（単体・API）を書き、Server・Client のテストを全部動かす |
+| frontend-impl | Client の実装（設計書を読む → 詳細設計 → 実装。テストは書かない） |
+| frontend-test | Client のテスト（Playwright）を書き、Server・Client のテストを全部動かす |
+| detailed-design | 詳細設計を書く・直す・コードと突き合わせる |
+| backend-review | Server の実装のレビュー。コードは直さず、指摘の一覧を返す。作った会話とは別のエージェントで動く |
+| frontend-review | Client の実装のレビュー（同じ） |
+| deliver-zip | 最後のテスト、証跡、説明.md・変更ファイル一覧.md、zip（7章） |
+| reverse-engineer | コードから詳細設計を書き起こし、設計書との食い違いを一覧にする（設計書は直さない） |
+| implementation-guidelines | 実装・テスト・レビューのときの一般的な心得（読みやすさ、例外、型など）。この CLAUDE.md にない所で使う |
+| env-setup | 開発環境を作る・確かめる（Windows のPC） |
+
+1つのストーリー（Jira の課題。API 1本、画面1つ、仕組み1つ）は、人が次の順に skill を呼んで進める。ストーリーの4つのサブタスクとの対応は、detailed-design が［詳細設計］、backend-impl・frontend-impl が［実装］、backend-test が［単体テスト］と［結合テスト］、frontend-test が画面の［結合テスト］（実装タスク一覧.md 0.1）。レビューと zip づくりはサブタスクにしていない。skill どうしは自動でつながない（人がそれぞれの終わりに結果を確かめるため）。
+
+```
+（API・仕組みのストーリー。例：K-01_種別一覧）
+/detailed-design K-01_種別一覧 → /backend-impl K-01_種別一覧 → /backend-test K-01_種別一覧 → /backend-review K-01_種別一覧 →（指摘を直す）→ /deliver-zip K-01_種別一覧
+
+（画面のストーリー。例：S-13_種別管理）
+/detailed-design S-13_種別管理 → /frontend-impl S-13_種別管理 → /frontend-test S-13_種別管理 → /frontend-review S-13_種別管理 →（指摘を直す）→ /deliver-zip S-13_種別管理
+```
+
+- backend-impl・frontend-impl は、詳細設計がすでにあれば、それを読んで書き足す。
+- 画面のストーリーの単体テストは、テスト方針にないため、着手するときに中身を人と相談して決める（実装タスク一覧.md 0.1）。
 
 ## 5. 書き方の決まり
 
@@ -306,22 +312,22 @@ npx playwright test
 **作業のしかた**
 
 - Claude Codeは、人がGitHubから取ってきた3つのフォルダ（4章）の中で、ファイルを作る・直す。コードは Server か Client に、詳細設計と証跡は Document に書く。
-- 1回の作業は小さくする（人が全部読んで確認するため）。目安は、Jiraのタスク1つ。
+- 1回の作業は小さくする（人が全部読んで確認するため）。目安は、Jira のストーリー1つ（実装タスク一覧.md 10章）。同じ機能の API と画面を続けて作るときに、1つにまとめるかは人が決める。
 - Gitで変更を調べられないので、作業の中で足した・変えた・消したファイルを、自分で記録しておく。記録は、Claude Code を起動したリポジトリの `output/<タスク名>/変更ファイル一覧.md` に書きためる（4.4 の skill を別の会話から呼んでも、続きが分かるようにするため）。Server と Client の両方を変えるタスクは、同じリポジトリで起動し続け、もう一方は `/add-dir` で読み書きできるようにする。
 
 **成果物の渡し方（zip）**
 
 - 作業が終わり、6章のテストがすべて成功したら、成果物を zip にして、Claude Codeを起動したリポジトリ（Server か Client）のいちばん上の output フォルダに置く。
-- zip の名前は「タスク名_日付.zip」（例：種別管理_20261110.zip）。名前を見ただけで何の成果物かが分かるようにするため。タスク名は実装タスク一覧.md の「タスク」の名前（Jira の課題の名前から頭の番号を除いたもの）。Windows のファイル名に使えない半角の文字（\ / : * ? " < > |）と空白は除く。Jira のタスクにない作業は、中身が分かる短い名前を人と決める。Jira の課題キーは、説明.md の「目的」に書く。
+- zip の名前は「タスク名_日付.zip」（例：K-01_種別一覧_20261110.zip）。名前を見ただけで何の成果物かが分かるようにするため。タスク名は実装タスク一覧.md の「タスク名」の列の名前（API・画面は「ID_短い名前」）。Windows のファイル名に使えない半角の文字（\ / : * ? " < > |）と空白は除く。Jira のタスクにない作業は、中身が分かる短い名前を人と決める。Jira の課題キーは、説明.md の「目的」に書く。
 - zip の中身は次のとおり。足したファイルと変えたファイルを、リポジトリの名前のフォルダの下に、リポジトリと同じフォルダの形のまま入れる。人は、それぞれのフォルダの中身を、同じ名前のリポジトリに反映する。
 
 ```
-種別管理_20261110.zip
+K-01_種別一覧_20261110.zip
 ├─ 説明.md                             下の形の説明の文
 ├─ 変更ファイル一覧.md                  足した・変えた・消したファイルの一覧（リポジトリごと。消したファイルは、ここにだけ書く）
 ├─ EquipmentManagementSystem_Server/ …   Serverで足したファイルと変えたファイル
 ├─ EquipmentManagementSystem_Client/ …   Clientで足したファイルと変えたファイル
-└─ EquipmentManagementSystem_Document/ … 書いた・直した詳細設計（internaldesign/詳細設計/）と、今回の証跡（evidence/）
+└─ EquipmentManagementSystem_Document/ … 書いた・直した詳細設計（internaldesign/詳細設計/）と、今回の証跡（evidence/）。決まり・skill を直したときは、それも入れる
 ```
 
 説明.md の形（人がプルリクエストを作るときに、そのまま使う）
@@ -357,7 +363,7 @@ npx playwright test
 
 **お手本**
 
-- 新しい機能は、category（種別管理。ZPOP-33）を手本にして、同じ書き方で作る。category ができるまでは、health（A-08）の controller・service（HealthService と HealthServiceImpl）と、mapper.health・dto.health の書き方に合わせる（health には業務チェックがないため、validator の書き方は 5章の決まりに従う）。詳細設計も、Document の internaldesign/詳細設計/ の category/（できるまでは health/）を手本にする。
+- 新しい機能は、category（種別管理。API は ZPOP-83〜86、画面は ZPOP-115）を手本にして、同じ書き方で作る。category ができるまでは、health（A-08）の controller・service（HealthService と HealthServiceImpl）と、mapper.health・dto.health の書き方に合わせる（health には業務チェックがないため、validator の書き方は 5章の決まりに従う）。詳細設計も、Document の internaldesign/詳細設計/ の category/（できるまでは health/）を手本にする。
 
 **担当**
 
@@ -370,7 +376,7 @@ npx playwright test
 | common（サーバー・画面の共通部品）と internaldesign/詳細設計/common.md | 変えるときは2人で相談し、その変更だけの小さな作業にして、先に main に入れる |
 | common.constant（Enum） | 新しい Enum のファイルを足すだけなら、機能の作業の中で足してよい（足したことを相手に伝える）。すでにある Enum を変えるときは、common と同じく2人で相談する |
 | routes.tsx、共通ヘッダーのメニュー | 1行足すだけにする。ぶつかったら人が手で直す |
-| Flyway のファイル（Server の src/main/resources/db/migration。テーブルを作る・変えるSQL） | テーブルは ZPOP-23 で全部作る。あとから足すときは、先に相手に伝える（2人が同じ版の番号を使うと、Flyway がエラーで止まるため） |
+| Flyway のファイル（Server の src/main/resources/db/migration。テーブルを作る・変えるSQL） | テーブルは ZPOP-122 で全部作る。あとから足すときは、先に相手に伝える（2人が同じ版の番号を使うと、Flyway がエラーで止まるため） |
 | Server の build.gradle・settings.gradle、Client の package.json | ライブラリを足すときは、2人で合意してから（3章） |
 | Document の .claude/skills/（4.4） | 決まりと同じ扱い。変えるときは2人で相談し、その変更だけの小さな作業にして、先に main に入れる |
 
