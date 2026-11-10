@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="二重貸出の防止（データ設計 5.7）" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T15:04:38.149Z" hostname="vm" time="0.086">
+  <properties/>
+  <testcase name="貸出中の備品に、もう1つ貸出中の行は作れない" classname="jp.co.highjunk.equipment.DatabaseMigrationTest$DoubleLoan" time="0.018"/>
+  <testcase name="取り消した貸出（deleted_at が入った行）は、貸出中に数えない" classname="jp.co.highjunk.equipment.DatabaseMigrationTest$DoubleLoan" time="0.036"/>
+  <testcase name="返却した備品は、また貸し出せる" classname="jp.co.highjunk.equipment.DatabaseMigrationTest$DoubleLoan" time="0.015"/>
+  <system-out><![CDATA[2026-11-11T00:04:38.150+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.DatabaseMigrationTest$DoubleLoan]: DoubleLoan does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:38.152+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.DatabaseMigrationTest$DoubleLoan
+2026-11-11T00:04:38.153+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.DatabaseMigrationTest$DoubleLoan]: DoubleLoan does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:38.154+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.DatabaseMigrationTest]: DatabaseMigrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:38.155+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.DatabaseMigrationTest$DoubleLoan
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
