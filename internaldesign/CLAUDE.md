@@ -231,8 +231,8 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 - controller は、Web のセッションを扱う common.security.LoginSession（ログインの開始・終了）だけは、service を通さずに呼んでよい。業務のルールとデータベースの読み書きは、これまでどおり service に書く（2026-11-10 に決めた例外。service に HttpServletRequest を渡さないため。詳細設計 common.md 3.10）。
 - Controller は1つの機能に1つだけ。URLの頭が違うAPI（例：auth の `/api/auth/...` と `/api/me/password`）も、同じControllerに書く。
 - 機能は、その機能の中だけで完結させる。ほかの機能の service・validator・model と、mapper・dto の下のほかの機能のパッケージ（例：loan から mapper.equipment、dto.equipment）は使わない。使ってよいのは、自分の機能の mapper.<機能名>・dto.<機能名> と、common の部品だけ。
-- mapper.<機能名> が使ってよいのは、同じ機能の model と common だけ。
-- mapper は `<テーブルの名前>Mapper` なので、同じ名前の mapper がほかの機能にもある（例：mapper.auth.UserMapper と mapper.user.UserMapper）。import するときは、自分の機能の mapper.<機能名> のものかを確かめる（Eclipse の自動の import で選び間違えやすい）。dto.<機能名> が使ってよいのは common だけ（common.constant の Enum など）。
+- mapper.<機能名> が使ってよいのは、同じ機能の model と common だけ。dto.<機能名> が使ってよいのは common だけ（common.constant の Enum など）。
+- mapper は `<テーブルの名前>Mapper` なので、同じ名前の mapper がほかの機能にもある（例：mapper.auth.UserMapper と mapper.user.UserMapper）。import するときは、自分の機能の mapper.<機能名> のものかを確かめる（Eclipse の自動の import で選び間違えやすい）。
 - common から機能のパッケージ（mapper・dto の下も含む）を使わない。循環（AがBを使い、BもAを使う形）を作らない。
 - 2つ以上の機能で使う業務のルール（4.1の common.calendar・common.passwordlink）は、common に1つだけ置き、書き写さない。
 - 機能をまたいで同じルールが書かれている所（貸出のルール：mine・equipment・importer、確認のルール：mine・equipment・confirmation）は、1か所を直したらほかも同じように直し、テストも直す。
