@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>InitialAdminEmailCallbackTest</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">21</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">0.755s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="acceptsValidForms(String)/index.html">前後に半角スペースがある・大文字を含むメールアドレスは通す（V2 の SQL で前後の空白を除き、小文字にそろえる）</a>
+</td>
+<td class="path">acceptsValidForms(String)</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="130">0.130s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">メールアドレスが設定されていれば、データベースを見ずに通す</td>
+<td class="path">emailSet()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">メールアドレスが空でも、最初のデータ（V2）がすでに当たっていれば通す</td>
+<td class="path">emptyButInitialDataApplied()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="18">0.018s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">メールアドレスが空で、初めて当てる（Flyway の記録のテーブルがない）ときは、設定の場所を書いた文で止める</td>
+<td class="path">emptyOnNewDatabase()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">記録のテーブルはあるが V2 の成功がない（V1 だけ当たった・V2 が失敗として残っている）ときは止める</td>
+<td class="path">historyWithoutSuccessfulV2()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="50">0.050s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">形の正しくない値でも、最初のデータ（V2）がすでに当たっていれば通す</td>
+<td class="path">invalidButInitialDataApplied()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="11">0.011s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">メールアドレスの設定そのものがない（null）ときも止める</td>
+<td class="path">missingOnNewDatabase()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="371">0.371s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="rejectsInvalidForms(String)/index.html">初めて当てるとき、SQL を壊す文字・TRIM で除けない空白・@ の数の誤りがあれば、値を出さない文で止める</a>
+</td>
+<td class="path">rejectsInvalidForms(String)</td>
+<td>10</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="108">0.108s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">記録のテーブルの名前に決まった文字以外があれば、SQL に入れずに止める</td>
+<td class="path">rejectsUnexpectedTableName()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">Flyway が当て始める前（BEFORE_MIGRATE）だけに動く</td>
+<td class="path">supportsOnlyBeforeMigrate()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="11">0.011s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest">2026-11-08T22:39:05.676+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest]: InitialAdminEmailCallbackTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-08T22:39:05.677+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest
+2026-11-08T22:39:05.678+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest]: InitialAdminEmailCallbackTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-08T22:39:05.679+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at Nov 8, 2026, 1:39:10 PM</p>
+</div>
+</div>
+</body>
+</html>
