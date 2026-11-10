@@ -57,10 +57,10 @@ Server のフォルダ（`EquipmentManagementSystem_Server`）と Document の�
 
 **パッケージと機能の分け方**（CLAUDE.md 4.1・5章）
 - [ ] 機能の中は controller・service・validator・model。mapper は `mapper.<機能名>`、dto は `dto.<機能名>`、Enum は `common.constant`。
-- [ ] service は interface の `<機能名>Service` と、中身の `<機能名>ServiceImpl`（`@Service`）に分かれ、同じ service パッケージにある。controller は interface を使い、ServiceImpl を直接使っていない。
+- [ ] controller と service が API 1本に1つずつある（`<APIの名前>Controller`、interface の `<APIの名前>Service` と中身の `<APIの名前>ServiceImpl`（`@Service`）。同じ service パッケージ）。controller に URL と操作が1つだけ。controller は自分の API の interface を使い、ServiceImpl を直接使っていない。同じ機能のほかの API の service を呼ぶのはよいが、ほかの機能の service は使っていない。
 - [ ] 業務チェック（データベースの中身や業務のルールと照らして確かめるもの）が `<機能名>/validator/` の `…Validator` にあり、ServiceImpl から書き換えの前に呼ばれている。controller から呼んでいない。Validator が書き換え（insert・update・markDeleted など）をしていない。業務チェックが ServiceImpl や controller に直接書かれていない。
 - [ ] 名前が CLAUDE.md 5章の命名規則のとおり（`…Service`・`…ServiceImpl`・語尾が `Validator`）。
-- [ ] Controller は1つの機能に1つだけ。業務のルールが controller に書かれていない。（controller から common.security.LoginSession を呼ぶのは、決まった例外なので指摘しない。CLAUDE.md 5章）
+- [ ] 業務のルールが controller に書かれていない。（controller から common.security.LoginSession を呼ぶのは、決まった例外なので指摘しない。CLAUDE.md 5章）
 - [ ] mapper はテーブルごとの `<テーブルの名前>Mapper`（テーブルを使わないものだけ `<機能名>Mapper`）。import している mapper が、自分の機能の `mapper.<機能名>` のもの（同じ名前の mapper がほかの機能にもある）。
 - [ ] ほかの機能の service・validator・model・`mapper.<ほかの機能>`・`dto.<ほかの機能>` を import していない（import の行を見て確かめる）。common から機能のパッケージを使っていない。循環がない。
 - [ ] common の部品、Flyway のファイル、build.gradle・settings.gradle、すでにある Enum を変えていたら、「2人で相談が必要な変更」として指摘する（CLAUDE.md 9章）。

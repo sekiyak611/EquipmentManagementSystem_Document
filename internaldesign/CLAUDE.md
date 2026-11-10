@@ -114,22 +114,24 @@ mapper と dto は、機能のパッケージの外にまとめて置く。そ�
 
 | パッケージ | 中身 |
 |---|---|
-| 機能（例：loan） | controller（APIの入口）、service（業務のルール）、validator（業務チェック）、model（テーブルの1行の形）の4つに分ける。service には、interface（インターフェース＝メソッドの名前・受け取る値・返す値だけを決めた型）の `<機能名>Service` と、中身を書いた `<機能名>ServiceImpl` を並べて置く。業務チェックがない機能（例：health）は、validator を作らない |
+| 機能（例：category） | controller（APIの入口）、service（業務のルール）、validator（業務チェック）、model（テーブルの1行の形）の4つに分ける。controller と service は **API 1本に1つずつ** 作る（2026-11-10 に決めた）。service には、interface（インターフェース＝メソッドの名前・受け取る値・返す値だけを決めた型）の `<APIの名前>Service` と、中身を書いた `<APIの名前>ServiceImpl` を並べて置く。業務チェックがない機能（例：health）は、validator を作らない |
 | mapper.<機能名>（例：mapper.loan） | MyBatisでデータベースを読み書きする部品（インターフェース） |
 | dto.<機能名>（例：dto.loan） | APIで受け取る値・返す値の形 |
 | common.constant | Enum（上の表） |
 
 ```
 jp.co.highjunk.equipment
-├─ loan/
-│  ├─ controller/   LoanController
-│  ├─ service/      LoanService（interface）、LoanServiceImpl（中身）
-│  ├─ validator/    LoanValidator（業務チェック）
-│  └─ model/        Loan（テーブルの1行）
+├─ category/
+│  ├─ controller/   CategoryListController（K-01）、CategoryCreateController（K-02）、
+│  │                CategoryUpdateController（K-03）、CategoryDeleteController（K-04）
+│  ├─ service/      CategoryListService（interface）、CategoryListServiceImpl（中身）、
+│  │                CategoryCreateService、CategoryCreateServiceImpl …（API ごと）
+│  ├─ validator/    CategoryValidator など（業務チェック）
+│  └─ model/        Category（テーブルの1行）
 ├─ mapper/
-│  └─ loan/         LoanMapper
+│  └─ category/     CategoryMapper
 ├─ dto/
-│  └─ loan/         LoanRequest、LoanResponse など
+│  └─ category/     CategoryCreateRequest、CategoryResponse など
 └─ common/
    └─ constant/     Enum（例：EquipmentStatus）
 ```
@@ -219,8 +221,11 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 - テスト用の切り替え（Slackの偽物、送った内容を読み出すAPI）は、本番の設定で動かないようにする。
 
 **サーバー（Java）**
-- パッケージは 4.1 のとおり機能ごとに分ける。業務のルールは service（`<機能名>ServiceImpl`）に、業務チェックは validator に書き、controller には書かない。
-- service は、interface の `<機能名>Service` と、中身の `<機能名>ServiceImpl`（`implements <機能名>Service`）に分け、同じ service パッケージに置く。`@Service` は ServiceImpl に付ける。controller は interface（`<機能名>Service`）を受け取って使い、ServiceImpl を直接使わない。
+- パッケージは 4.1 のとおり機能ごとに分ける。業務のルールは service（`<APIの名前>ServiceImpl`）に、業務チェックは validator に書き、controller には書かない。
+- controller と service は、API 1本（API設計の ID 1つ。例：K-01）に1つずつ作る（2026-11-10 に決めた）。controller には、その API の URL と操作を1つだけ書く。
+- service は、interface の `<APIの名前>Service` と、中身の `<APIの名前>ServiceImpl`（`implements <APIの名前>Service`）に分け、同じ service パッケージに置く。`@Service` は ServiceImpl に付ける。controller は、自分の API の service の interface を受け取って使い、ServiceImpl を直接使わない。
+- 同じ機能の中で、ほかの API と同じ処理が要るときは、その API の service（interface）を呼んでよい（例：A-01 ログインは、返す値を A-03 の MeService で作る）。ほかの機能の service は使わない（下の決まり）。
+- API でない処理（Slack 催促の定期実行、common の約束の中身など）の service は、役目を表す名前にする（例：auth の LoginUserRefresherImpl、reminder の定期実行）。
 - 確かめることは、次の2つに分ける。
   - **入力チェック**：受け取った値だけで分かるもの（必須、文字数、形式、数の範囲など）。dto の印（`@NotBlank`・`@Size` など）と、controller の `@Valid` で確かめる。
   - **業務チェック**：データベースの中身や業務のルールと照らして確かめるもの（例：同じ名前の種別がもうある、使われている種別は消せない、すでに貸し出されている、その人が操作してよい対象か）。`<機能名>/validator/` の `<名前>Validator` に書く。
@@ -229,7 +234,6 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
   - 守れないときは、common.error の例外（BusinessRuleException・NotFoundException・ConflictException など。投げる例外と文は、その API の詳細設計 9章）を投げる。
   - 読むだけにする（mapper の `select…`・`count…` だけを使う）。書き換えは ServiceImpl で行う。確かめるために読んだ行（model）は、返して ServiceImpl で使ってよい（同じ行を2回読まないため）。
 - controller は、Web のセッションを扱う common.security.LoginSession（ログインの開始・終了）だけは、service を通さずに呼んでよい。業務のルールとデータベースの読み書きは、これまでどおり service に書く（2026-11-10 に決めた例外。service に HttpServletRequest を渡さないため。詳細設計 common.md 3.10）。
-- Controller は1つの機能に1つだけ。URLの頭が違うAPI（例：auth の `/api/auth/...` と `/api/me/password`）も、同じControllerに書く。
 - 機能は、その機能の中だけで完結させる。ほかの機能の service・validator・model と、mapper・dto の下のほかの機能のパッケージ（例：loan から mapper.equipment、dto.equipment）は使わない。使ってよいのは、自分の機能の mapper.<機能名>・dto.<機能名> と、common の部品だけ。
 - mapper.<機能名> が使ってよいのは、同じ機能の model と common だけ。dto.<機能名> が使ってよいのは common だけ（common.constant の Enum など）。
 - mapper は `<テーブルの名前>Mapper` なので、同じ名前の mapper がほかの機能にもある（例：mapper.auth.UserMapper と mapper.user.UserMapper）。import するときは、自分の機能の mapper.<機能名> のものかを確かめる（Eclipse の自動の import で選び間違えやすい）。
@@ -245,7 +249,7 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 - 編集するAPIは、楽観ロック（version 列）で、ほかの人が先に保存していたら 409 を返す。
 - SQLは MyBatis の XML に書く。値は必ずパラメータ（#{}）で渡し、文字をつなげてSQLを作らない（SQLインジェクション＝外から入れた文字でデータベースを操られる攻撃を防ぐため）。
 - 削除は論理削除（deleted_at）。一覧や検索では、削除済みの行を出さない。
-- 2つ以上の書き換え（INSERT・UPDATE・DELETE）を1つの操作として行う処理は、ServiceImpl のメソッドに `@Transactional` を付け、途中で失敗したら全部を元に戻す。controller・validator・mapper と、interface の `<機能名>Service` には付けない。
+- 2つ以上の書き換え（INSERT・UPDATE・DELETE）を1つの操作として行う処理は、ServiceImpl のメソッドに `@Transactional` を付け、途中で失敗したら全部を元に戻す。controller・validator・mapper と、interface の `<APIの名前>Service` には付けない。
 - Slack の送信は、`@Transactional` の中で行わない。データベースへの書き込みが確定してから送る（送ったのにデータベースは元に戻った、を防ぐため）。送るのに失敗したときの扱いは、その機能の設計書・詳細設計に従う。
 - 操作する対象（備品・貸出など）の ID を画面から受け取る API は、権限項目の確認に加えて、その人が操作してよい対象かを validator で確かめる（業務チェックの1つ。ServiceImpl から呼ぶ）（例：B-03 の返す・B-04 の確認したは、ログインしている人が借りている備品だけを対象にする。B-04 は docs/API設計.md 4.7 のとおり、ほかの人の備品が含まれていたら 403）。ID を書き換えて他人のデータを読む・変えることを防ぐため（IDOR と呼ばれる穴）。
 
@@ -263,15 +267,16 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 
 | もの | 付け方 | 例 |
 |---|---|---|
-| controller | `<機能名>Controller` | CategoryController |
-| service | interface は `<機能名>Service`、中身は `<機能名>ServiceImpl` | CategoryService、CategoryServiceImpl |
-| validator | 語尾を `Validator` にする。基本は `<機能名>Validator`。確かめることが多ければ、対象ごとに分けてよい | CategoryValidator、LoanValidator |
+| `<APIの名前>` | API 1本を表す英語。基本は `<対象><操作>`：一覧は `List`、1件は `Detail`、追加は `Create`、変更は `Update`、削除は `Delete`。この形に当てはまらない API は、何をするかを表す名前 | CategoryList（K-01）、CategoryCreate（K-02）、Login（A-01）、Logout（A-02）、Me（A-03） |
+| controller | `<APIの名前>Controller`（API 1本に1つ） | CategoryListController、LoginController |
+| service | interface は `<APIの名前>Service`、中身は `<APIの名前>ServiceImpl`（API 1本に1つ） | CategoryListService、CategoryListServiceImpl |
+| validator | 語尾を `Validator` にする。基本は `<APIの名前>Validator`。同じ機能の2つ以上の API で同じことを確かめるときは、まとめて `<機能名>Validator` にしてよい | LoginValidator、CategoryValidator（K-02〜K-04 で使う） |
 | mapper | `<テーブルの名前>Mapper`。1つのテーブルに1つ作り、テーブルの名前の単数形を PascalCase にする。ほかの機能に同じ名前の mapper があってよい（Spring の部品の名前をパッケージ込みにしているので、ぶつからない。common.config.MyBatisConfig）。テーブルを使わない mapper（health の `SELECT 1`）だけは `<機能名>Mapper`（2026-11-10 に決めた） | UserMapper（users）、CategoryMapper（categories）、RolePermissionMapper（role_permissions）、HealthMapper（テーブルを使わない） |
 | mapper のメソッド | 読む：`select…`（1件は `selectById`、まとめては `selectByIds`）、数える：`count…`、足す：`insert`、変える：`update…`、論理削除：`markDeleted` | selectById、countByName、markDeleted |
 | model（テーブルの1行） | テーブルの名前の単数形 | Category（categories）、Loan（loans） |
 | dto | 受け取る値は `…Request`、返す値は `…Response` | CategoryCreateRequest、CategoryResponse |
 | Enum | 意味を表す名前。値は大文字と「_」で、API設計・データ設計の値と同じ文字 | EquipmentStatus.MANAGED（データ設計の管理状態 MANAGED） |
-| テスト（Server） | API のテストは `<機能名>ApiTest`、単体テストは `<テストするクラス>Test` | CategoryApiTest、CategoryValidatorTest、ReminderDateCalculatorTest |
+| テスト（Server） | API のテストは `<APIの名前>ApiTest`（API 1本に1つ。同じ機能のテストで共通に使う値と道具は `<機能名>ApiTestBase` にまとめてよい）、単体テストは `<テストするクラス>Test` | CategoryListApiTest、LoginApiTest、CategoryValidatorTest、ReminderDateCalculatorTest |
 | 画面（Client） | 画面は `…Page.tsx`、部品は役目を表す名前の `.tsx`（どちらも PascalCase） | CategoryListPage.tsx、CategoryForm.tsx |
 | api.ts の関数 | 読む：`get…`、足す：`create…`、変える：`update…`、消す：`delete…`（camelCase＝最初の単語だけ小文字） | getCategories、createCategory |
 | types.ts の型 | Server の dto と同じ名前 | CategoryResponse |
