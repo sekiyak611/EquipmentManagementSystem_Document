@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="データベースにつながるとき（テスト専用のデータベース equipment_test を使う）" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-08T14:26:49.676Z" hostname="vm" time="0.035">
+  <properties/>
+  <testcase name="版や設定などの詳しい情報は返さない（data は state だけ）" classname="jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsUp" time="0.014"/>
+  <testcase name="ログインしていなくても呼べて、200 と state=UP を返す" classname="jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsUp" time="0.006"/>
+  <system-out><![CDATA[2026-11-08T23:26:49.678+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsUp]: WhenDatabaseIsUp does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-08T23:26:49.684+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsUp
+2026-11-08T23:26:49.685+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsUp]: WhenDatabaseIsUp does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-08T23:26:49.685+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.health.HealthApiTest]: HealthApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-08T23:26:49.687+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsUp
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
