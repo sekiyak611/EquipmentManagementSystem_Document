@@ -29,8 +29,8 @@ API詳細設計のテンプレート。1つの API に1ファイル。
 | 内容 | （API設計の「内容」の文） |
 | 権限項目 | XXX（データ設計 5.3 のコード）／ ログイン ／ なし |
 | 使う画面 | S-xx（[S-xx_….md](S-xx_….md)） |
-| controller のメソッド | XxxController#xxx |
-| service のメソッド | XxxService#xxx（中身は XxxServiceImpl） |
+| controller のメソッド | XxxListController#xxx（API 1本に1つの controller。CLAUDE.md 5章） |
+| service のメソッド | XxxListService#xxx（中身は XxxListServiceImpl。API 1本に1つ） |
 | validator のメソッド | XxxValidator#xxx ／ なし（業務チェックがない） |
 
 ## 2. リクエスト定義

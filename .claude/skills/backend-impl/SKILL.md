@@ -53,8 +53,8 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<機能名
 
 | 作るもの | 置き場所 |
 |---|---|
-| controller（APIの入口） | `<機能名>/controller/`。1つの機能に1つだけ |
-| service（業務のルール） | `<機能名>/service/` に、interface の `<機能名>Service` と、中身の `<機能名>ServiceImpl`（`@Service`）を並べて置く |
+| controller（APIの入口） | `<機能名>/controller/` の `<APIの名前>Controller`。API 1本に1つ（URL と操作を1つだけ書く） |
+| service（業務のルール） | `<機能名>/service/` に、interface の `<APIの名前>Service` と、中身の `<APIの名前>ServiceImpl`（`@Service`）を並べて置く。API 1本に1つ |
 | validator（業務チェック） | `<機能名>/validator/` の `<名前>Validator`（`@Component`）。業務チェックがない機能は作らない |
 | model（テーブルの1行の形） | `<機能名>/model/` |
 | mapper（データベースを読み書きする部品） | `mapper/<機能名>/` に、テーブルごとの `<テーブルの名前>Mapper`（ほかの機能に同じ名前があってよい）。SQLの XML は `src/main/resources/jp/co/highjunk/equipment/mapper/<機能名>/` |
@@ -66,7 +66,7 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<機能名
 
 **書きながら確かめること**（くわしくは CLAUDE.md 5章）
 
-- [ ] 業務のルールは ServiceImpl に書き、controller は受け取る・service を呼ぶ・返すだけ。controller は interface の `<機能名>Service` を使い、ServiceImpl を直接使わない。（例外：ログインの開始・終了の LoginSession だけは controller から呼んでよい。CLAUDE.md 5章）
+- [ ] 業務のルールは ServiceImpl に書き、controller は受け取る・service を呼ぶ・返すだけ。controller は自分の API の interface（`<APIの名前>Service`）を使い、ServiceImpl を直接使わない。（例外：ログインの開始・終了の LoginSession だけは controller から呼んでよい。CLAUDE.md 5章）
 - [ ] 業務チェック（データベースの中身や業務のルールと照らして確かめるもの。例：重なり、使われているか、貸出中か、本人か）は Validator に書き、ServiceImpl から書き換えの前に呼んでいる。controller からは呼ばない。Validator は読むだけ（`select…`・`count…`）で、書き換えない。
 - [ ] 返す値は `ApiResponse`（ok・created・accepted）で包む。エラーは common.error の例外（BusinessRuleException、NotFoundException、ConflictException、CsvErrorException など）を投げ、自分で JSON を組み立てない。
 - [ ] すべての API に、必要な権限項目の確認（`@PreAuthorize("hasAuthority('…')")`）がある。コードはデータ設計 5.3 のもの。

@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.9 2026-11-10 |
+| 版 | v1.10 2026-11-10 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.2 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -244,7 +244,7 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 | クラス | 役割 |
 |---|---|
 | LoginUser | セッションに入れる「ログインしている人」。ユーザID（userId）と、ログインした日時（loggedInAt）だけを持つ。LoginUserId を実装する |
-| LoginUserRefresher | APIを呼ぶたびに、ログインしている人の今の権限項目を返す約束（インターフェース）。返せない（削除された、session_valid_after より前のログイン）ときは空を返す。中身は auth の AuthServiceImpl が持つ（common から機能を使わないため、約束だけを common に置く） |
+| LoginUserRefresher | APIを呼ぶたびに、ログインしている人の今の権限項目を返す約束（インターフェース）。返せない（削除された、session_valid_after より前のログイン）ときは空を返す。中身は auth の LoginUserRefresherImpl が持つ（common から機能を使わないため、約束だけを common に置く） |
 | LoginRefreshFilter | `/api/` で始まるリクエストのたびに LoginUserRefresher を呼ぶフィルター。空なら、セッションを捨ててログインしていない扱いにする（→ ログインが要る API は 401）。そうでなければ、今の権限項目でログイン状態を作り直す（そのリクエストの間だけ。権限の変更が次の操作から効く。API設計 2.2）。データベースを読めなかったときは、controller の外なので GlobalExceptionHandler を通らないため、ここで 500 を 2.4 の形で返す（ApiResponseWriter） |
 | LoginSession | ログインを始める（start）・終える（end）。start：セッションの番号を変え（すでにあれば）、LoginUser と権限項目のログイン状態をセッションに保存し、XSRF-TOKEN を作り直す。end：ログに「ログアウトしました」を残し、セッションを捨て、XSRF-TOKEN を作り直す |
 | SecurityConfig（変更） | PasswordEncoder（bcrypt）・SecurityContextRepository（セッションにログイン状態を入れる部品）・CsrfTokenRepository（XSRF-TOKEN のクッキーを扱う部品）を、ほかの部品から使えるように用意する。LoginRefreshFilter を、セッションからログイン状態を読んだすぐあと（SecurityContextHolderFilter の後ろ）に置く |
@@ -396,7 +396,7 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 テストを書くときの決まり（CLAUDE.md 6章）：
 
 - POST・PUT・DELETE を送るときは、`CsrfTestHelper.csrfToken(mockMvc)` を使う。Spring Security のテスト用の `csrf()` は使わない（10章の7）。
-- ログインした状態は、`@WithMockUser`（権限項目は `authorities` で指定）か、`authentication(...)` で作る。本物のログインを通すときは、A-01 を呼んで受け取ったセッション（MockHttpSession）を次のリクエストに渡す（auth の AuthApiTest がお手本。3.10）。開発用のユーザ（4章）を使える。
+- ログインした状態は、`@WithMockUser`（権限項目は `authorities` で指定）か、`authentication(...)` で作る。本物のログインを通すときは、A-01 を呼んで受け取ったセッション（MockHttpSession）を次のリクエストに渡す（auth の AuthApiTestBase・LoginApiTest がお手本。3.10）。開発用のユーザ（4章）を使える。
 
 ## 10. 設計書にない判断
 
@@ -566,3 +566,4 @@ EquipmentManagementSystem_Client/
 | v1.7 | 2026-11-08 | ZPOP-55・56・57・103（ログインの最小限）：ログインの部品（3.10）、開発用のユーザ（4章）、UnauthorizedException（6章）、PermissionCode・HomePage、画面の common/auth（11.9）とヘッダーの氏名・ログアウト（11.4）を足した |
 | v1.8 | 2026-11-09 | 開発のPCの MySQL を Docker で動かす形にしたので、4章に compose.yaml の行を足した（接続先の設定は変えない） |
 | v1.9 | 2026-11-10 | mapper の部品の名前をパッケージ込みにする MyBatisConfig を足した（2.3）。controller から LoginSession を呼ぶ例外を CLAUDE.md 5章に書いたことを 3.10 に足した |
+| v1.10 | 2026-11-10 | controller と service を API 1本に1つずつにした決まりに合わせて、auth のクラスの名前を直した（3.10・9章） |
