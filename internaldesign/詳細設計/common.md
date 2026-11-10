@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.8 2026-11-09 |
+| 版 | v1.9 2026-11-10 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.2 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -99,7 +99,8 @@ CLAUDE.md 4.1 のとおり、mapper と dto は機能のパッケージの外に
 | dto | dto.<機能名> | dto.health.HealthResponse |
 | Enum | common.constant | common.constant.HealthState |
 
-- MyBatis は、`@Mapper` を付けたインターフェースを、EquipmentApplication があるパッケージの下から自動で探す。mapper のパッケージを移しても、設定を足す必要はない。
+- MyBatis は、`@Mapper` を付けたインターフェースを、`jp.co.highjunk.equipment.mapper` の下から探す（common.config.MyBatisConfig の `@MapperScan`）。mapper のパッケージを足しても、設定を足す必要はない。
+- mapper の名前は `<テーブルの名前>Mapper`（CLAUDE.md 5章）なので、同じ名前の mapper がパッケージ違いでできる（例：mapper.auth.UserMapper と mapper.user.UserMapper）。Spring の部品（bean）の名前は、ふつうはクラスの名前（userMapper）でぶつかるため、MyBatisConfig で、パッケージ込みの名前（`jp.co.highjunk.equipment.mapper.auth.UserMapper`）にしている（FullyQualifiedAnnotationBeanNameGenerator）。テストは common.config.MyBatisConfigTest（テストだけの mapper.namecheck.first・second の SameNameMapper で確かめる）。2026-11-10 に決めた。
 - XML は、mapper と同じパッケージの場所にあれば自動で読み込まれる（`mybatis.mapper-locations` は設定しない）。XML の namespace は、mapper のクラスの名前（例：`jp.co.highjunk.equipment.mapper.health.HealthMapper`）にする。
 - Enum を JSON で返すと、Enum の名前（例：UP）がそのまま文字になる。API設計の値（例：管理状態の文字）と Enum の名前をそろえる。
 - common.constant は common の一部だが、新しい Enum のファイルを足すだけなら、機能の作業の中で足してよい。すでにある Enum を変えるときは2人で相談する（CLAUDE.md 9章）。
@@ -253,7 +254,7 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 - ログインしている人のユーザIDは、controller の引数に `@AuthenticationPrincipal LoginUserId user` と書いて、`user.getUserId()` で取る。
 - パスワードの照らし合わせ・変換は、PasswordEncoder を受け取って使う（bcrypt。基本設計書 5章）。
 - テストでログインした状態を作るときは、A-01 を呼んでセッション（MockHttpSession）を受け取るか、`authentication(...)` で LoginUser を入れる（9章）。
-- ログインを始める・終える（LoginSession#start・end）は、Web のセッションを扱う仕事なので、auth の controller から呼ぶ（service に HttpServletRequest を渡さないため。auth.md 4章の No.6）。
+- ログインを始める・終える（LoginSession#start・end）は、Web のセッションを扱う仕事なので、auth の controller から呼ぶ（service に HttpServletRequest を渡さないため。auth.md 4章の No.6）。CLAUDE.md 5章の「controller は service を呼ぶだけ」の例外として、2026-11-10 に CLAUDE.md 5章に書いた。
 
 **あとのタスクへの申し送り**
 
@@ -564,3 +565,4 @@ EquipmentManagementSystem_Client/
 | v1.6 | 2026-11-08 | ZPOP-122：テーブルと最初のデータを作ったので、1章・2.1・4章に、テーブル.md への案内と InitialAdminEmailCallback を足した |
 | v1.7 | 2026-11-08 | ZPOP-55・56・57・103（ログインの最小限）：ログインの部品（3.10）、開発用のユーザ（4章）、UnauthorizedException（6章）、PermissionCode・HomePage、画面の common/auth（11.9）とヘッダーの氏名・ログアウト（11.4）を足した |
 | v1.8 | 2026-11-09 | 開発のPCの MySQL を Docker で動かす形にしたので、4章に compose.yaml の行を足した（接続先の設定は変えない） |
+| v1.9 | 2026-11-10 | mapper の部品の名前をパッケージ込みにする MyBatisConfig を足した（2.3）。controller から LoginSession を呼ぶ例外を CLAUDE.md 5章に書いたことを 3.10 に足した |

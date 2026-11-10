@@ -228,9 +228,11 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
   - `@Component` を付ける。ServiceImpl から、書き換えの前に呼ぶ（ServiceImpl の `@Transactional` の中で呼び、確かめてから書き換えるまでを1つのまとまりにする）。controller からは呼ばない。
   - 守れないときは、common.error の例外（BusinessRuleException・NotFoundException・ConflictException など。投げる例外と文は、その API の詳細設計 9章）を投げる。
   - 読むだけにする（mapper の `select…`・`count…` だけを使う）。書き換えは ServiceImpl で行う。確かめるために読んだ行（model）は、返して ServiceImpl で使ってよい（同じ行を2回読まないため）。
+- controller は、Web のセッションを扱う common.security.LoginSession（ログインの開始・終了）だけは、service を通さずに呼んでよい。業務のルールとデータベースの読み書きは、これまでどおり service に書く（2026-11-10 に決めた例外。service に HttpServletRequest を渡さないため。詳細設計 common.md 3.10）。
 - Controller は1つの機能に1つだけ。URLの頭が違うAPI（例：auth の `/api/auth/...` と `/api/me/password`）も、同じControllerに書く。
 - 機能は、その機能の中だけで完結させる。ほかの機能の service・validator・model と、mapper・dto の下のほかの機能のパッケージ（例：loan から mapper.equipment、dto.equipment）は使わない。使ってよいのは、自分の機能の mapper.<機能名>・dto.<機能名> と、common の部品だけ。
 - mapper.<機能名> が使ってよいのは、同じ機能の model と common だけ。dto.<機能名> が使ってよいのは common だけ（common.constant の Enum など）。
+- mapper は `<テーブルの名前>Mapper` なので、同じ名前の mapper がほかの機能にもある（例：mapper.auth.UserMapper と mapper.user.UserMapper）。import するときは、自分の機能の mapper.<機能名> のものかを確かめる（Eclipse の自動の import で選び間違えやすい）。
 - common から機能のパッケージ（mapper・dto の下も含む）を使わない。循環（AがBを使い、BもAを使う形）を作らない。
 - 2つ以上の機能で使う業務のルール（4.1の common.calendar・common.passwordlink）は、common に1つだけ置き、書き写さない。
 - 機能をまたいで同じルールが書かれている所（貸出のルール：mine・equipment・importer、確認のルール：mine・equipment・confirmation）は、1か所を直したらほかも同じように直し、テストも直す。
@@ -264,7 +266,7 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 | controller | `<機能名>Controller` | CategoryController |
 | service | interface は `<機能名>Service`、中身は `<機能名>ServiceImpl` | CategoryService、CategoryServiceImpl |
 | validator | 語尾を `Validator` にする。基本は `<機能名>Validator`。確かめることが多ければ、対象ごとに分けてよい | CategoryValidator、LoanValidator |
-| mapper | `<テーブルの名前>Mapper`（機能の中でテーブルが2つ以上なら、テーブルごとに分けてよい） | CategoryMapper、LoanMapper |
+| mapper | `<テーブルの名前>Mapper`。1つのテーブルに1つ作り、テーブルの名前の単数形を PascalCase にする。ほかの機能に同じ名前の mapper があってよい（Spring の部品の名前をパッケージ込みにしているので、ぶつからない。common.config.MyBatisConfig）。テーブルを使わない mapper（health の `SELECT 1`）だけは `<機能名>Mapper`（2026-11-10 に決めた） | UserMapper（users）、CategoryMapper（categories）、RolePermissionMapper（role_permissions）、HealthMapper（テーブルを使わない） |
 | mapper のメソッド | 読む：`select…`（1件は `selectById`、まとめては `selectByIds`）、数える：`count…`、足す：`insert`、変える：`update…`、論理削除：`markDeleted` | selectById、countByName、markDeleted |
 | model（テーブルの1行） | テーブルの名前の単数形 | Category（categories）、Loan（loans） |
 | dto | 受け取る値は `…Request`、返す値は `…Response` | CategoryCreateRequest、CategoryResponse |
