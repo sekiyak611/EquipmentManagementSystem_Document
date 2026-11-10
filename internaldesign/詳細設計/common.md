@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.10 2026-11-10 |
+| 版 | v1.11 2026-11-10 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.2 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -322,6 +322,7 @@ common には、入力チェックそのものはない。各機能で入力チ�
 |---|---|---|---|
 | BusinessRuleException(文) | 400 | 決まりに合わない操作 | 画面設計の文を渡す |
 | NotFoundException() | 404 | 見つからない（削除された備品など） | 決まった文 |
+| FieldErrorException(入力欄, 文) ／ FieldErrorException(入力欄のエラーの一覧) | 400 | 業務チェック（データベースの中身と照らした結果）を、入力欄の下に出すエラーとして返すとき。例：種別の名前・頭文字が、ほかの種別ともう重なっている（画面設計 16章） | 決まった文「入力内容に誤りがあります。」。入力欄ごとの文は ErrorItem.ofField(入力欄, 画面設計の文)。受け取った値だけで分かる入力チェックには使わない（dto の印で行う） |
 | ConflictException(文) | 409 | ほかの人が先に保存した、すでに貸し出されている、すでに返却されている | 画面設計の文を渡す |
 | CsvErrorException(行のエラーの一覧) | 400 | CSVの行にエラーがある | 決まった文。行ごとの理由は ErrorItem.ofCsvRow(行番号, 管理番号, 理由) |
 | ServiceUnavailableException() | 503 | A-08 でデータベースにつながらない | 決まった文 |
@@ -388,7 +389,7 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 |---|---|---|
 | common.config.AppPropertiesTest | 結合（アプリを起動） | 設定値が API設計 6章のとおりに読み込まれる／テストの設定では、テスト用の切り替えが有効になる／記録に出ても、秘密の値は見えない／時計は日本時間／日付は 2026-11-02、日時は 2026-11-25T09:00:00+09:00 の形で返す |
 | common.error.ApiResponseTest | 単体 | 正常時：status・message・data・errors の4つがあり、errors は null／作った・受け付けた：status は 201・202、返すものがないときは data が null／入力の誤り：data は null、errors に入力欄ごとのメッセージ。行番号・管理番号の項目は出さない／CSVの行のエラー：errors の1件に row と managementNo が入り、field は null |
-| common.error.GlobalExceptionHandlerApiTest | 結合（API） | 正常時：200／入力の誤り：400／JSONの形が壊れている：400／数字の欄に文字：400／決まりに合わない操作：400／見つからない：404／存在しないアドレス：404／ぶつかった：409／CSVの行のエラー：400／思いがけない不具合：500。詳しい中身は返さない／必要な権限項目がない：403／必要な権限項目がある：200 |
+| common.error.GlobalExceptionHandlerApiTest | 結合（API） | 正常時：200／入力の誤り：400／JSONの形が壊れている：400／数字の欄に文字：400／決まりに合わない操作：400／見つからない：404／存在しないアドレス：404／ぶつかった：409／業務チェックの入力欄のエラー（FieldErrorException）：400／CSVの行のエラー：400／思いがけない不具合：500。詳しい中身は返さない／必要な権限項目がない：403／必要な権限項目がある：200 |
 | common.security.SecurityApiTest | 結合（API） | ログインせずに、ログインが必要なAPIを呼ぶと 401／CSRFの合言葉を付けずにPOSTすると 403／合言葉は XSRF-TOKEN クッキーで渡され、X-XSRF-TOKEN 見出しで送り返すと通る／合言葉が違うと 403／Spring Boot の仮のユーザを作らない／ユーザIDがログに付き、合言葉のクッキーも同じ処理で渡される（2つのフィルターが両方動く） |
 | common.web.SpaWebConfigTest | 結合（API） | 画面のアドレス（/loans、/equipment/12、/login）では、ログインしていなくても index.html を返す／トップ（/）では index.html に回す（Spring Boot の最初のページの仕組み）／ないファイル（/assets/なし.js）は 404／/api/ で始まる存在しないアドレスは、今までどおり 404 の JSON |
 | common.security.UserIdLogFilterTest | 単体 | ユーザIDが処理の間だけログに付き、終わったら消える／ログインしていないときは付けない |
@@ -567,3 +568,4 @@ EquipmentManagementSystem_Client/
 | v1.8 | 2026-11-09 | 開発のPCの MySQL を Docker で動かす形にしたので、4章に compose.yaml の行を足した（接続先の設定は変えない） |
 | v1.9 | 2026-11-10 | mapper の部品の名前をパッケージ込みにする MyBatisConfig を足した（2.3）。controller から LoginSession を呼ぶ例外を CLAUDE.md 5章に書いたことを 3.10 に足した |
 | v1.10 | 2026-11-10 | controller と service を API 1本に1つずつにした決まりに合わせて、auth のクラスの名前を直した（3.10・9章） |
+| v1.11 | 2026-11-10 | 6章に FieldErrorException（業務チェックの結果を入力欄のエラーとして返す 400）を足した（ZPOP-84 K-02 で使う。2026-11-10 に人が決めた） |
