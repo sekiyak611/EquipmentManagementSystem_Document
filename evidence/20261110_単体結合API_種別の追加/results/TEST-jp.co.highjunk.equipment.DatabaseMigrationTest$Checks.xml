@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="入ってよい値の決まり（CHECK 制約。データ設計 5.6・5.7）" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T14:42:41.367Z" hostname="vm" time="6.165">
+  <properties/>
+  <testcase name="管理状態は MANAGED・DISPOSED・MISSING だけ入る" classname="jp.co.highjunk.equipment.DatabaseMigrationTest$Checks" time="0.679"/>
+  <testcase name="廃棄日は、管理状態が DISPOSED のときだけ入る" classname="jp.co.highjunk.equipment.DatabaseMigrationTest$Checks" time="0.009"/>
+  <testcase name="返却予定日・返却日は、貸出日と同じ日なら入り、前の日は入らない" classname="jp.co.highjunk.equipment.DatabaseMigrationTest$Checks" time="0.02"/>
+  <system-out><![CDATA[14:42:41.370 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [jp.co.highjunk.equipment.DatabaseMigrationTest$Checks]: Checks does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:42:41.372 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.DatabaseMigrationTest$Checks
+14:42:41.374 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [jp.co.highjunk.equipment.DatabaseMigrationTest$Checks]: Checks does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:42:41.374 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [jp.co.highjunk.equipment.DatabaseMigrationTest]: DatabaseMigrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+14:42:41.376 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.DatabaseMigrationTest$Checks
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.2)
+
+2026-11-10T23:42:41.866+09:00 INFO  userId=- [Test worker] j.c.h.e.DatabaseMigrationTest$Checks - Starting DatabaseMigrationTest.Checks using Java 21.0.12.1 with PID 9568 (started by root in /home/claude/equipmentmanagementsystem_server)
+2026-11-10T23:42:41.869+09:00 INFO  userId=- [Test worker] j.c.h.e.DatabaseMigrationTest$Checks - The following 1 profile is active: "test"
+2026-11-10T23:42:42.181+09:00 INFO  userId=- [background-preinit] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 9.1.5.Final
+2026-11-10T23:42:43.754+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-11-10T23:42:44.259+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@464d5365
+2026-11-10T23:42:44.261+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-11-10T23:42:44.300+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-10T23:42:44.529+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped pre-schema database level objects (execution time 00:00.004s)
+2026-11-10T23:42:44.679+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.147s)
+2026-11-10T23:42:44.699+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.017s)
+2026-11-10T23:42:44.704+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped post-schema database level objects (execution time 00:00.004s)
+2026-11-10T23:42:44.726+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-10T23:42:44.801+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table `equipment_test`.`flyway_schema_history` does not exist yet
+2026-11-10T23:42:44.806+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.054s)
+2026-11-10T23:42:44.831+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table `equipment_test`.`flyway_schema_history` ...
+2026-11-10T23:42:44.934+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Current version of schema `equipment_test`: << Empty Schema >>
+2026-11-10T23:42:44.991+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "1 - create tables"
+2026-11-10T23:42:45.199+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "2 - insert initial data"
+2026-11-10T23:42:45.252+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` with repeatable migration "dev users"
+2026-11-10T23:42:45.286+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Successfully applied 3 migrations to schema `equipment_test`, now at version v2 (execution time 00:00.192s)
+2026-11-10T23:42:46.292+09:00 INFO  userId=- [Test worker] o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-11-10T23:42:46.794+09:00 INFO  userId=- [Test worker] j.c.h.e.DatabaseMigrationTest$Checks - Started DatabaseMigrationTest.Checks in 5.379 seconds (process running for 7.166)
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/root/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.18.15/de6980bb799c25bb1fe9e6c434201299cb5e694e/byte-buddy-agent-1.18.15.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>
