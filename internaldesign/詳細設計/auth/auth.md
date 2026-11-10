@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.0 2026-11-08 |
+| 版 | v1.1 2026-11-10 |
 | Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01） |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の4章（F-01・F-02）・8章、API設計.md v1.1 の2.2・3.1・4.1・4.2・7章、画面設計.md v1.1 の1・2章、データ設計.md v1.0 の5.1〜5.4、基本設計書.md v1.1 の5章 |
@@ -71,12 +71,15 @@ F-02：ログアウト。
 | auth.service | AuthServiceImpl | login・me の中身。common.security.LoginUserRefresher も実装し、APIを呼ぶたびの権限項目の読み直し（R-3・R-4）を受け持つ | A-01・A-03、全API |
 | auth.validator | LoginValidator | メールアドレスとパスワードを確かめる（R-1・R-2・R-7）。守れなければ UnauthorizedException | A-01 |
 | auth.model | User | users の1行（ログインに使う列だけ） | |
-| mapper.auth | AuthMapper（インターフェース）・AuthMapper.xml | users・roles・role_permissions・permissions を読む | |
+| mapper.auth | UserMapper（インターフェース）・UserMapper.xml | users を読む | A-01・A-03、全API |
+| mapper.auth | RoleMapper・RoleMapper.xml | roles を読む（権限の名前） | A-01・A-03 |
+| mapper.auth | RolePermissionMapper・RolePermissionMapper.xml | role_permissions を読む（権限に含まれる権限項目） | A-01・A-03、全API |
+| mapper.auth | PermissionMapper・PermissionMapper.xml | permissions を読む（権限項目の並び順） | A-01・A-03 |
 | dto.auth | LoginRequest | A-01 で受け取る値 | A-01 |
 | dto.auth | MeResponse | A-01・A-03 で返す値（API設計 4.2 の形） | A-01・A-03 |
 | （テスト）auth | AuthApiTest | A-01〜A-03 と、APIを呼ぶたびの読み直しのテスト | |
 
-mapper は、ほかの機能（user など）にも users・roles を読む mapper ができる。Spring は部品の名前をクラス名から付ける（UserMapper なら userMapper）ので、ほかの機能と同じ名前にならないよう、機能の名前を付けて AuthMapper にした（4章の No.3）。
+mapper は、命名規則（CLAUDE.md 5章）のとおり、テーブルごとに `<テーブルの名前>Mapper` にした。ほかの機能（user など）にも UserMapper ができるが、Spring の部品の名前をパッケージ込みにしている（common.config.MyBatisConfig。common.md 2.3）ので、ぶつからない（4章の No.3）。
 
 ### 2.2 Client
 
@@ -124,14 +127,15 @@ mapper は、ほかの機能（user など）にも users・roles を読む mapp
 |---|---|---|---|---|
 | 1 | 開発用（dev）と自動テスト（test）のときだけ、開発用のユーザ2人（総務・一般社員）を決まったパスワードで入れる（common.md 4章） | 最初の総務の担当者はパスワードが空で、パスワード再設定ができるまで画面からログインできないため | はい（開発のときだけ） | 済（2026-11-08） |
 | 2 | ログアウト（A-02）とヘッダーのログアウトを、このタスクで一緒に作る | 別のユーザで試すときに、クッキーを消さずに済むように | はい | 済（2026-11-08） |
-| 3 | mapper の名前を AuthMapper にした（CLAUDE.md の命名規則は `<テーブルの名前>Mapper`） | ほかの機能の UserMapper と Spring の部品の名前がぶつかるため（2.1）。命名規則の直し方は説明.md で提案する | いいえ | まだ |
-| 4 | 権限項目の読み直しで、削除されたユーザは、セッションを捨ててログアウトさせる | 削除されたユーザが、ログインしたまま使い続けられないように。API設計 2.2 は session_valid_after だけを書いているが、削除（画面設計 17章「削除すると、この人はログインできなくなります」）も同じ扱いにした | はい | まだ |
+| 3 | mapper を、テーブルごとの `<テーブルの名前>Mapper`（UserMapper・RoleMapper・RolePermissionMapper・PermissionMapper）にした。v1.0 では AuthMapper の1つだった | 2026-11-10 に、命名規則を `<テーブルの名前>Mapper` のままにし、部品の名前をパッケージ込みにする（common.config.MyBatisConfig）と決めたため | いいえ | 済（2026-11-10） |
+| 4 | 権限項目の読み直しで、削除されたユーザは、セッションを捨ててログアウトさせる | 削除されたユーザが、ログインしたまま使い続けられないように。API設計 2.2 は session_valid_after だけを書いているが、削除（画面設計 17章「削除すると、この人はログインできなくなります」）も同じ扱いにした | はい | 済（2026-11-10） |
 | 5 | ロック中でも、すでにログインしている人は締め出さない | 画面設計 2.1 の6（ロックしても、ログインしている端末はそのまま使える） | いいえ | ― |
-| 6 | ログインを始める・終える（common.security.LoginSession）は、controller から呼ぶ（A-02 は service を通さない） | セッションは Web の仕事で、service に HttpServletRequest を渡したくないため。CLAUDE.md 5章の「controller は service を呼ぶだけ」の例外になるので、認めるなら CLAUDE.md か common.md 3.10 に書く | いいえ | まだ |
-| 7 | 開発用のユーザは、データベースの名前が equipment_dev・equipment_test のときだけ入れる（common.md 4章） | 本番の起動で prod の設定を付け忘れても、公開しているパスワードの総務のユーザができないように（レビューの指摘） | いいえ | まだ |
+| 6 | ログインを始める・終える（common.security.LoginSession）は、controller から呼ぶ（A-02 は service を通さない） | セッションは Web の仕事で、service に HttpServletRequest を渡したくないため。CLAUDE.md 5章の「controller は service を呼ぶだけ」の例外として、2026-11-10 に CLAUDE.md 5章に書いた | いいえ | 済（2026-11-10） |
+| 7 | 開発用のユーザは、データベースの名前が equipment_dev・equipment_test のときだけ入れる（common.md 4章） | 本番の起動で prod の設定を付け忘れても、公開しているパスワードの総務のユーザができないように（レビューの指摘） | いいえ | 済（2026-11-10） |
 
 ## 変更履歴
 
 | 版 | 日付 | 内容 |
 |---|---|---|
 | v1.0 | 2026-11-08 | 初版（ZPOP-55・56・57・103） |
+| v1.1 | 2026-11-10 | 4章の判断を人が確かめた（No.3・4・6・7 を済）。No.3 は、命名規則を `<テーブルの名前>Mapper` のままにすると決めたので、AuthMapper をテーブルごとの4つの mapper に分けた（2.1） |
