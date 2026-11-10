@@ -2,9 +2,9 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.7 2026-11-08 |
+| 版 | v1.8 2026-11-09 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限） |
-| もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md 4・5章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
+| もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.2 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
 ## 1. 概要
 
@@ -268,6 +268,7 @@ common には mapper（データベースを読み書きする部品）はない
 |---|---|---|
 | 接続先（dev） | jdbc:mysql://localhost:3306/equipment_dev | 開発用のデータベース |
 | 接続先（test） | jdbc:mysql://localhost:3306/equipment_test | テスト専用のデータベース（CLAUDE.md 6章） |
+| 開発のPCの MySQL | Docker で動かす（Server の compose.yaml。`mysql:8.4.13`、127.0.0.1 の 3306番、文字コード utf8mb4・照合順序 utf8mb4_ja_0900_as_cs_ks）。equipment_dev とユーザ `equipment` は compose.yaml の環境変数で、equipment_test は docker/mysql/init/01_create_test_database.sql で、最初の起動のときに作る。パスワードは Server の .env（Git で管理しない） | PC に直接入れると重くなったため（基本設計書 v1.2 の9章。2026-11-09 に決めた）。3306番で待つので、接続先の設定は変えない |
 | 接続先（prod） | 環境変数 SPRING_DATASOURCE_URL | RDS。ZPOP-48 で決める |
 | 接続のオプション | `connectionTimeZone=+09:00`、`forceConnectionTimeZoneToSession=true`、`characterEncoding=UTF-8` | データベースとのやり取りを日本時間にそろえる。`+` はアドレスの中で `%2B` と書く |
 | つながるまで待つ時間 | 5秒（`spring.datasource.hikari.connection-timeout: 5000`） | 見張り役は10秒で失敗とみなすので、それより短くする（health/A-08_動いているかを答える.md） |
@@ -562,3 +563,4 @@ EquipmentManagementSystem_Client/
 | v1.5 | 2026-11-08 | ディレクトリ構成の変更（service を interface と Impl に分け、業務チェックを validator に置く）に合わせて、5章の業務チェックの書き場所を validator に直した |
 | v1.6 | 2026-11-08 | ZPOP-122：テーブルと最初のデータを作ったので、1章・2.1・4章に、テーブル.md への案内と InitialAdminEmailCallback を足した |
 | v1.7 | 2026-11-08 | ZPOP-55・56・57・103（ログインの最小限）：ログインの部品（3.10）、開発用のユーザ（4章）、UnauthorizedException（6章）、PermissionCode・HomePage、画面の common/auth（11.9）とヘッダーの氏名・ログアウト（11.4）を足した |
+| v1.8 | 2026-11-09 | 開発のPCの MySQL を Docker で動かす形にしたので、4章に compose.yaml の行を足した（接続先の設定は変えない） |
