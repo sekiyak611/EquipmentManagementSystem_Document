@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="入ってよい値の決まり（CHECK 制約。データ設計 5.6・5.7）" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T15:26:30.922Z" hostname="vm" time="0.153">
+  <properties/>
+  <testcase name="管理状態は MANAGED・DISPOSED・MISSING だけ入る" classname="jp.co.highjunk.equipment.DatabaseMigrationTest$Checks" time="0.056"/>
+  <testcase name="廃棄日は、管理状態が DISPOSED のときだけ入る" classname="jp.co.highjunk.equipment.DatabaseMigrationTest$Checks" time="0.018"/>
+  <testcase name="返却予定日・返却日は、貸出日と同じ日なら入り、前の日は入らない" classname="jp.co.highjunk.equipment.DatabaseMigrationTest$Checks" time="0.035"/>
+  <system-out><![CDATA[2026-11-11T00:26:30.926+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.DatabaseMigrationTest$Checks]: Checks does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:26:30.929+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.DatabaseMigrationTest$Checks
+2026-11-11T00:26:30.931+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.DatabaseMigrationTest$Checks]: Checks does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:26:30.931+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.DatabaseMigrationTest]: DatabaseMigrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:26:30.934+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.DatabaseMigrationTest$Checks
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
