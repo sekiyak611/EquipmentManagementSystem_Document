@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="A-03 ログイン中の人の情報" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T13:48:12.843Z" hostname="vm" time="0.126">
+  <properties/>
+  <testcase name="ログインしていなければ 401（ログインしてください。）" classname="jp.co.highjunk.equipment.auth.MeApiTest" time="0.006"/>
+  <testcase name="ログインしていれば、A-01 と同じ形で返す" classname="jp.co.highjunk.equipment.auth.MeApiTest" time="0.11"/>
+  <system-out><![CDATA[2026-11-10T22:48:12.844+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.auth.MeApiTest]: MeApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-10T22:48:12.847+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.auth.MeApiTest
+2026-11-10T22:48:12.848+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.auth.MeApiTest]: MeApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-10T22:48:12.848+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.auth.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-10T22:48:12.849+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.auth.MeApiTest
+2026-11-10T22:48:12.957+09:00 INFO  userId=- [Test worker] j.c.h.e.a.service.LoginServiceImpl - ログインしました（userId=3）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
