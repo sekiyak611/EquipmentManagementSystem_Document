@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="K-01 種別の一覧" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T15:26:41.065Z" hostname="vm" time="0.177">
+  <properties/>
+  <testcase name="ログインしていなければ 401（ログインしてください。）。data・errors は null" classname="jp.co.highjunk.equipment.category.CategoryListApiTest" time="0.017"/>
+  <testcase name="削除済みの種別は出さない" classname="jp.co.highjunk.equipment.category.CategoryListApiTest" time="0.03"/>
+  <testcase name="data に種別の配列をそのまま入れ、1件は id・name・initial・equipmentCount・version の5項目" classname="jp.co.highjunk.equipment.category.CategoryListApiTest" time="0.018"/>
+  <testcase name="権限項目は要らない：一般社員の権限項目（LOAN_SELF・CONFIRM_SELF）だけでも 200" classname="jp.co.highjunk.equipment.category.CategoryListApiTest" time="0.015"/>
+  <testcase name="種別がないとき（全部削除済み）：200。data は空の配列" classname="jp.co.highjunk.equipment.category.CategoryListApiTest" time="0.016"/>
+  <testcase name="頭文字の順に並べ、頭文字がないものは後ろに名前の順（画面設計 16章）。頭文字がない種別の initial は null" classname="jp.co.highjunk.equipment.category.CategoryListApiTest" time="0.02"/>
+  <testcase name="使っている備品の数：削除されていない備品を数える。管理中・廃棄・不明のどれも数え、削除済みの備品は数えない。備品がなければ 0" classname="jp.co.highjunk.equipment.category.CategoryListApiTest" time="0.018"/>
+  <system-out><![CDATA[2026-11-11T00:26:41.069+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryListApiTest]: CategoryListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:26:41.082+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryListApiTest
+2026-11-11T00:26:41.084+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryListApiTest]: CategoryListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:26:41.088+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryListApiTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

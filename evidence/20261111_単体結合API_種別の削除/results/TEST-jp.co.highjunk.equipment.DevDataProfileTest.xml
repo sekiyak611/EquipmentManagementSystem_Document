@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jp.co.highjunk.equipment.DevDataProfileTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T15:26:31.591Z" hostname="vm" time="0.022">
+  <properties/>
+  <testcase name="どの環境でも同じ設定（application.yml）と本番の設定（application-prod.yml）には、db/devdata が入っていない" classname="jp.co.highjunk.equipment.DevDataProfileTest" time="0.017"/>
+  <testcase name="開発（dev）とテスト（test）の設定だけが、db/devdata を足している" classname="jp.co.highjunk.equipment.DevDataProfileTest" time="0.004"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
