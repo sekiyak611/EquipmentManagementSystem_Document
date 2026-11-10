@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="K-03 種別を変える" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-10T15:04:48.940Z" hostname="vm" time="0.832">
+  <properties/>
+  <testcase name="名前・頭文字を変えずに保存しても 200。version は1増える。自分と同じ名前・頭文字は重なりにならない" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.098"/>
+  <testcase name="ログインしていない：401。CSRF の合言葉がない：403。どちらも変えない" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.036"/>
+  <testcase name="名前・頭文字がほかの種別と重なる：400。errors に入力欄ごとの文（両方なら2つ）。変えない" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.073"/>
+  <testcase name="総務：200。data に変えた種別（K-01 の1件と同じ形。version は1増え、使っている備品の数は今の数）。データベースの名前・頭文字・version・変えた人が変わり、作った人は変わらない" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.063"/>
+  <testcase name="続けて変えるときは、返ってきた version を送る（古い version のままなら 409）" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.126"/>
+  <testcase name="ほかの人が先に保存していた（version が違う）：409。画面設計 16章の文。変えない" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.04"/>
+  <testcase name="名前・頭文字の前後の空白を取り除き、頭文字の小文字は大文字にする。頭文字を空にすると、頭文字なし" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.077"/>
+  <testcase name="入力の誤り（名前が空・21文字、頭文字が英字1文字でない）：400。K-02 と同じ文。変えない" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.082"/>
+  <testcase name="削除済みの種別と同じ名前・頭文字には変えられる" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.031"/>
+  <testcase name="version がない：400（入力内容に誤りがあります。errors は null）。変えない" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.034"/>
+  <testcase name="パスの ID が数でない：400" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.029"/>
+  <testcase name="一般社員（CATEGORY_MANAGE がない）：403。変えない" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.035"/>
+  <testcase name="ない種別・削除済みの種別：404「対象が見つかりません。」" classname="jp.co.highjunk.equipment.category.CategoryUpdateApiTest" time="0.043"/>
+  <system-out><![CDATA[2026-11-11T00:04:48.943+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryUpdateApiTest]: CategoryUpdateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:48.948+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryUpdateApiTest
+2026-11-11T00:04:48.949+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryUpdateApiTest]: CategoryUpdateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:48.950+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryApiTestBase]: CategoryApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:48.954+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryUpdateApiTest
+2026-11-11T00:04:49.034+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryUpdateServiceImpl - 種別を変えました（id=1, name=PC, initial=A）
+2026-11-11T00:04:49.217+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryUpdateServiceImpl - 種別を変えました（id=1, name=ノートPC, initial=N）
+2026-11-11T00:04:49.282+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryUpdateServiceImpl - 種別を変えました（id=1, name=PC2, initial=A）
+2026-11-11T00:04:49.324+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryUpdateServiceImpl - 種別を変えました（id=1, name=PC3, initial=A）
+2026-11-11T00:04:49.454+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryUpdateServiceImpl - 種別を変えました（id=1, name=ノートPC, initial=N）
+2026-11-11T00:04:49.480+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryUpdateServiceImpl - 種別を変えました（id=1, name=ノートPC, initial=null）
+2026-11-11T00:04:49.570+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryUpdateServiceImpl - 種別を変えました（id=1, name=ああああああああああああああああああああ, initial=null）
+2026-11-11T00:04:49.604+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryUpdateServiceImpl - 種別を変えました（id=1, name=マウス, initial=C）
+2026-11-11T00:04:49.778+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryUpdateApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:49.790+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryUpdateApiTest$Race
+2026-11-11T00:04:49.794+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryUpdateApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:49.795+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryUpdateApiTest]: CategoryUpdateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:49.796+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryApiTestBase]: CategoryApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:49.803+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryUpdateApiTest$Race
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

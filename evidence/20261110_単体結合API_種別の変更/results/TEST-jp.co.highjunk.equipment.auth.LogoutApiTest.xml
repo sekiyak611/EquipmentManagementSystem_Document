@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="A-02 ログアウト" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T15:04:42.994Z" hostname="vm" time="0.286">
+  <properties/>
+  <testcase name="CSRF の合言葉がなければ 403。ログアウトしない" classname="jp.co.highjunk.equipment.auth.LogoutApiTest" time="0.143"/>
+  <testcase name="ログインしていなければ 401" classname="jp.co.highjunk.equipment.auth.LogoutApiTest" time="0.01"/>
+  <testcase name="ログアウトすると 200（data は null）。そのあとは 401" classname="jp.co.highjunk.equipment.auth.LogoutApiTest" time="0.12"/>
+  <system-out><![CDATA[2026-11-11T00:04:42.996+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.auth.LogoutApiTest]: LogoutApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:42.998+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.auth.LogoutApiTest
+2026-11-11T00:04:42.999+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.auth.LogoutApiTest]: LogoutApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:43.000+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.auth.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:43.002+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.auth.LogoutApiTest
+2026-11-11T00:04:43.131+09:00 INFO  userId=- [Test worker] j.c.h.e.a.service.LoginServiceImpl - ログインしました（userId=2）
+2026-11-11T00:04:43.255+09:00 INFO  userId=- [Test worker] j.c.h.e.a.service.LoginServiceImpl - ログインしました（userId=2）
+2026-11-11T00:04:43.273+09:00 INFO  userId=2 [Test worker] j.c.h.e.common.security.LoginSession - ログアウトしました
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

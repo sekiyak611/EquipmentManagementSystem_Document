@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsDown</title>
+<link href="../../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../../index.html">all</a> &gt; 
+<a class="breadcrumb" href="../index.html">jp.co.highjunk.equipment.health.HealthApiTest</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsDown</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>データベースにつながらないとき（データベースの読み書きを偽物にして、つながらない状態を作る）</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">2.316s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="down().html">503 を返す。詳しい理由は返さない</a>
+</td>
+<td class="path">down()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="29">0.029s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsDown">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsDown">2026-11-11T00:04:51.676+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsDown]: WhenDatabaseIsDown does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:51.695+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsDown
+2026-11-11T00:04:51.696+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsDown]: WhenDatabaseIsDown does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:51.697+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.health.HealthApiTest]: HealthApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T00:04:51.701+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.health.HealthApiTest$WhenDatabaseIsDown
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.2)
+
+2026-11-11T00:04:51.785+09:00 INFO  userId=- [Test worker] j.c.h.e.h.HealthApiTest$WhenDatabaseIsDown - Starting HealthApiTest.WhenDatabaseIsDown using Java 21.0.12.1 with PID 18207 (started by root in /home/claude/equipmentmanagementsystem_server)
+2026-11-11T00:04:51.786+09:00 INFO  userId=- [Test worker] j.c.h.e.h.HealthApiTest$WhenDatabaseIsDown - The following 1 profile is active: &quot;test&quot;
+2026-11-11T00:04:52.553+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Starting...
+2026-11-11T00:04:52.578+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.pool.HikariPool - HikariPool-4 - Added connection com.mysql.cj.jdbc.ConnectionImpl@8c41677
+2026-11-11T00:04:52.579+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Start completed.
+2026-11-11T00:04:52.581+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&amp;forceConnectionTimeZoneToSession=true&amp;characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-11T00:04:52.611+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped pre-schema database level objects (execution time 00:00.000s)
+2026-11-11T00:04:52.737+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.122s)
+2026-11-11T00:04:52.749+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.011s)
+2026-11-11T00:04:52.753+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped post-schema database level objects (execution time 00:00.000s)
+2026-11-11T00:04:52.760+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&amp;forceConnectionTimeZoneToSession=true&amp;characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-11T00:04:52.813+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table `equipment_test`.`flyway_schema_history` does not exist yet
+2026-11-11T00:04:52.816+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.012s)
+2026-11-11T00:04:52.830+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table `equipment_test`.`flyway_schema_history` ...
+2026-11-11T00:04:52.889+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Current version of schema `equipment_test`: &lt;&lt; Empty Schema &gt;&gt;
+2026-11-11T00:04:52.910+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version &quot;1 - create tables&quot;
+2026-11-11T00:04:53.188+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version &quot;2 - insert initial data&quot;
+2026-11-11T00:04:53.338+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` with repeatable migration &quot;dev users&quot;
+2026-11-11T00:04:53.358+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Successfully applied 3 migrations to schema `equipment_test`, now at version v2 (execution time 00:00.334s)
+2026-11-11T00:04:53.803+09:00 INFO  userId=- [Test worker] o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-11-11T00:04:53.887+09:00 INFO  userId=- [Test worker] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-11T00:04:53.887+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-11T00:04:53.889+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-11T00:04:53.952+09:00 INFO  userId=- [Test worker] j.c.h.e.h.HealthApiTest$WhenDatabaseIsDown - Started HealthApiTest.WhenDatabaseIsDown in 2.245 seconds (process running for 24.314)
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at Nov 10, 2026, 3:04:54 PM</p>
+</div>
+</div>
+</body>
+</html>
