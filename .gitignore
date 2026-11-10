@@ -1,0 +1,20 @@
+# Git で管理しないもの（CLAUDE.md 7章）。
+# 公開してはいけないもの・各自のPCだけのもの・作られるものを入れる。
+# 設計書・skill（.claude/skills）・証跡（evidence）は管理する。
+
+# Word・Excel が開いている間に作る一時ファイル
+~$*
+
+# Eclipse・エディタの各自の設定
+/.project
+/.settings/
+/.vscode/
+/.idea/
+
+# Claude Code の各自の設定（skill は管理する）
+/.claude/settings.local.json
+
+# OS が作るもの
+Thumbs.db
+desktop.ini
+.DS_Store
