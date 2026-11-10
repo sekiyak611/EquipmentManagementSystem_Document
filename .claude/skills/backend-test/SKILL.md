@@ -37,7 +37,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 | まとめて取り消し | `@Transactional` の処理で途中が失敗したら、途中までの書き換えが残らない（作れる場合） |
 | 削除済み | 削除済みの行が一覧に出ない、操作できない |
 | 日付 | 時計を止めて、境目（前日・当日・翌日、月末、祝日）を確かめる |
-| 計算・判断の部品 | 単体テスト（テスト方針 3章に挙げた部品は必ず） |
+| 計算・判断の部品 | 単体テスト（テスト方針 3章に挙げた部品は必ず）。業務チェックの Validator のうち、テスト方針 3章に当たるもの（例：貸出の期間の重なりのチェック）は `<名前>ValidatorTest` で境目まで確かめる。当たらないものは、API のテストの⑤で確かめる |
 
 ## 2. テストを書く
 
@@ -45,7 +45,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 
 - [ ] API のテストは `src/test/java/jp/co/highjunk/equipment/<機能名>/` に置く。`@SpringBootTest` と `@AutoConfigureMockMvc` を使い、テスト専用のデータベース（equipment_test）で動かす。
 - [ ] POST・PUT・DELETE は `jp.co.highjunk.equipment.testsupport.CsrfTestHelper` の csrfToken を使う。Spring Security の `csrf()` は使わない（CLAUDE.md 6章）。
-- [ ] 単体テストは、テストする部品と同じパッケージに置く。
+- [ ] 単体テストは、テストする部品と同じパッケージに置く（例：`<機能名>/validator/<名前>ValidatorTest`）。
 - [ ] 今の日時は、止めた時計（`Clock.fixed`）に差し替えて確かめる。
 - [ ] Slack には本物を送らない（偽物に置き換え、だれにどんな文を送ったかを確かめる）。
 - [ ] テストの名前（`@DisplayName`）は、何を確かめるかを日本語で書く。証跡の一覧にそのまま出るため。

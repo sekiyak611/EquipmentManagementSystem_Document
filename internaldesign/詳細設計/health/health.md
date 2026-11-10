@@ -2,9 +2,9 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v2.0 2026-11-08 |
+| 版 | v2.1 2026-11-08 |
 | Jira | ZPOP-21（雛形：サーバー） |
-| 状態 | 人の確認済み（2026-11-04。v2.0 は書き方だけを新しいテンプレートに合わせた） |
+| 状態 | 作成中（v2.1 の service の分け方は、人の確認がまだ。v2.0 までは人の確認済み 2026-11-04） |
 | もとにした設計書 | API設計.md v1.1 の3.1（A-08）・3.10（見張り役）、基本設計書.md 8章 |
 
 ## 1. 概要
@@ -13,7 +13,7 @@
 
 アプリとデータベースが動いているかを答える。見張り役（アプリとは別のプログラム。AWS の Lambda、Java 21。ZPOP-46）が5分ごとに A-08 を呼ぶ。10秒以内に 200 が返らなければ失敗とし、2回続けて失敗したら開発者2人に DM を送る（見張り役の作りは、見張り役のタスクで書く）。
 
-この機能は、controller → service → mapper の形を持つ最初の機能でもある。category（ZPOP-33）ができるまでは、ほかの機能はこの書き方に合わせる（CLAUDE.md 9章）。
+この機能は、controller → service（interface と Impl）→ mapper の形を持つ最初の機能でもある。category（種別管理。ZPOP-83〜86・115）ができるまでは、ほかの機能はこの書き方に合わせる（CLAUDE.md 9章）。業務チェックがないため validator はない。validator の書き方は CLAUDE.md 5章に従う。
 
 ### 1.1 API一覧
 
@@ -43,8 +43,10 @@
 
 | パッケージ | クラス・ファイル | 役割 | 使う API |
 |---|---|---|---|
-| health.controller | HealthController | A-08 の入口。HealthService を呼び、結果を ApiResponse.ok で包んで返す | A-08 |
-| health.service | HealthService | データベースにつながるかを確かめる。つながらなければ ServiceUnavailableException を投げる | A-08 |
+| health.controller | HealthController | A-08 の入口。HealthService（インターフェース）を呼び、結果を ApiResponse.ok で包んで返す | A-08 |
+| health.service | HealthService（インターフェース） | check() の形だけを決める。controller はこれを使う | A-08 |
+| health.service | HealthServiceImpl | HealthService の中身（`@Service`）。データベースにつながるかを確かめる。つながらなければ ServiceUnavailableException を投げる | A-08 |
+| health.validator | なし | 業務チェックがないため、作らない | |
 | health.model | なし | テーブルの1行を表すものがないため、作らない | |
 | mapper.health | HealthMapper（インターフェース） | データベースを読み書きする部品。`@Mapper` を付けると、MyBatis が中身を自動で作る | A-08 |
 | mapper.health | HealthMapper.xml（src/main/resources/jp/co/highjunk/equipment/mapper/health/） | SQL | A-08 |
@@ -90,3 +92,4 @@
 | v1.1 | 2026-11-03 | リポジトリを3つに分けた形に合わせて、場所の書き方を直した |
 | v1.2 | 2026-11-04 | パッケージ構成の変更：HealthMapper を mapper.health に、HealthResponse を dto.health に移した。state を Enum（common.constant.HealthState）にした |
 | v2.0 | 2026-11-08 | 新しいテンプレートに合わせて、health.md を health/health.md（機能全体）と health/A-08_動いているかを答える.md（API詳細）に分けた。設計書の中身を写した。テストの章を外した（テストは証跡 evidence/20261103_単体結合API_基盤/ と evidence/20261104_単体結合API_パッケージ構成の変更/ を見る）。中身（作り）は変えていない |
+| v2.1 | 2026-11-08 | ディレクトリ構成の変更：HealthService をインターフェースにし、中身を HealthServiceImpl に移した（CLAUDE.md 4.1・5章）。動きは変えていない |

@@ -85,7 +85,7 @@ internaldesign/詳細設計/
 | こと | 書いてある場所 |
 |---|---|
 | フォルダ・パッケージの構成 | CLAUDE.md 4章（4.1 サーバー、4.3 画面） |
-| 部品の役目の分け方（controller・service・mapper など） | CLAUDE.md 4.1・5章、基本設計書 2・4章 |
+| 部品の役目の分け方（controller・service（interface と Impl）・validator・mapper など） | CLAUDE.md 4.1・5章、基本設計書 2・4章 |
 | 書き方の決まり（JOIN を使わない、Clock から時刻を取る など） | CLAUDE.md 5章 |
 | 名前の付け方 | CLAUDE.md 5章の命名規則 |
 | 書き方の心得（読みやすさ、例外、型 など） | Document の .claude/skills/implementation-guidelines/SKILL.md |

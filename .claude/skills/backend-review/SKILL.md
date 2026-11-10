@@ -56,9 +56,12 @@ Server のフォルダ（`EquipmentManagementSystem_Server`）と Document の�
 - [ ] 詳細設計とコードが食い違っていない（クラス・SQL・メッセージ・テスト）。
 
 **パッケージと機能の分け方**（CLAUDE.md 4.1・5章）
-- [ ] 機能の中は controller・service・model。mapper は `mapper.<機能名>`、dto は `dto.<機能名>`、Enum は `common.constant`。
+- [ ] 機能の中は controller・service・validator・model。mapper は `mapper.<機能名>`、dto は `dto.<機能名>`、Enum は `common.constant`。
+- [ ] service は interface の `<機能名>Service` と、中身の `<機能名>ServiceImpl`（`@Service`）に分かれ、同じ service パッケージにある。controller は interface を使い、ServiceImpl を直接使っていない。
+- [ ] 業務チェック（データベースの中身や業務のルールと照らして確かめるもの）が `<機能名>/validator/` の `…Validator` にあり、ServiceImpl から書き換えの前に呼ばれている。controller から呼んでいない。Validator が書き換え（insert・update・markDeleted など）をしていない。業務チェックが ServiceImpl や controller に直接書かれていない。
+- [ ] 名前が CLAUDE.md 5章の命名規則のとおり（`…Service`・`…ServiceImpl`・語尾が `Validator`）。
 - [ ] Controller は1つの機能に1つだけ。業務のルールが controller に書かれていない。
-- [ ] ほかの機能の service・model・`mapper.<ほかの機能>`・`dto.<ほかの機能>` を import していない（import の行を見て確かめる）。common から機能のパッケージを使っていない。循環がない。
+- [ ] ほかの機能の service・validator・model・`mapper.<ほかの機能>`・`dto.<ほかの機能>` を import していない（import の行を見て確かめる）。common から機能のパッケージを使っていない。循環がない。
 - [ ] common の部品、Flyway のファイル、build.gradle・settings.gradle、すでにある Enum を変えていたら、「2人で相談が必要な変更」として指摘する（CLAUDE.md 9章）。
 
 **データベースと SQL**
@@ -71,10 +74,10 @@ Server のフォルダ（`EquipmentManagementSystem_Server`）と Document の�
 
 **安全と決まり**
 - [ ] すべての API に権限項目の確認（`@PreAuthorize`）がある。ログインなしで呼べる API は、API設計で決めたものだけ。
-- [ ] ID を受け取る API で、その人が操作してよい対象かを service で確かめている。ID を書き換えて他人のデータを読む・変えることができない（IDOR。CLAUDE.md 5章）。
-- [ ] 2つ以上の書き換えを1つの操作として行う service のメソッドに `@Transactional` がある。controller・mapper に付いていない。同じクラスの中から呼んでいて効いていない、ということがない（CLAUDE.md 5章）。
+- [ ] ID を受け取る API で、その人が操作してよい対象かを Validator で確かめている。ID を書き換えて他人のデータを読む・変えることができない（IDOR。CLAUDE.md 5章）。
+- [ ] 2つ以上の書き換えを1つの操作として行う ServiceImpl のメソッドに `@Transactional` があり、Validator の呼び出しもその中にある。interface・controller・validator・mapper に付いていない。同じクラスの中から呼んでいて効いていない、ということがない（CLAUDE.md 5章）。
 - [ ] Slack の送信が `@Transactional` の中にない。書き込みが確定してから送っている（CLAUDE.md 5章）。
-- [ ] 入力チェックをサーバー側でも行っている（`@Valid` と dto の印）。
+- [ ] 画面設計のチェックをサーバー側でも行っている（入力チェックは `@Valid` と dto の印、業務チェックは Validator）。
 - [ ] 今の日時を Clock から取っている（`now()` を Clock なしで呼んでいない）。
 - [ ] ログに、パスワード・合言葉・Slack のトークンを出していない。秘密の値がコードや設定ファイルに書かれていない。
 - [ ] 変えられる値（時刻・期限・回数）が、プログラムに直接書かれていない。
@@ -109,7 +112,7 @@ Server のフォルダ（`EquipmentManagementSystem_Server`）と Document の�
 ## 指摘
 | No. | 重さ | 場所 | 内容 | 根拠 | 直し方の案 |
 |---|---|---|---|---|---|
-| 1 | 必ず直す | src/main/java/…/XxxService.java:42 | … | CLAUDE.md 5章「…」 | … |
+| 1 | 必ず直す | src/main/java/…/XxxServiceImpl.java:42 | … | CLAUDE.md 5章「…」 | … |
 
 重さ：
 - 必ず直す：決まり・設計書に反する、不具合、安全の問題
