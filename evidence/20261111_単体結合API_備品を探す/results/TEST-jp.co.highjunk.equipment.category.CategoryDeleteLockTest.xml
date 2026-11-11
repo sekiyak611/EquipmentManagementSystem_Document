@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="K-04 種別を消す：同時に備品を足されたとき" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-11T12:52:37.366Z" hostname="vm" time="1.072">
+  <properties/>
+  <testcase name="備品を足すまとまりが種別の行を読んでいる間、K-04 は待たされ、その備品が確定したあとで数えて 400（消さない）" classname="jp.co.highjunk.equipment.category.CategoryDeleteLockTest" time="1.048"/>
+  <system-out><![CDATA[2026-11-11T21:52:37.372+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryDeleteLockTest]: CategoryDeleteLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:37.373+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryDeleteLockTest
+2026-11-11T21:52:37.377+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryDeleteLockTest]: CategoryDeleteLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:37.378+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryDeleteLockTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

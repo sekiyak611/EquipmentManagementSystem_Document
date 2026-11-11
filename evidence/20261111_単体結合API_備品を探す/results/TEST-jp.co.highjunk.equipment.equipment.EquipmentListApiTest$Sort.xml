@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="並び順" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-11T12:52:40.789Z" hostname="vm" time="0.074">
+  <properties/>
+  <testcase name="sort=lastConfirmedOn：古い順。未記入が先頭、同じ日は管理番号の順" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort" time="0.017"/>
+  <testcase name="最初は管理番号の順" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort" time="0.015"/>
+  <testcase name="sort=lastConfirmedOn,desc：新しい順。未記入が末尾、同じ日は管理番号の順" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort" time="0.015"/>
+  <testcase name="sort=managementNo,desc：管理番号の逆順" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort" time="0.015"/>
+  <system-out><![CDATA[2026-11-11T21:52:40.790+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort]: Sort does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.793+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort
+2026-11-11T21:52:40.793+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort]: Sort does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.794+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest]: EquipmentListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.796+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

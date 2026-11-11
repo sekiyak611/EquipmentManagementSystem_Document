@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.equipment.EquipmentListApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.equipment.EquipmentListApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>C-01 備品を探す</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">31</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">0.771s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">種別・管理状態（複数）で絞る</td>
+<td class="path">categoryAndStatus()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="37">0.037s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">最初の値の今月確認済みは「最終確認日の月が今月」：今月の1日は確認済み、先月の末日は未確認</td>
+<td class="path">confirmedThisMonth()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">削除された備品は出さない。返却済み・取り消した貸出履歴だけの備品は保管中</td>
+<td class="path">deletedAndReturned()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="28">0.028s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">備品がないとき：200。items は空、page 1・size 50・totalCount 0・totalPages 0</td>
+<td class="path">empty()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="12">0.012s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">1件の項目：id・管理番号・種別の名前・メーカー・モデル・管理状態・貸出状態・借用者・最終確認日・今月確認済みか</td>
+<td class="path">fields()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="58">0.058s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">EQUIPMENT_VIEW がない（一般社員）：403「この操作を行う権限がありません。」</td>
+<td class="path">forbidden()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="8">0.008s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="invalid(String)/index.html">決まった値でない条件：400「入力内容に誤りがあります。」、errors は null</a>
+</td>
+<td class="path">invalid(String)</td>
+<td>10</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="100">0.100s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Confirm/index.html">確認の条件は、管理中の備品にだけ効かせる</a>
+</td>
+<td class="path">jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Confirm</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="87">0.087s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Keyword/index.html">キーワード</a>
+</td>
+<td class="path">jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Keyword</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="123">0.123s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort/index.html">並び順</a>
+</td>
+<td class="path">jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="75">0.075s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">貸出状態で絞る：LENT は貸出中だけ、IN_STOCK は保管中だけ、ALL はすべて</td>
+<td class="path">loanStatus()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="36">0.036s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">貸出中の備品が1つもないとき：LENT は0件、IN_STOCK はすべて</td>
+<td class="path">noLoans()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="20">0.020s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ログインしていない：401</td>
+<td class="path">notLoggedIn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="7">0.007s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">50件ずつ：51件なら2ページ。2ページ目は1件、最後のページより後ろは空</td>
+<td class="path">paging()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="131">0.131s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.equipment.EquipmentListApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.equipment.EquipmentListApiTest">2026-11-11T21:52:40.218+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest]: EquipmentListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.230+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest
+2026-11-11T21:52:40.232+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest]: EquipmentListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.234+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at Nov 11, 2026, 12:52:42 PM</p>
+</div>
+</div>
+</body>
+</html>
