@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="C-01 備品を探す" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-11-11T12:52:40.216Z" hostname="vm" time="0.485">
+  <properties/>
+  <testcase name="ログインしていない：401" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.007"/>
+  <testcase name="1件の項目：id・管理番号・種別の名前・メーカー・モデル・管理状態・貸出状態・借用者・最終確認日・今月確認済みか" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.058"/>
+  <testcase name="50件ずつ：51件なら2ページ。2ページ目は1件、最後のページより後ろは空" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.131"/>
+  <testcase name="貸出状態で絞る：LENT は貸出中だけ、IN_STOCK は保管中だけ、ALL はすべて" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.036"/>
+  <testcase name="備品がないとき：200。items は空、page 1・size 50・totalCount 0・totalPages 0" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.012"/>
+  <testcase name="種別・管理状態（複数）で絞る" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.037"/>
+  <testcase name="削除された備品は出さない。返却済み・取り消した貸出履歴だけの備品は保管中" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.028"/>
+  <testcase name="最初の値の今月確認済みは「最終確認日の月が今月」：今月の1日は確認済み、先月の末日は未確認" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.017"/>
+  <testcase name="EQUIPMENT_VIEW がない（一般社員）：403「この操作を行う権限がありません。」" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.008"/>
+  <testcase name="[1] query = &quot;status=FOO&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.009"/>
+  <testcase name="[2] query = &quot;status=managed&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.01"/>
+  <testcase name="[3] query = &quot;loanStatus=X&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.008"/>
+  <testcase name="[4] query = &quot;confirm=X&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.008"/>
+  <testcase name="[5] query = &quot;sort=maker&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.01"/>
+  <testcase name="[6] query = &quot;sort=managementNo,asc&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.008"/>
+  <testcase name="[7] query = &quot;page=0&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.008"/>
+  <testcase name="[8] query = &quot;page=-1&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.008"/>
+  <testcase name="[9] query = &quot;page=abc&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.009"/>
+  <testcase name="[10] query = &quot;categoryId=abc&quot;" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.007"/>
+  <testcase name="貸出中の備品が1つもないとき：LENT は0件、IN_STOCK はすべて" classname="jp.co.highjunk.equipment.equipment.EquipmentListApiTest" time="0.02"/>
+  <system-out><![CDATA[2026-11-11T21:52:40.218+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest]: EquipmentListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.230+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest
+2026-11-11T21:52:40.232+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest]: EquipmentListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.234+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest
+2026-11-11T21:52:40.703+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Confirm]: Confirm does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.706+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Confirm
+2026-11-11T21:52:40.707+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Confirm]: Confirm does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.708+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest]: EquipmentListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.711+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Confirm
+2026-11-11T21:52:40.790+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort]: Sort does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.793+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort
+2026-11-11T21:52:40.793+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort]: Sort does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.794+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest]: EquipmentListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.796+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Sort
+2026-11-11T21:52:40.865+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Keyword]: Keyword does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.868+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Keyword
+2026-11-11T21:52:40.869+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Keyword]: Keyword does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.869+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentListApiTest]: EquipmentListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:52:40.872+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentListApiTest$Keyword
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
