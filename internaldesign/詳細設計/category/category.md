@@ -2,10 +2,10 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.3 2026-11-11 |
-| Jira | ZPOP-83（K-01）、ZPOP-84（K-02）、ZPOP-85（K-03）、ZPOP-86（K-04）。S-13（ZPOP-115）は、作るときに書き足す |
+| 版 | v1.4 2026-11-11 |
+| Jira | ZPOP-83（K-01）、ZPOP-84（K-02）、ZPOP-85（K-03）、ZPOP-86（K-04）、ZPOP-115（S-13） |
 | 状態 | 作成中 |
-| もとにした設計書 | 機能一覧.md v1.0 の4章（F-21）、API設計.md v1.2 の2.4・2.5・2.7・3.6・7章、画面設計.md v1.2 の1.2・16章、画面一覧.md v1.0 の2章・7章、データ設計.md v1.0 の2章・5.3・5.5・5.6 |
+| もとにした設計書 | 機能一覧.md v1.0 の4章（F-21）、API設計.md v1.2 の2.4・2.5・2.7・3.6・7章、画面設計.md v1.3 の1.2・16章、画面一覧.md v1.0 の2章・4章・7章、データ設計.md v1.0 の2章・5.3・5.5・5.6 |
 
 ## 1. 概要
 
@@ -30,11 +30,11 @@
 
 | ID | 名前 | URL | 使う人 | スマートフォン優先 | 詳細設計 |
 |---|---|---|---|---|---|
-| S-13 | 種別管理 | まだ決めていない（画面を作るときに決める） | 総務（権限項目「種別を管理する」） | いいえ（PCだけ） | まだ（ZPOP-115） |
+| S-13 | 種別管理 | /categories | 総務（権限項目「種別を管理する」） | いいえ（PCだけ） | [S-13_種別管理.md](S-13_種別管理.md) |
 
 ### 1.3 業務のルール
 
-写したもと：機能一覧.md v1.0 の4章、画面設計.md v1.2 の16章、データ設計.md v1.0 の2章
+写したもと：機能一覧.md v1.0 の4章、画面設計.md v1.3 の16章、データ設計.md v1.0 の2章
 
 | No. | ルール | 写したもと |
 |---|---|---|
@@ -53,7 +53,7 @@ K-01 で使うのは R-4〜R-6。K-02・K-03 で使うのは R-1・R-2・R-6。K
 
 ## 2. クラス・ファイル構成
 
-パッケージの頭の `jp.co.highjunk.equipment` は省いて書く。名前の付け方は CLAUDE.md 5章の命名規則（controller と service は API 1本に1つ、mapper はテーブルごと）。K-01〜K-04 の分を書く。S-13 の分は、作るときに足す。
+パッケージの頭の `jp.co.highjunk.equipment` は省いて書く。名前の付け方は CLAUDE.md 5章の命名規則（controller と service は API 1本に1つ、mapper はテーブルごと）。K-01〜K-04（Server）と S-13（Client）の分を書く。
 
 ### 2.1 Server
 
@@ -90,7 +90,18 @@ K-01 で使うのは R-4〜R-6。K-02・K-03 で使うのは R-1・R-2・R-6。K
 
 ### 2.2 Client
 
-なし（K-01 では作らない。S-13 のときに書く）
+src/features/category/ の下。名前の付け方は CLAUDE.md 5章の命名規則。
+
+| ファイル | 役割 | 画面 |
+|---|---|---|
+| pages/CategoryListPage.tsx | S-13 の画面全体。権限の確かめ、一覧の読み込み（K-01）、ダイアログの開け閉め、削除（K-04） | S-13 |
+| components/CategoryTable.tsx | 種別の一覧の表 | S-13 |
+| components/CategoryFormDialog.tsx | 追加・変更のダイアログ。入力チェックと K-02・K-03 の呼び出し | S-13 |
+| api.ts | getCategories（K-01）・createCategory（K-02）・updateCategory（K-03）・deleteCategory（K-04） | S-13 |
+| types.ts | CategoryResponse・CategoryCreateRequest・CategoryUpdateRequest（Server の dto と同じ名前と形） | S-13 |
+| （テスト）tests/category/category-list.spec.ts | S-13 の画面のテスト（Playwright） | S-13 |
+| （共有）src/routes.tsx | /categories の1行を足す（CLAUDE.md 9章） | S-13 |
+| （共有）src/common/components/menuItems.ts | メニューに「種別管理」の1行を足す（CLAUDE.md 9章、common.md 11.4） | S-13 |
 
 ### 2.3 足す Enum（common.constant）
 
@@ -114,7 +125,7 @@ K-01 で使うのは R-4〜R-6。K-02・K-03 で使うのは R-1・R-2・R-6。K
 |---|---|---|---|---|
 | 1 | 同じテーブルを読む | equipment（備品）を、種別ごとに数える（読むだけ） | equipment・mine・importer（これから作る） | 対応なし。備品の「削除済み」の決まり（deleted_at）が変わったら、ここの数え方も直す |
 | 2 | 備品を足す機能 | K-04 で種別を消すのと同時に、その種別の備品を足されないように、備品を足す・種別を変える機能は、種別の行を FOR SHARE で読み、削除されていないことを確かめてから書き込む（K-04 の8章・12章の No.2） | equipment（C-02 備品を登録する、C-03 で種別を変えるとき）・importer（I-01〜I-03 一括登録） | それぞれの詳細設計に書き、同じように作る |
-| 3 | K-01 を使う画面 | S-06・S-07 の絞り込み、S-09 の選択、S-13 が、K-01 の返す値（K-01 の3章の形・並び順）を使う | mine・equipment・category の画面 | 返す値の形を変えるときは、使っている画面も直す |
+| 3 | K-01 を使う画面 | S-06・S-07 の絞り込み、S-09 の選択、S-13 が、K-01 の返す値（K-01 の3章の形・並び順）を使う | mine・equipment・category の画面 | 返す値の形を変えるときは、使っている画面も直す。S-13 の types.ts（CategoryResponse）は category の中だけで使う（ほかの機能の画面は、自分の機能の types.ts に書く。CLAUDE.md 5章） |
 | 4 | common・Flyway・Enum | K-02 のために common.error に FieldErrorException を足した（別のプルリクエストで先に取り込む）。Flyway・Enum は変更なし | ― | ― |
 
 ## 4. 設計書にない判断
@@ -131,3 +142,4 @@ K-01 で使うのは R-4〜R-6。K-02・K-03 で使うのは R-1・R-2・R-6。K
 | v1.1 | 2026-11-10 | K-02（ZPOP-84）の分を足した（1.1・1.3・2章・3章） |
 | v1.2 | 2026-11-10 | K-03（ZPOP-85）の分を足した（1.1・1.3・2章）。画面設計の版を v1.2 にした |
 | v1.3 | 2026-11-11 | K-04（ZPOP-86）の分を足した（1.1・1.3・2章・3章の No.2） |
+| v1.4 | 2026-11-11 | S-13（ZPOP-115）の分を足した（1.2・2.2・3章の No.3）。画面設計の版を v1.3 にした |
