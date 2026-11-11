@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>C-03 備品を登録する</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">21</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">1.641s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="allFields().html">すべての項目：201。data は C-01 の1件と同じ形。管理状態は管理中、最終確認日は今日、version は 0</a>
+</td>
+<td class="path">allFields()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="20">0.020s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">日付の形でない：400、errors は null</td>
+<td class="path">badDate()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="11">0.011s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ない種別・削除された種別：400、種別の欄に「種別を選んでください」</td>
+<td class="path">category()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="19">0.019s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="duplicated().html">管理番号がほかの備品と重なる：400「この管理番号はすでに使われています」。削除済みの備品の番号は使い直せる</a>
+</td>
+<td class="path">duplicated()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="29">0.029s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">EQUIPMENT_CREATE がない（一般社員）：403。登録しない</td>
+<td class="path">forbidden()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="7">0.007s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="invalid(String,-String,-String,-String)/index.html">入力の誤り：400。errors に入力欄ごとの文（画面設計 12章）</a>
+</td>
+<td class="path">invalid(String, String, String, String)</td>
+<td>7</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="87">0.087s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest$Race/index.html">確かめのあとに、ほかの人が同じ管理番号を足していたとき</a>
+</td>
+<td class="path">jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest$Race</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1291">1.291s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">業務チェックの誤りが重なると、管理番号・種別・購入日・保証期日の順にすべて返す</td>
+<td class="path">manyErrors()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="14">0.014s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="maxLengths().html">文字数の上限ちょうどは登録できる</a>
+</td>
+<td class="path">maxLengths()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ログインしていない：401</td>
+<td class="path">notLoggedIn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="6">0.006s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="purchasedOn().html">購入日：今日は登録でき、明日は「購入日は今日以前の日付を入力してください」</a>
+</td>
+<td class="path">purchasedOn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="26">0.026s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="requiredOnly().html">必須だけ：ほかの項目は null。昇降・ピボットは未設定（null）</a>
+</td>
+<td class="path">requiredOnly()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="34">0.034s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="strip().html">文字の項目は前後の空白（全角も）を取り除き、空・空白だけなら null にする</a>
+</td>
+<td class="path">strip()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="13">0.013s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">モデル・シリアルNo が101文字、備考が501文字：それぞれの文</td>
+<td class="path">tooLong()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="warrantyUntil().html">保証期日：購入日と同じ日は登録でき、前の日は「保証期日は購入日以降の日付を入力してください」。購入日がなければ確かめない</a>
+</td>
+<td class="path">warrantyUntil()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="29">0.029s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest">2026-11-11T23:24:31.961+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest]: EquipmentCreateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:31.963+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest
+2026-11-11T23:24:31.964+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest]: EquipmentCreateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:31.966+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.equipment.EquipmentCreateApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at Nov 11, 2026, 2:24:36 PM</p>
+</div>
+</div>
+</body>
+</html>

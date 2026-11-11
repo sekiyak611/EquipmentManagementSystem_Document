@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.1 2026-11-11 |
-| Jira | ZPOP-68（C-01）、ZPOP-70（C-03）。C-02・C-04〜C-08、S-07〜S-09 は、作るときに書き足す |
+| 版 | v1.2 2026-11-11 |
+| Jira | ZPOP-68（C-01）、ZPOP-70（C-03）、ZPOP-73（C-06）。C-02・C-04・C-05・C-07・C-08、S-07〜S-09 は、作るときに書き足す |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の1章・4章（F-05〜F-07・F-09）、API設計.md v1.2 の2.3〜2.5・3.3・4.8、画面設計.md v1.3 の10〜12章、画面一覧.md v1.0 の2章・7章、データ設計.md v1.0 の2章・5.1・5.3・5.5〜5.7・6章 |
 
@@ -24,7 +24,7 @@
 | C-03 | POST | /api/equipment | 備品を登録する | EQUIPMENT_CREATE | S-09 | [C-03_備品を登録する.md](C-03_備品を登録する.md) |
 | C-04 | PUT | /api/equipment/{備品のID} | 備品を変える | EQUIPMENT_UPDATE | S-09 | まだ（ZPOP-71） |
 | C-05 | DELETE | /api/equipment/{備品のID} | 備品を削除する | EQUIPMENT_DELETE | S-08 | まだ（ZPOP-72） |
-| C-06 | POST | /api/equipment/{備品のID}/confirmation | 備品を「確認した」にする | CONFIRM_ALL | S-07、S-08 | まだ（ZPOP-73） |
+| C-06 | POST | /api/equipment/{備品のID}/confirmation | 備品を「確認した」にする | CONFIRM_ALL | S-07、S-08 | [C-06_確認した.md](C-06_確認した.md) |
 | C-07 | POST | /api/equipment/{備品のID}/loans | 総務が、ほかの人の貸出を登録する | LOAN_MANAGE | S-08 | まだ（ZPOP-74） |
 | C-08 | POST | /api/equipment/{備品のID}/return | 総務が、返却を登録する | LOAN_MANAGE | S-08 | まだ（ZPOP-75） |
 
@@ -54,7 +54,10 @@
 | R-7 | 登録するときの管理状態は管理中、最終確認日は登録した日 | 機能一覧 F-06、画面設計 12章 |
 | R-8 | 備品を足す・種別を変えるときは、種別の行を FOR SHARE で読む（K-04 と同時に動いても、消した種別の備品ができない） | category/category.md 3章の No.2 |
 
-C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。
+| R-9 | 「確認した」は最終確認日をその日の日付にする。確認できるのは管理中の備品だけ | 機能一覧 F-07、画面設計 10章 |
+| R-10 | 保存のたびに version を1増やす（最終確認日だけを変えるときも。2026-11-11 に人が決めた） | データ設計 2章 |
+
+C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。C-06 で使うのは R-1〜R-3・R-9・R-10。
 
 ### 1.4 定期実行
 
@@ -62,7 +65,7 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。
 
 ## 2. クラス・ファイル構成
 
-パッケージの頭の `jp.co.highjunk.equipment` は省いて書く。名前の付け方は CLAUDE.md 5章の命名規則。C-01・C-03 の分を書く。
+パッケージの頭の `jp.co.highjunk.equipment` は省いて書く。名前の付け方は CLAUDE.md 5章の命名規則。C-01・C-03・C-06 の分を書く。
 
 ### 2.1 Server
 
@@ -72,22 +75,26 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。
 | equipment.service | EquipmentListService（インターフェース）・EquipmentListServiceImpl | C-01 の業務のルール（`@Service`。読むだけなので `@Transactional` は付けない） | C-01 |
 | equipment.controller | EquipmentCreateController | C-03 の入口 | C-03 |
 | equipment.service | EquipmentCreateService（インターフェース）・EquipmentCreateServiceImpl | C-03 の業務のルール（`@Service`、`@Transactional`） | C-03 |
-| equipment.validator | EquipmentValidator | 備品の業務チェック。登録してよいか（validateCreatable。管理番号の重なり、種別、購入日・保証期日）。C-04 などでも使う予定なので `<機能名>Validator` にまとめた | C-03 |
+| equipment.controller | EquipmentConfirmController | C-06 の入口 | C-06 |
+| equipment.service | EquipmentConfirmService（インターフェース）・EquipmentConfirmServiceImpl | C-06 の業務のルール（`@Service`、`@Transactional`） | C-06 |
+| equipment.service | EquipmentItemAssembler | 備品の行から C-01 の1件の形を作る（種別の名前・借用者の氏名を IN でまとめて読んで突き合わせる）。API の service ではないので、役目を表す名前（`@Component`） | C-01・C-06 |
+| equipment.validator | EquipmentValidator | 備品の業務チェック。登録してよいか（validateCreatable。管理番号の重なり、種別、購入日・保証期日）、確認してよいか（validateConfirmable。あるか、管理中か）。2つ以上の API で使うので `<機能名>Validator` にまとめた | C-03・C-06 |
 | equipment.model | Equipment | テーブル equipment の1行（C-03 ですべての列を足した） | C-01・C-03 |
 | equipment.model | Loan | テーブル loans の1行（使う列だけ） | C-01 |
 | equipment.model | Category | テーブル categories の1行（id・name だけ） | C-01・C-03 |
 | equipment.model | User | テーブル users の1行（id・name だけ） | C-01 |
 | equipment.model | EquipmentSearchCondition | 備品を探す条件（mapper に渡す。テーブルの行ではない。4章の No.1） | C-01 |
-| mapper.equipment | EquipmentMapper（インターフェース）・EquipmentMapper.xml | equipment を探す・数える（C-01）、管理番号の重なりを数える・足す（C-03） | C-01・C-03 |
-| mapper.equipment | LoanMapper・LoanMapper.xml | 貸出中の貸出履歴を読む | C-01 |
+| mapper.equipment | EquipmentMapper（インターフェース）・EquipmentMapper.xml | equipment を探す・数える（C-01）、管理番号の重なりを数える・足す（C-03）、FOR UPDATE で読む・最終確認日を変える（C-06） | C-01・C-03・C-06 |
+| mapper.equipment | LoanMapper・LoanMapper.xml | 貸出中の貸出履歴を読む（すべて：C-01、1つの備品：C-06） | C-01・C-06 |
 | mapper.equipment | CategoryMapper・CategoryMapper.xml | 種別の名前を IN でまとめて読む（C-01）、種別を FOR SHARE で読む（C-03） | C-01・C-03 |
 | mapper.equipment | UserMapper・UserMapper.xml | 氏名でユーザを探す、氏名を IN でまとめて読む | C-01 |
 | dto.equipment | EquipmentListRequest | C-01 の条件（受け取った値を確かめて、探す条件にする） | C-01 |
-| dto.equipment | EquipmentListResponse・EquipmentListItem | C-01 の返す値（API設計 2.5 の形と、1件の形）。EquipmentListItem は C-03 の返す値にも使う | C-01・C-03 |
+| dto.equipment | EquipmentListResponse・EquipmentListItem | C-01 の返す値（API設計 2.5 の形と、1件の形）。EquipmentListItem は C-03・C-06 の返す値にも使う | C-01・C-03・C-06 |
 | dto.equipment | EquipmentCreateRequest | C-03 で受け取る値 | C-03 |
 | dto.equipment | EquipmentInputs | 文字の項目の直し方（前後の空白を取り除き、空なら null） | C-03 |
 | （テスト）equipment | EquipmentListApiTest | C-01 のテスト | C-01 |
 | （テスト）equipment | EquipmentCreateApiTest | C-03 のテスト | C-03 |
+| （テスト）equipment | EquipmentConfirmApiTest | C-06 のテスト | C-06 |
 | （テスト）equipment | EquipmentCreateLockTest | C-03 の、同時に種別を消されたときの守り（FOR SHARE）のテスト。2つのまとまりを本当に開いて確かめる | C-03 |
 
 - XML は src/main/resources/jp/co/highjunk/equipment/mapper/equipment/ に置く。
@@ -122,9 +129,10 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。
 
 | No. | 種類 | 内容 | 相手（機能・部品） | 対応 |
 |---|---|---|---|---|
-| 1 | 同じルール | 貸出中の決め方（R-2） | mine（B-01〜B-03）、importer、equipment の C-07・C-08 | 変えるときは、同じように直す（CLAUDE.md 5章） |
-| 2 | 同じテーブルを読む | categories・users・loans を読むだけ | category・user・loan | 対応なし |
-| 3 | common・Flyway・Enum | 今月確認済みの判定は common.calendar（別のプルリクエストで先に取り込む）。Enum を5つ足した（2.3）。Flyway は変更なし | ― | 足した Enum を相手に伝える（CLAUDE.md 9章） |
+| 1 | 同じルール | 「確認した」で最終確認日を今日にし、version を1増やす（R-9・R-10） | mine（B-04）、貸出・返却（B-02・B-03・C-07・C-08） | 作るときに同じようにする（version を増やすことを、それぞれの詳細設計に書く） |
+| 2 | 同じルール | 貸出中の決め方（R-2） | mine（B-01〜B-03）、importer、equipment の C-07・C-08 | 変えるときは、同じように直す（CLAUDE.md 5章） |
+| 3 | 同じテーブルを読む | categories・users・loans を読むだけ | category・user・loan | 対応なし |
+| 4 | common・Flyway・Enum | 今月確認済みの判定は common.calendar（取り込み済み。common.md 3.11）。Enum を5つ足した（2.3）。Flyway は変更なし | ― | 足した Enum を相手に伝える（CLAUDE.md 9章） |
 
 ## 4. 設計書にない判断
 
@@ -139,3 +147,4 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。
 |---|---|---|
 | v1.0 | 2026-11-11 | 初版（ZPOP-68。C-01 の分） |
 | v1.1 | 2026-11-11 | C-03（ZPOP-70）の分を足した（1.1・1.3・2章） |
+| v1.2 | 2026-11-11 | C-06（ZPOP-73）の分を足した（1.1・1.3 の R-9・R-10・2章・3章）。C-01 の1件の形を作る処理を EquipmentItemAssembler にまとめた |
