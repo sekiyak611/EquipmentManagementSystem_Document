@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" tests="21" skipped="0" failures="0" errors="0" timestamp="2026-11-11T12:45:49.902Z" hostname="vm" time="0.511">
+  <properties/>
+  <testcase name="メールアドレスの設定そのものがない（null）ときも止める" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.346"/>
+  <testcase name="[1] 「&quot; admin@example.com &quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.009"/>
+  <testcase name="[2] 「&quot;Admin@Example.COM&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.003"/>
+  <testcase name="[3] 「&quot;a.b+c@example.co.jp&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.001"/>
+  <testcase name="メールアドレスが空でも、最初のデータ（V2）がすでに当たっていれば通す" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.008"/>
+  <testcase name="Flyway が当て始める前（BEFORE_MIGRATE）だけに動く" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.001"/>
+  <testcase name="[1] 「&quot;o'brien@example.com&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.002"/>
+  <testcase name="[2] 「&quot;a\&quot;b@example.com&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.003"/>
+  <testcase name="[3] 「&quot;a\\b@example.com&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.003"/>
+  <testcase name="[4] 「&quot;admin@example.com\t&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.003"/>
+  <testcase name="[5] 「&quot;admin@example.com\n&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.004"/>
+  <testcase name="[6] 「&quot;admin example@example.com&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.005"/>
+  <testcase name="[7] 「&quot;admin.example.com&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.004"/>
+  <testcase name="[8] 「&quot;a@b@example.com&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.004"/>
+  <testcase name="[9] 「&quot;@example.com&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.005"/>
+  <testcase name="[10] 「&quot;admin@&quot;」" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.002"/>
+  <testcase name="形の正しくない値でも、最初のデータ（V2）がすでに当たっていれば通す" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.003"/>
+  <testcase name="記録のテーブルの名前に決まった文字以外があれば、SQL に入れずに止める" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.002"/>
+  <testcase name="メールアドレスが空で、初めて当てる（Flyway の記録のテーブルがない）ときは、設定の場所を書いた文で止める" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.007"/>
+  <testcase name="記録のテーブルはあるが V2 の成功がない（V1 だけ当たった・V2 が失敗として残っている）ときは止める" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.015"/>
+  <testcase name="メールアドレスが設定されていれば、データベースを見ずに通す" classname="jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest" time="0.006"/>
+  <system-out><![CDATA[2026-11-11T21:45:49.904+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest]: InitialAdminEmailCallbackTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:45:49.905+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest
+2026-11-11T21:45:49.906+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest]: InitialAdminEmailCallbackTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:45:49.907+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.config.InitialAdminEmailCallbackTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
