@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.0 2026-11-11 |
-| Jira | ZPOP-68（C-01）。C-02〜C-08、S-07〜S-09 は、作るときに書き足す |
+| 版 | v1.1 2026-11-11 |
+| Jira | ZPOP-68（C-01）、ZPOP-70（C-03）。C-02・C-04〜C-08、S-07〜S-09 は、作るときに書き足す |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の1章・4章（F-05〜F-07・F-09）、API設計.md v1.2 の2.3〜2.5・3.3・4.8、画面設計.md v1.3 の10〜12章、画面一覧.md v1.0 の2章・7章、データ設計.md v1.0 の2章・5.1・5.3・5.5〜5.7・6章 |
 
@@ -21,7 +21,7 @@
 |---|---|---|---|---|---|---|
 | C-01 | GET | /api/equipment | 備品を探す（絞り込み・並び替え・ページ分け） | EQUIPMENT_VIEW | S-07 | [C-01_備品を探す.md](C-01_備品を探す.md) |
 | C-02 | GET | /api/equipment/{備品のID} | 備品1件と、その備品の貸出履歴（新しい順に5件）を返す | EQUIPMENT_VIEW | S-08、S-09（編集） | まだ（ZPOP-69） |
-| C-03 | POST | /api/equipment | 備品を登録する | EQUIPMENT_CREATE | S-09 | まだ（ZPOP-70） |
+| C-03 | POST | /api/equipment | 備品を登録する | EQUIPMENT_CREATE | S-09 | [C-03_備品を登録する.md](C-03_備品を登録する.md) |
 | C-04 | PUT | /api/equipment/{備品のID} | 備品を変える | EQUIPMENT_UPDATE | S-09 | まだ（ZPOP-71） |
 | C-05 | DELETE | /api/equipment/{備品のID} | 備品を削除する | EQUIPMENT_DELETE | S-08 | まだ（ZPOP-72） |
 | C-06 | POST | /api/equipment/{備品のID}/confirmation | 備品を「確認した」にする | CONFIRM_ALL | S-07、S-08 | まだ（ZPOP-73） |
@@ -50,7 +50,11 @@
 | R-4 | 画面での検索は、大文字・小文字を区別しない | データ設計 2章 |
 | R-5 | 棚卸対象＝管理中で今月確認済みでないもの＋不明のもの | 画面設計 10章 |
 
-C-01 で使うのは R-1〜R-5。
+| R-6 | 管理番号はほかの備品と重ならない。削除済みの備品の番号は使い直せる | 画面設計 12章 |
+| R-7 | 登録するときの管理状態は管理中、最終確認日は登録した日 | 機能一覧 F-06、画面設計 12章 |
+| R-8 | 備品を足す・種別を変えるときは、種別の行を FOR SHARE で読む（K-04 と同時に動いても、消した種別の備品ができない） | category/category.md 3章の No.2 |
+
+C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。
 
 ### 1.4 定期実行
 
@@ -58,7 +62,7 @@ C-01 で使うのは R-1〜R-5。
 
 ## 2. クラス・ファイル構成
 
-パッケージの頭の `jp.co.highjunk.equipment` は省いて書く。名前の付け方は CLAUDE.md 5章の命名規則。C-01 の分を書く。
+パッケージの頭の `jp.co.highjunk.equipment` は省いて書く。名前の付け方は CLAUDE.md 5章の命名規則。C-01・C-03 の分を書く。
 
 ### 2.1 Server
 
@@ -66,18 +70,25 @@ C-01 で使うのは R-1〜R-5。
 |---|---|---|---|
 | equipment.controller | EquipmentListController | C-01 の入口 | C-01 |
 | equipment.service | EquipmentListService（インターフェース）・EquipmentListServiceImpl | C-01 の業務のルール（`@Service`。読むだけなので `@Transactional` は付けない） | C-01 |
-| equipment.model | Equipment | テーブル equipment の1行（使う列だけ） | C-01 |
+| equipment.controller | EquipmentCreateController | C-03 の入口 | C-03 |
+| equipment.service | EquipmentCreateService（インターフェース）・EquipmentCreateServiceImpl | C-03 の業務のルール（`@Service`、`@Transactional`） | C-03 |
+| equipment.validator | EquipmentValidator | 備品の業務チェック。登録してよいか（validateCreatable。管理番号の重なり、種別、購入日・保証期日）。C-04 などでも使う予定なので `<機能名>Validator` にまとめた | C-03 |
+| equipment.model | Equipment | テーブル equipment の1行（C-03 ですべての列を足した） | C-01・C-03 |
 | equipment.model | Loan | テーブル loans の1行（使う列だけ） | C-01 |
-| equipment.model | Category | テーブル categories の1行（id・name だけ） | C-01 |
+| equipment.model | Category | テーブル categories の1行（id・name だけ） | C-01・C-03 |
 | equipment.model | User | テーブル users の1行（id・name だけ） | C-01 |
 | equipment.model | EquipmentSearchCondition | 備品を探す条件（mapper に渡す。テーブルの行ではない。4章の No.1） | C-01 |
-| mapper.equipment | EquipmentMapper（インターフェース）・EquipmentMapper.xml | equipment を探す・数える | C-01 |
+| mapper.equipment | EquipmentMapper（インターフェース）・EquipmentMapper.xml | equipment を探す・数える（C-01）、管理番号の重なりを数える・足す（C-03） | C-01・C-03 |
 | mapper.equipment | LoanMapper・LoanMapper.xml | 貸出中の貸出履歴を読む | C-01 |
-| mapper.equipment | CategoryMapper・CategoryMapper.xml | 種別の名前を IN でまとめて読む | C-01 |
+| mapper.equipment | CategoryMapper・CategoryMapper.xml | 種別の名前を IN でまとめて読む（C-01）、種別を FOR SHARE で読む（C-03） | C-01・C-03 |
 | mapper.equipment | UserMapper・UserMapper.xml | 氏名でユーザを探す、氏名を IN でまとめて読む | C-01 |
 | dto.equipment | EquipmentListRequest | C-01 の条件（受け取った値を確かめて、探す条件にする） | C-01 |
-| dto.equipment | EquipmentListResponse・EquipmentListItem | C-01 の返す値（API設計 2.5 の形と、1件の形） | C-01 |
+| dto.equipment | EquipmentListResponse・EquipmentListItem | C-01 の返す値（API設計 2.5 の形と、1件の形）。EquipmentListItem は C-03 の返す値にも使う | C-01・C-03 |
+| dto.equipment | EquipmentCreateRequest | C-03 で受け取る値 | C-03 |
+| dto.equipment | EquipmentInputs | 文字の項目の直し方（前後の空白を取り除き、空なら null） | C-03 |
 | （テスト）equipment | EquipmentListApiTest | C-01 のテスト | C-01 |
+| （テスト）equipment | EquipmentCreateApiTest | C-03 のテスト | C-03 |
+| （テスト）equipment | EquipmentCreateLockTest | C-03 の、同時に種別を消されたときの守り（FOR SHARE）のテスト。2つのまとまりを本当に開いて確かめる | C-03 |
 
 - XML は src/main/resources/jp/co/highjunk/equipment/mapper/equipment/ に置く。
 - mapper.equipment の CategoryMapper・UserMapper・EquipmentMapper は、ほかの機能の同じ名前の mapper とは別のもの（common.md 2.3）。import するときは mapper.equipment のものを選ぶ（CLAUDE.md 5章）。
@@ -104,6 +115,8 @@ C-01 で使うのは R-1〜R-5。
 | common.error.BusinessRuleException・ApiMessages | sort・page が決まった値でないとき 400「入力内容に誤りがあります。」 |
 | common.security | `@PreAuthorize("hasAuthority('EQUIPMENT_VIEW')")` |
 | common.calendar.MonthlyConfirmationRule | 今月の1日（SQL の条件）、今月確認済みか（返す値。common.md 3.11） |
+| common.error.FieldErrorException | C-03 の業務チェックの誤りを、入力欄のエラー（400）で返す |
+| common.security.LoginUserId・common.config（Clock） | C-03 で、作った人のユーザIDと、作った日時・今日 |
 
 ## 3. ほかの機能への影響
 
@@ -125,3 +138,4 @@ C-01 で使うのは R-1〜R-5。
 | 版 | 日付 | 内容 |
 |---|---|---|
 | v1.0 | 2026-11-11 | 初版（ZPOP-68。C-01 の分） |
+| v1.1 | 2026-11-11 | C-03（ZPOP-70）の分を足した（1.1・1.3・2章） |
