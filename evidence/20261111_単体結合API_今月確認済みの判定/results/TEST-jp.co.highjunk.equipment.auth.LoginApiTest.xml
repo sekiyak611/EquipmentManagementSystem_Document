@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="A-01 ログイン" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-11T12:45:42.200Z" hostname="vm" time="2.076">
+  <properties/>
+  <testcase name="パスワードがまだない人（最初の総務の担当者）：401。同じ文" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.199"/>
+  <testcase name="メールアドレスの大文字・小文字は区別しない" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.104"/>
+  <testcase name="登録のないメールアドレス：401。パスワードが違うときと同じ文" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.07"/>
+  <testcase name="削除されたユーザ：正しいパスワードでも 401。同じ文" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.07"/>
+  <testcase name="パスワードが違う：401。ログインできない" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.082"/>
+  <testcase name="ログインすると、ログイン状態がセッションに入り、セッションの番号が変わり、XSRF-TOKEN が作り直される" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.107"/>
+  <testcase name="入力の誤り：メールアドレス・パスワードが空なら 400。入力欄ごとに画面設計の文" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.017"/>
+  <testcase name="一般社員：権限項目は LOAN_SELF・CONFIRM_SELF の順、最初の画面は自分の備品（MY_EQUIPMENT）" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.075"/>
+  <testcase name="総務：200。data に氏名・権限・18個の権限項目（並び順どおり）、最初の画面は備品一覧（EQUIPMENT_LIST）" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.08"/>
+  <testcase name="入力の誤り：メールアドレスの形でなければ 400" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.009"/>
+  <testcase name="ロック中のユーザ：正しいパスワードでも 401。同じ文（画面設計 2.1）" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.077"/>
+  <testcase name="メールアドレスは254文字まで。254文字は入力の誤りにならず（登録がないので 401）、255文字は 400" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.074"/>
+  <testcase name="ログインしたままにする（rememberMe）を送っても、今はふつうにログインする（ZPOP-125 で作る）" classname="jp.co.highjunk.equipment.auth.LoginApiTest" time="0.071"/>
+  <system-out><![CDATA[2026-11-11T21:45:42.203+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.auth.LoginApiTest]: LoginApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:45:42.213+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.auth.LoginApiTest
+2026-11-11T21:45:42.214+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.auth.LoginApiTest]: LoginApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:45:42.214+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.auth.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T21:45:42.215+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.auth.LoginApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.2)
+
+2026-11-11T21:45:42.234+09:00 INFO  userId=- [Test worker] j.c.h.equipment.auth.LoginApiTest - Starting LoginApiTest using Java 21.0.12.1 with PID 30656 (started by root in /home/claude/equipmentmanagementsystem_server)
+2026-11-11T21:45:42.235+09:00 INFO  userId=- [Test worker] j.c.h.equipment.auth.LoginApiTest - The following 1 profile is active: "test"
+2026-11-11T21:45:42.413+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2026-11-11T21:45:42.423+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@47c06b1a
+2026-11-11T21:45:42.424+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2026-11-11T21:45:42.425+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-11T21:45:42.436+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped pre-schema database level objects (execution time 00:00.000s)
+2026-11-11T21:45:42.514+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.077s)
+2026-11-11T21:45:42.519+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.004s)
+2026-11-11T21:45:42.520+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped post-schema database level objects (execution time 00:00.000s)
+2026-11-11T21:45:42.522+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-11T21:45:42.535+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table `equipment_test`.`flyway_schema_history` does not exist yet
+2026-11-11T21:45:42.536+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.004s)
+2026-11-11T21:45:42.543+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table `equipment_test`.`flyway_schema_history` ...
+2026-11-11T21:45:42.566+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Current version of schema `equipment_test`: << Empty Schema >>
+2026-11-11T21:45:42.592+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "1 - create tables"
+2026-11-11T21:45:42.710+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "2 - insert initial data"
+2026-11-11T21:45:42.742+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` with repeatable migration "dev users"
+2026-11-11T21:45:42.755+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Successfully applied 3 migrations to schema `equipment_test`, now at version v2 (execution time 00:00.113s)
+2026-11-11T21:45:43.091+09:00 INFO  userId=- [Test worker] o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-11-11T21:45:43.185+09:00 INFO  userId=- [Test worker] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-11T21:45:43.186+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-11T21:45:43.187+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-11T21:45:43.225+09:00 INFO  userId=- [Test worker] j.c.h.equipment.auth.LoginApiTest - Started LoginApiTest in 1.007 seconds (process running for 7.906)
+2026-11-11T21:45:43.404+09:00 WARN  userId=- [Test worker] j.c.h.e.a.validator.LoginValidator - ログインできませんでした（パスワードがまだない userId=1）
+2026-11-11T21:45:43.497+09:00 INFO  userId=- [Test worker] j.c.h.e.a.service.LoginServiceImpl - ログインしました（userId=2）
+2026-11-11T21:45:43.601+09:00 WARN  userId=- [Test worker] j.c.h.e.a.validator.LoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-11T21:45:43.671+09:00 WARN  userId=- [Test worker] j.c.h.e.a.validator.LoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-11T21:45:43.749+09:00 WARN  userId=- [Test worker] j.c.h.e.a.validator.LoginValidator - ログインできませんでした（パスワードの誤り userId=2）
+2026-11-11T21:45:43.829+09:00 INFO  userId=- [Test worker] j.c.h.e.a.service.LoginServiceImpl - ログインしました（userId=2）
+2026-11-11T21:45:43.952+09:00 INFO  userId=- [Test worker] j.c.h.e.a.service.LoginServiceImpl - ログインしました（userId=3）
+2026-11-11T21:45:44.028+09:00 INFO  userId=- [Test worker] j.c.h.e.a.service.LoginServiceImpl - ログインしました（userId=2）
+2026-11-11T21:45:44.123+09:00 WARN  userId=- [Test worker] j.c.h.e.a.validator.LoginValidator - ログインできませんでした（ロック中 userId=3）
+2026-11-11T21:45:44.200+09:00 WARN  userId=- [Test worker] j.c.h.e.a.validator.LoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-11T21:45:44.270+09:00 INFO  userId=- [Test worker] j.c.h.e.a.service.LoginServiceImpl - ログインしました（userId=2）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

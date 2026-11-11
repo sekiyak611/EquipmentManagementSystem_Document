@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.13 2026-11-11 |
+| 版 | v1.14 2026-11-11 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.2 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -21,7 +21,7 @@
 | テスト用の部品 | TestFlywayConfig、CsrfTestHelper | 作成済み（ZPOP-21） |
 | common.slack | Slack送信の部品 | 未作成（ZPOP-123 で、この資料に章を足す） |
 | common.csv | CSVの読み書き | 未作成（使う機能のタスクで章を足す） |
-| common.calendar | 祝日・催促日の計算、「今月確認済み」の判定 | 未作成（ZPOP-126 で章を足す） |
+| common.calendar | 祝日・催促日の計算、「今月確認済み」の判定 | 「今月確認済み」の判定だけ作成済み（2026-11-11。C-01 の前の共通作業。3.11）。祝日・催促日は ZPOP-126 で足す |
 | common.passwordlink | パスワード設定用のリンク | 未作成（A-04 の ZPOP-58 で章を足す） |
 | common.web | 組み立てた画面（Client）をサーバーから配る | 作成済み（ZPOP-22）。3.9 |
 | テーブルと最初のデータ | Flyway の SQL（db/migration） | 作成済み（ZPOP-122）。詳細設計 [テーブル.md](テーブル.md) |
@@ -52,6 +52,7 @@
 | common.security | LoginUserId | 「ログインしている人のユーザIDを持つもの」を表す決まり（インターフェース）。LoginUser がこれを持つ |
 | common.security | LoginUser・LoginUserRefresher・LoginRefreshFilter・LoginSession | ログイン状態の持ち方（3.10。ZPOP-55・56・57） |
 | common.error | UnauthorizedException | 401 と文を返す（6章。ZPOP-55） |
+| common.calendar | MonthlyConfirmationRule | 「今月確認済み」の判定（3.11） |
 | common.constant | PermissionCode・HomePage | 権限項目のコード（データ設計 5.3）、ログイン後の最初の画面（API設計 4.2） |
 | common.error | ApiResponse | 返す値の形（status・message・data・errors）。ok・created・accepted・error で作る |
 | common.error | ErrorItem | errors の1件（field・row・managementNo・message） |
@@ -261,6 +262,21 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 - ログインしたままにする（ZPOP-125）：Spring Security の RememberMe（ログインしたままにする仕組み）は、LoginRefreshFilter より後ろでログイン状態を作り、持ち主も LoginUser にならない。そのままでは権限項目の読み直しが効かないので、ZPOP-125 で、RememberMe で作ったログイン状態を LoginUser に置き換え、読み直しの前に来るようにする。
 - パスワードの設定・変更（ZPOP-60・61）：session_valid_after は DATETIME（秒まで）、LoginUser の loggedInAt はもっと細かい。同じ1秒の中でログインとパスワードの変更が起きたときの扱い（秒にそろえて比べるか）を、そのタスクで決める。
 
+### 3.11 「今月確認済み」の判定（common.calendar.MonthlyConfirmationRule）
+
+写したもと：機能一覧.md v1.0 の1章（言葉の決まり「今月確認済み」）・4章（F-05）
+
+- 今月確認済み＝最終確認日の月が今月であること。最終確認日が未記入、または先月以前なら「未確認」（今のExcelで最終確認日が黄色になる状態）。
+- 使う機能：equipment（C-01 の絞り込みと confirmedThisMonth。C-06）、mine（B-01）、confirmation、reminder（催促の対象）。どの機能もこの部品を使い、書き写さない（CLAUDE.md 5章）。
+- 今日の日付は時計（ClockConfig の Clock。日本時間）から取る。
+
+| メソッド | 返すもの | 使い方 |
+|---|---|---|
+| firstDayOfThisMonth() | 今月の1日（LocalDate） | SQL で「last_confirmed_on >= 今月の1日」なら今月確認済み、「last_confirmed_on IS NULL OR last_confirmed_on < 今月の1日」なら未確認、と比べるときに渡す。最終確認日は今日より後にならない（「確認した」はその日の日付を入れる。機能一覧 F-07）ので、「1日以降」は「今月」と同じ |
+| isConfirmedThisMonth(LocalDate lastConfirmedOn) | 今月確認済みなら true（null は false） | 読んだ行ごとに、返す値の confirmedThisMonth などを決めるときに使う |
+
+- 祝日の取り込みと催促日の計算（25日。土日祝日なら前の平日）は、ZPOP-126 でこのパッケージに足す。
+
 ## 4. データベース
 
 common には mapper（データベースを読み書きする部品）はない。データベースへのつなぎ方を、設定ファイルで次のように決めている。
@@ -393,6 +409,7 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 | common.security.SecurityApiTest | 結合（API） | ログインせずに、ログインが必要なAPIを呼ぶと 401／CSRFの合言葉を付けずにPOSTすると 403／合言葉は XSRF-TOKEN クッキーで渡され、X-XSRF-TOKEN 見出しで送り返すと通る／合言葉が違うと 403／Spring Boot の仮のユーザを作らない／ユーザIDがログに付き、合言葉のクッキーも同じ処理で渡される（2つのフィルターが両方動く） |
 | common.web.SpaWebConfigTest | 結合（API） | 画面のアドレス（/loans、/equipment/12、/login）では、ログインしていなくても index.html を返す／トップ（/）では index.html に回す（Spring Boot の最初のページの仕組み）／ないファイル（/assets/なし.js）は 404／/api/ で始まる存在しないアドレスは、今までどおり 404 の JSON |
 | common.security.UserIdLogFilterTest | 単体 | ユーザIDが処理の間だけログに付き、終わったら消える／ログインしていないときは付けない |
+| common.calendar.MonthlyConfirmationRuleTest | 単体（時計を止める） | 今月の1日（月の初日・末日・年の変わり目）／今月なら確認済み／未記入・先月・去年の同じ月は未確認／日本時間の月で判定する（UTC ではまだ前の月の時刻） |
 
 テストを書くときの決まり（CLAUDE.md 6章）：
 
@@ -609,3 +626,4 @@ EquipmentManagementSystem_Client/
 | v1.11 | 2026-11-10 | 6章に FieldErrorException（業務チェックの結果を入力欄のエラーとして返す 400）を足した（ZPOP-84 K-02 で使う。2026-11-10 に人が決めた） |
 | v1.12 | 2026-11-11 | 共通ヘッダーのメニュー（11.4）と menuItems.ts（11.2）、設計書にない判断の7・8（11.8）を足した。S-13（ZPOP-115）の前に、共通の小さな作業として作った（2026-11-11 に人が決めた） |
 | v1.13 | 2026-11-11 | ZPOP-121：エラー画面 S-19（11.10）を足し、見つからないときの仮の画面を置き換えた（11.2・11.7・11.8 の2・9） |
+| v1.14 | 2026-11-11 | common.calendar の「今月確認済み」の判定（MonthlyConfirmationRule。3.11）を足した。C-01（ZPOP-68）の前に、共通の小さな作業として作った（2026-11-11 に人が決めた）。祝日・催促日は ZPOP-126 で足す |
