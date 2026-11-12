@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="確かめのあとに、ほかの人が同じ名前・頭文字を足していたとき" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-11T14:24:25.767Z" hostname="vm" time="2.819">
+  <properties/>
+  <testcase name="名前が重複禁止に当たる：400。errors の name に「この名前はすでに使われています」" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race" time="0.27"/>
+  <testcase name="頭文字が重複禁止に当たる：400。errors の initial に「この頭文字はすでに使われています」" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race" time="0.036"/>
+  <system-out><![CDATA[2026-11-11T23:24:25.770+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:25.775+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race
+2026-11-11T23:24:25.776+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:25.776+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryCreateApiTest]: CategoryCreateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:25.776+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryApiTestBase]: CategoryApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:25.777+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.2)
+
+2026-11-11T23:24:25.809+09:00 INFO  userId=- [Test worker] j.c.h.e.c.CategoryCreateApiTest$Race - Starting CategoryCreateApiTest.Race using Java 21.0.12.1 with PID 6573 (started by root in /home/claude/equipmentmanagementsystem_server)
+2026-11-11T23:24:25.809+09:00 INFO  userId=- [Test worker] j.c.h.e.c.CategoryCreateApiTest$Race - The following 1 profile is active: "test"
+2026-11-11T23:24:26.365+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
+2026-11-11T23:24:26.435+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.pool.HikariPool - HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@291fbdc9
+2026-11-11T23:24:26.436+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
+2026-11-11T23:24:26.439+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-11T23:24:26.492+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped pre-schema database level objects (execution time 00:00.005s)
+2026-11-11T23:24:26.623+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.129s)
+2026-11-11T23:24:26.640+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.015s)
+2026-11-11T23:24:26.643+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped post-schema database level objects (execution time 00:00.003s)
+2026-11-11T23:24:26.652+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-11T23:24:26.689+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table `equipment_test`.`flyway_schema_history` does not exist yet
+2026-11-11T23:24:26.690+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.017s)
+2026-11-11T23:24:26.705+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table `equipment_test`.`flyway_schema_history` ...
+2026-11-11T23:24:26.823+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Current version of schema `equipment_test`: << Empty Schema >>
+2026-11-11T23:24:26.847+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "1 - create tables"
+2026-11-11T23:24:27.115+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "2 - insert initial data"
+2026-11-11T23:24:27.166+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` with repeatable migration "dev users"
+2026-11-11T23:24:27.202+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Successfully applied 3 migrations to schema `equipment_test`, now at version v2 (execution time 00:00.250s)
+2026-11-11T23:24:28.004+09:00 INFO  userId=- [Test worker] o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-11-11T23:24:28.153+09:00 INFO  userId=- [Test worker] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-11T23:24:28.154+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-11T23:24:28.155+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 1 ms
+2026-11-11T23:24:28.223+09:00 INFO  userId=- [Test worker] j.c.h.e.c.CategoryCreateApiTest$Race - Started CategoryCreateApiTest.Race in 2.441 seconds (process running for 13.132)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

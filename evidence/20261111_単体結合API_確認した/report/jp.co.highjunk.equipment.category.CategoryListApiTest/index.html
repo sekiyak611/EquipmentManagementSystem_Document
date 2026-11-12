@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.category.CategoryListApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.category.CategoryListApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>K-01 種別の一覧</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">7</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">0.167s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">権限項目は要らない：一般社員の権限項目（LOAN_SELF・CONFIRM_SELF）だけでも 200</td>
+<td class="path">anyLoggedInUser()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="14">0.014s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">削除済みの種別は出さない</td>
+<td class="path">deletedCategory()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="32">0.032s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">種別がないとき（全部削除済み）：200。data は空の配列</td>
+<td class="path">empty()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="13">0.013s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">使っている備品の数：削除されていない備品を数える。管理中・廃棄・不明のどれも数え、削除済みの備品は数えない。備品がなければ 0</td>
+<td class="path">equipmentCount()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">data に種別の配列をそのまま入れ、1件は id・name・initial・equipmentCount・version の5項目</td>
+<td class="path">fields()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ログインしていなければ 401（ログインしてください。）。data・errors は null</td>
+<td class="path">notLoggedIn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="16">0.016s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">頭文字の順に並べ、頭文字がないものは後ろに名前の順（画面設計 16章）。頭文字がない種別の initial は null</td>
+<td class="path">order()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="20">0.020s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.category.CategoryListApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.category.CategoryListApiTest">2026-11-11T23:24:30.151+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryListApiTest]: CategoryListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:30.157+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryListApiTest
+2026-11-11T23:24:30.159+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryListApiTest]: CategoryListApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:30.163+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryListApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at Nov 11, 2026, 2:24:36 PM</p>
+</div>
+</div>
+</body>
+</html>

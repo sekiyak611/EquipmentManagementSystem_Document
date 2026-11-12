@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.category.CategoryDeleteApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.category.CategoryDeleteApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>K-04 種別を消す</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">9</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">0.478s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="deleted().html">総務・使っている備品がない：200（data は null）。論理削除され（deleted_at・変えた人が入り、version が1増える）、一覧（K-01）に出なくなる</a>
+</td>
+<td class="path">deleted()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="49">0.049s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">一般社員（CATEGORY_MANAGE がない）：403。消さない</td>
+<td class="path">forbidden()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="27">0.027s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">パスの ID が数でない：400</td>
+<td class="path">idNotNumber()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="22">0.022s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">使っている備品がある（管理中・廃棄・不明のどれでも）：400「この種別の備品があるため削除できません」。消さない</td>
+<td class="path">inUse()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="75">0.075s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="notFound().html">ない種別・削除済みの種別（2回消す）：404「対象が見つかりません。」</a>
+</td>
+<td class="path">notFound()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="49">0.049s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ログインしていない：401。CSRF の合言葉がない：403。どちらも消さない</td>
+<td class="path">notLoggedInOrNoCsrf()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="24">0.024s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="onlyDeletedEquipment().html">使っていた備品が全部削除済みなら、消せる</a>
+</td>
+<td class="path">onlyDeletedEquipment()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="43">0.043s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="reuseNameAfterDelete().html">消した種別の名前・頭文字は、新しい種別で使える（K-02）</a>
+</td>
+<td class="path">reuseNameAfterDelete()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="48">0.048s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="updateAfterDelete().html">消したあとで変えよう（K-03）としても 404</a>
+</td>
+<td class="path">updateAfterDelete()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="105">0.105s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.category.CategoryDeleteApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.category.CategoryDeleteApiTest">2026-11-11T23:24:28.593+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryDeleteApiTest]: CategoryDeleteApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:28.598+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryDeleteApiTest
+2026-11-11T23:24:28.599+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryDeleteApiTest]: CategoryDeleteApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:28.599+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryApiTestBase]: CategoryApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:24:28.602+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryDeleteApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at Nov 11, 2026, 2:24:36 PM</p>
+</div>
+</div>
+</body>
+</html>
