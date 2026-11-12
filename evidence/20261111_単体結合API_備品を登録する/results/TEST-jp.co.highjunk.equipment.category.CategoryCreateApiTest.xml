@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="K-02 種別を追加する" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-11T14:17:37.942Z" hostname="vm" time="0.398">
+  <properties/>
+  <testcase name="ログインしていない：401「ログインしてください。」" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.01"/>
+  <testcase name="頭文字は任意：送らない・null・空・空白だけなら、頭文字なし（null）" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.096"/>
+  <testcase name="大文字・小文字が違う名前は別の名前（「pc」は「PC」と重ならない）" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.016"/>
+  <testcase name="CSRF の合言葉がない：403。足さない" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.009"/>
+  <testcase name="総務：201。data に作った種別（K-01 の1件と同じ形。使っている備品の数は 0、version は 0）。データベースに、作った人・日時が入る" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.025"/>
+  <testcase name="名前は20文字まで：20文字は 201、21文字は 400「名前は20文字以内で入力してください」。前後の空白は数えない" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.044"/>
+  <testcase name="頭文字が英字1文字でない（2文字、数字、記号、全角の英字、ひらがな）：400「頭文字は英字1文字で入力してください」" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.049"/>
+  <testcase name="名前と頭文字の両方が重なる：400。errors に name・initial の2つ" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.019"/>
+  <testcase name="名前がほかの種別と重なる：400。errors の name に「この名前はすでに使われています」。足さない" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.013"/>
+  <testcase name="頭文字がほかの種別と重なる（小文字で送っても）：400。errors の initial に「この頭文字はすでに使われています」" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.013"/>
+  <testcase name="頭文字の小文字は大文字に直す。名前・頭文字の前後の空白（全角も）は取り除く" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.014"/>
+  <testcase name="削除済みの種別と同じ名前・頭文字は使える" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.019"/>
+  <testcase name="名前が空・空白だけ・送らない：400「名前を入力してください」。足さない" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.02"/>
+  <testcase name="一般社員（CATEGORY_MANAGE がない）：403「この操作を行う権限がありません。」。足さない" classname="jp.co.highjunk.equipment.category.CategoryCreateApiTest" time="0.01"/>
+  <system-out><![CDATA[2026-11-11T23:17:37.946+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryCreateApiTest]: CategoryCreateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:17:37.958+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryCreateApiTest
+2026-11-11T23:17:37.959+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryCreateApiTest]: CategoryCreateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:17:37.959+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryApiTestBase]: CategoryApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:17:37.961+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryCreateApiTest
+2026-11-11T23:17:38.020+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=7, name=ケーブル1, initial=null）
+2026-11-11T23:17:38.039+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=8, name=ケーブル2, initial=null）
+2026-11-11T23:17:38.052+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=9, name=ケーブル3, initial=null）
+2026-11-11T23:17:38.069+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=10, name=ケーブル4, initial=null）
+2026-11-11T23:17:38.088+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=11, name=pc, initial=null）
+2026-11-11T23:17:38.118+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=12, name=ケーブル, initial=G）
+2026-11-11T23:17:38.142+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=13, name=ああああああああああああああああああああ, initial=null）
+2026-11-11T23:17:38.156+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=14, name=いいいいいいいいいいいいいいいいいいいい, initial=null）
+2026-11-11T23:17:38.285+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=15, name=ケーブル, initial=G）
+2026-11-11T23:17:38.303+09:00 INFO  userId=2 [Test worker] j.c.h.e.c.s.CategoryCreateServiceImpl - 種別を追加しました（id=16, name=PC, initial=A）
+2026-11-11T23:17:38.346+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:17:38.350+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race
+2026-11-11T23:17:38.351+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:17:38.351+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryCreateApiTest]: CategoryCreateApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:17:38.351+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.category.CategoryApiTestBase]: CategoryApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-11T23:17:38.353+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.category.CategoryCreateApiTest$Race
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.2)
+
+2026-11-11T23:17:38.373+09:00 INFO  userId=- [Test worker] j.c.h.e.c.CategoryCreateApiTest$Race - Starting CategoryCreateApiTest.Race using Java 21.0.12.1 with PID 2012 (started by root in /home/claude/equipmentmanagementsystem_server)
+2026-11-11T23:17:38.373+09:00 INFO  userId=- [Test worker] j.c.h.e.c.CategoryCreateApiTest$Race - The following 1 profile is active: "test"
+2026-11-11T23:17:38.952+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
+2026-11-11T23:17:39.027+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.pool.HikariPool - HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4a77d2a5
+2026-11-11T23:17:39.028+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
+2026-11-11T23:17:39.033+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-11T23:17:39.083+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped pre-schema database level objects (execution time 00:00.004s)
+2026-11-11T23:17:39.226+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.140s)
+2026-11-11T23:17:39.249+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.018s)
+2026-11-11T23:17:39.257+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped post-schema database level objects (execution time 00:00.002s)
+2026-11-11T23:17:39.263+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-11T23:17:39.341+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table `equipment_test`.`flyway_schema_history` does not exist yet
+2026-11-11T23:17:39.350+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.034s)
+2026-11-11T23:17:39.376+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table `equipment_test`.`flyway_schema_history` ...
+2026-11-11T23:17:39.442+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Current version of schema `equipment_test`: << Empty Schema >>
+2026-11-11T23:17:39.473+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "1 - create tables"
+2026-11-11T23:17:39.651+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "2 - insert initial data"
+2026-11-11T23:17:39.704+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` with repeatable migration "dev users"
+2026-11-11T23:17:39.729+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Successfully applied 3 migrations to schema `equipment_test`, now at version v2 (execution time 00:00.176s)
+2026-11-11T23:17:40.293+09:00 INFO  userId=- [Test worker] o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-11-11T23:17:40.425+09:00 INFO  userId=- [Test worker] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-11T23:17:40.427+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-11T23:17:40.429+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 2 ms
+2026-11-11T23:17:40.549+09:00 INFO  userId=- [Test worker] j.c.h.e.c.CategoryCreateApiTest$Race - Started CategoryCreateApiTest.Race in 2.194 seconds (process running for 13.648)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
