@@ -27,7 +27,6 @@ argument-hint: "[まとまり（例：equipment.category）、API・画面の ID
 | 画面詳細 | `internaldesign/詳細設計/<まとまりのフォルダ>/<画面のID>_<短い名前>.md` | テンプレート/画面.md | タスクで作る・直す画面ごとに1つ |
 
 - `<まとまりのフォルダ>` は、パッケージの `api` より後ろを入れ子のフォルダにしたもの（例：api.equipment.category → `equipment/category/`。README 2章）。
-- 古い形のフォルダ（作り直す前の category/・equipment/・health/・auth/ の中身）は手本にしない。API を作り直すときは、その詳細設計を新しいフォルダ・新しい形に移す（README 2章の作り直しの途中の注意）。
 
 - 短い名前は、API設計 3章の「内容」・画面一覧の画面の名前を短くしたもの（例：`K-01_種別一覧.md`、`S-13_種別管理.md`）。
 - 共通部品（common）は、テンプレートではなく common.md に章を足す。

@@ -64,7 +64,7 @@ Server のフォルダ（`EquipmentManagementSystem_Server`）と Document の�
 - [ ] チェック用アノテーションの中と Validator が読むだけ（Mapper の select・count だけ）で、書き換えをしていない。
 - [ ] 業務のルールが Controller に書かれていない。（Controller から common.security.LoginSession を呼ぶのは、決まった例外なので指摘しない。CLAUDE.md 5章）
 - [ ] ほかの API のパッケージ（同じまとまりの API も）のクラスを import していない（import の行を見て確かめる）。使っているのは自分の API のパッケージと common・dao だけ。common・dao から api・batch を使っていない。循環がない。
-- [ ] Mapper・テーブルの形・Example の import が `dao.mapper`・`dao.entity` のもの（古い `mapper.<機能名>` のものでない）。dao.entity をそのまま画面に返していない（RestOutDto に移している）。
+- [ ] Mapper・テーブルの形・Example の import が `dao.mapper`・`dao.entity` のもの。dao.entity をそのまま画面に返していない（RestOutDto に移している）。
 - [ ] MyBatis Generator が作ったファイル（`dao.mapper`・`dao.entity` と、その XML）を手で直していない。
 - [ ] `record` を使っていない（CLAUDE.md 3章）。
 - [ ] common の部品（common.validation のチェック用アノテーションを足す・変えるのを含む）、Flyway のファイル、dao（MyBatis Generator の設定と作ったファイル）、build.gradle・settings.gradle、すでにある Enum を変えていたら、「2人で相談が必要な変更」として指摘する（CLAUDE.md 9章）。
