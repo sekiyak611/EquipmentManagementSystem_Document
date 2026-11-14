@@ -112,11 +112,12 @@
 | common.calendar | 祝日、催促日の計算（25日。土日祝日なら前の平日）、「今月確認済み」の判定 |
 | common.passwordlink | パスワード設定用のリンク（合言葉）を作り、DMを送る（A-04、G-03、G-06で使う） |
 | common.web | 組み立てた画面（Client の dist）を配る。画面のアドレスでは index.html を返す |
+| common.equipment | 備品の一覧の1件の形を作る部品（EquipmentSummaryAssembler。C-01・C-06 で使う。2026-11-15 に決めた） |
 | common.constant | Enum（列挙型＝決まった値だけを持つ型。例：備品の管理状態、権限項目のコード）。Enum はすべてここに置く |
 | common.validation | 自作のチェック用アノテーション（ServiceInDto に付け、DB との整合性や Enum を確かめるもの。例：種別があるか）と、その中身（ConstraintValidator）。1つの API でしか使わないものも、ここに置く（2026-11-15 に決めた。API のパッケージどうしは使い合わないため）。ServiceInDto を確かめて例外に変える ServiceInDtoChecker と、確かめる順番（ServiceCheckOrder）・返し方の印（ServiceErrorType）もここ |
 | common.text | 画面から受け取った文字の直し方（前後の空白を取る、大文字にするなど。TextInputs）。RestInDto が、形式のチェックの前に使う（2026-11-15 に決めた） |
 
-- 2つ以上の API で使う処理と、API でない処理（例：ログインしている人の情報を返す値に組み立てる処理、アカウントロック、パスワードの決まり、ログイン中の人の情報を読み直す処理）は、common に置く。API のパッケージどうしは使い合わないため（5章）。パッケージの名前は、その処理を作り直すときに決め、上の表に足す（2026-11-15 に決めた）。
+- 2つ以上の API で使う処理と、API でない処理は、common に置く。API のパッケージどうしは使い合わないため（5章）。パッケージの名前は、その処理を作るときに決め、上の表に足す（2026-11-15 に決めた）。今あるもの：common.security の LoginUserInfoAssembler（ログインしている人の情報。A-01・A-03）と LoginUserRefresherImpl（権限項目の読み直し。API でない処理）、common.equipment の EquipmentSummaryAssembler（備品の一覧の1件の形。C-01・C-06）。
 - パッケージ名は英小文字だけ。言葉はつなげて書く（例：`itemformanager`）。`import` は Java の予約語（Java が使うので名前にできない言葉）なので、取込は `importer` にする。
 - 1つの API のパッケージの中を、controller・service・validator・model のパッケージに分け、次のクラスを置く（2026-11-15 に決め直した）。クラス名の頭（以下 `<頭>`）は、パッケージの `api` より後ろを全部つなげ、言葉の頭を大文字にしたもの（例：`api.equipment.management.search.item` → `EquipmentManagementSearchItem`）。
 
@@ -158,7 +159,6 @@ jp.co.highjunk.equipment
 - MyBatis の XML は、`src/main/resources/jp/co/highjunk/equipment/dao/mapper/` に置く（MyBatis Generator が作る）。手で書く Mapper の XML は `src/main/resources/jp/co/highjunk/equipment/dao/mapper/custom/` に置く。
 - Enum は、api・dao の中に作らない。1つの API でしか使わない Enum も common.constant に置く（同じ値の Enum が2つできるのを防ぐため）。
 - テストは、本体と同じパッケージ名で `src/test/java` に置く（API のテストは、その API のパッケージ。controller などの下ではなく、その上。例：`jp.co.highjunk.equipment.api.equipment.category.search.item`）。
-- **作り直しの途中の注意（2026-11-15〜）**：今のコード（auth・equipment・health のパッケージと、mapper・dto の下のパッケージ。category は 2026-11-15 に api.equipment.category に作り直した）は、まだ古い形（機能ごとのパッケージ、validator、…Request・…Response）のまま残っている。古い形のコードは手本にしない。新しく作るコードは、この 4.1 の形にする。全部を作り直したら、この行を消す。
 
 ### 4.2 見張り役（monitor）のパッケージ
 
@@ -294,9 +294,9 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 | Controller | `<頭>Controller`（API 1本に1つ） | EquipmentCategorySearchItemController、AuthLoginController |
 | Service | interface は `<頭>Service`、中身は `<頭>ServiceImpl`（API 1本に1つ） | EquipmentCategorySearchItemService、EquipmentCategorySearchItemServiceImpl |
 | 受け取る値 | 画面から受け取る値は `controller.<頭>RestInDto`、Service に渡す値は `service.<頭>ServiceInDto` | EquipmentCategoryEntryItemRestInDto、EquipmentCategoryEntryItemServiceInDto |
-| 業務チェック | `validator.<頭>Validator` と、渡す値の `validator.<頭>ValidatorDto`（業務チェックがある API だけ） | （例）EquipmentMineEntryItemValidator、EquipmentMineEntryItemValidatorDto |
+| 業務チェック | `validator.<頭>Validator` と、渡す値の `validator.<頭>ValidatorDto`（業務チェックがある API だけ） | EquipmentManagementEntryItemValidator、EquipmentManagementEntryItemValidatorDto（C-03）、AuthLoginValidator（A-01） |
 | 返す値 | `model.<頭>RestOutDto`（あとで変わるかもしれない。2026-11-15） | EquipmentCategorySearchItemRestOutDto |
-| テーブルの形・Mapper・Example | MyBatis Generator が作る。テーブルの形はテーブルの名前の単数形（Server の mybatis-generator/generatorConfig.xml で指定する。2026-11-15 に決めた）、Mapper は `<テーブルの形>Mapper`、Example は `<テーブルの形>Example`。Mapper のメソッドの名前も MyBatis Generator のまま（`selectByExample`・`selectByPrimaryKey`・`countByExample`・`insert`・`updateByPrimaryKey` など）。手で書く Mapper（dao.mapper.custom）は `<テーブルの形>CustomMapper`（テーブルごとに1つ）。その結果の形でテーブルの1行でないものは、dao.entity.custom に中身が分かる名前で置く（2026-11-15 に決めた） | Category・CategoryMapper・CategoryExample（categories）、Equipment（equipment）、RolePermission（role_permissions）、EquipmentCustomMapper、CategoryEquipmentCount |
+| テーブルの形・Mapper・Example | MyBatis Generator が作る。テーブルの形はテーブルの名前の単数形（Server の mybatis-generator/generatorConfig.xml で指定する。2026-11-15 に決めた）、Mapper は `<テーブルの形>Mapper`、Example は `<テーブルの形>Example`。Mapper のメソッドの名前も MyBatis Generator のまま（`selectByExample`・`selectByPrimaryKey`・`countByExample`・`insert`・`updateByPrimaryKey` など）。手で書く Mapper（dao.mapper.custom）は `<テーブルの形>CustomMapper`（テーブルごとに1つ。テーブルを使わない A-08 の HealthCustomMapper だけは例外。2026-11-15 に決めた）。その結果の形でテーブルの1行でないものは、dao.entity.custom に中身が分かる名前で置く（2026-11-15 に決めた） | Category・CategoryMapper・CategoryExample（categories）、Equipment（equipment）、RolePermission（role_permissions）、EquipmentCustomMapper、CategoryEquipmentCount |
 | チェック用アノテーション（common.validation） | 確かめることを表す名前（例：`<対象><状態>`）。中身（ConstraintValidator）は `<アノテーションの名前>Check`（API の `<頭>Validator` と区別するため。2026-11-15 に決めた） | CategoryExists・CategoryExistsCheck、CategoryNameNotDuplicated、CategoryNotInUse |
 | Enum | 意味を表す名前。値は大文字と「_」で、API設計・データ設計の値と同じ文字 | EquipmentStatus.MANAGED（データ設計の管理状態 MANAGED） |
 | テスト（Server） | API のテストは `<頭>ApiTest`（API 1本に1つ）、単体テストは `<テストするクラス>Test`。テストで共通に使う値と道具は、testsupport に、まとまりごとの基底クラス `<まとまりの名前>ApiTestBase`（public abstract）として置き、各 API のテストが継ぐ（API ごとにパッケージが分かれるため。2026-11-15 に決めた） | EquipmentCategorySearchItemApiTest、AuthLoginApiTest、ReminderDateCalculatorTest、testsupport.EquipmentCategoryApiTestBase |
@@ -407,7 +407,8 @@ npx playwright test
 
 **お手本**
 
-- 新しい API は、作り直した `api.equipment.category`（K-01〜K-04）を手本にして、同じ書き方で作る。詳細設計も、Document の internaldesign/詳細設計/ の、作り直した category の詳細設計を手本にする。作り直す前の古い形のコード（health など）は手本にしない（4.1 の作り直しの途中の注意）。
+- 新しい API は、作り直した `api.equipment.category`（K-01〜K-04）を手本にして、同じ書き方で作る。詳細設計も、Document の internaldesign/詳細設計/ の、作り直した category の詳細設計を手本にする。
+- Validator・ValidatorDto（業務チェック）は、api.equipment.management.entry.item（C-03 の日付）と api.auth.login（A-01 のパスワード）を手本にする。
 - 画面は、category（S-13。ZPOP-115）を手本にする。
 
 **担当**

@@ -1,8 +1,8 @@
-# 詳細設計：ログイン（auth）
+# 詳細設計：ログイン（api.auth）
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.2 2026-11-10 |
+| 版 | v2.0 2026-11-15 |
 | Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01） |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の4章（F-01・F-02）・8章、API設計.md v1.1 の2.2・3.1・4.1・4.2・7章、画面設計.md v1.1 の1・2章、データ設計.md v1.0 の5.1〜5.4、基本設計書.md v1.1 の5章 |
@@ -66,25 +66,20 @@ F-02：ログアウト。
 
 | パッケージ | クラス・ファイル | 役割 | 使う API |
 |---|---|---|---|
-| auth.controller | LoginController | A-01 の入口（API 1本に1つ。CLAUDE.md 5章） | A-01 |
-| auth.controller | LogoutController | A-02 の入口。service はなく、LoginSession を直接呼ぶ（CLAUDE.md 5章の例外） | A-02 |
-| auth.controller | MeController | A-03 の入口 | A-03 |
-| auth.service | LoginService（インターフェース）・LoginServiceImpl | A-01 の業務のルール。返す値は MeService#toMeResponse で作る（同じ機能のほかの API の service を使ってよい。CLAUDE.md 5章） | A-01 |
-| auth.service | MeService（インターフェース）・MeServiceImpl | A-03 の業務のルール。MeResponse を作る（toMeResponse。A-01 も使う） | A-01・A-03 |
-| auth.service | LoginUserRefresherImpl | common.security.LoginUserRefresher の中身。APIを呼ぶたびの権限項目の読み直し（R-3・R-4）。API ではないので controller はない | 全API |
-| auth.validator | LoginValidator | メールアドレスとパスワードを確かめる（R-1・R-2・R-7）。守れなければ UnauthorizedException | A-01 |
-| auth.model | User | users の1行（ログインに使う列だけ） | |
-| mapper.auth | UserMapper（インターフェース）・UserMapper.xml | users を読む | A-01・A-03、全API |
-| mapper.auth | RoleMapper・RoleMapper.xml | roles を読む（権限の名前） | A-01・A-03 |
-| mapper.auth | RolePermissionMapper・RolePermissionMapper.xml | role_permissions を読む（権限に含まれる権限項目） | A-01・A-03、全API |
-| mapper.auth | PermissionMapper・PermissionMapper.xml | permissions を読む（権限項目の並び順） | A-01・A-03 |
-| dto.auth | LoginRequest | A-01 で受け取る値 | A-01 |
-| dto.auth | MeResponse | A-01・A-03 で返す値（API設計 4.2 の形） | A-01・A-03 |
-| （テスト）auth | LoginApiTest・LogoutApiTest・MeApiTest | A-01・A-02・A-03 のテスト（API 1本に1つ） | A-01〜A-03 |
-| （テスト）auth | LoginUserRefresherApiTest | APIを呼ぶたびの読み直しのテスト | 全API |
-| （テスト）auth | AuthApiTestBase | 上のテストで共通に使う値と道具（開発用のユーザ、ログインしてセッションを受け取る、など） | |
-
-mapper は、命名規則（CLAUDE.md 5章）のとおり、テーブルごとに `<テーブルの名前>Mapper` にした。ほかの機能（user など）にも UserMapper ができるが、Spring の部品の名前をパッケージ込みにしている（common.config.MyBatisConfig。common.md 2.3）ので、ぶつからない（4章の No.3）。
+| api.auth.login.controller | AuthLoginController・AuthLoginRestInDto | A-01 の入口と、受け取る値（形式のチェック） | A-01 |
+| api.auth.login.service | AuthLoginService（インターフェース）・AuthLoginServiceImpl・AuthLoginServiceInDto | A-01 の業務の処理。メールアドレスでユーザを読み、Validator に渡す。返す値は common.security.LoginUserInfoAssembler で作る | A-01 |
+| api.auth.login.validator | AuthLoginValidator・AuthLoginValidatorDto | パスワードの照らし合わせ・ロック（R-1・R-2・R-7）。読んだユーザが要るので Validator。守れなければ UnauthorizedException | A-01 |
+| api.auth.login.model | AuthLoginRestOutDto | A-01 で返す値（API設計 4.2 の形） | A-01 |
+| api.auth.logout.controller | AuthLogoutController | A-02 の入口。Service はなく、LoginSession を直接呼ぶ（CLAUDE.md 5章の例外）。受け取る値・返す値もない | A-02 |
+| api.auth.me.controller | AuthMeController | A-03 の入口 | A-03 |
+| api.auth.me.service | AuthMeService（インターフェース）・AuthMeServiceImpl・AuthMeServiceInDto | A-03 の業務の処理。返す値は common.security.LoginUserInfoAssembler で作る | A-03 |
+| api.auth.me.model | AuthMeRestOutDto | A-03 で返す値（API設計 4.2 の形） | A-03 |
+| common.security | LoginUserInfoAssembler・LoginUserInfo | ユーザの行から、ログインしている人の情報と権限項目を作る（A-01・A-03 で使うので common。2026-11-15 に決めた） | A-01・A-03 |
+| common.security | LoginUserRefresherImpl | LoginUserRefresher の中身。APIを呼ぶたびの権限項目の読み直し（R-3・R-4）。API でない処理なので common（2026-11-15 に auth から移した） | 全API |
+| dao.mapper・dao.entity | UserMapper・RoleMapper・RolePermissionMapper・PermissionMapper と、テーブルの形・Example | users・roles・role_permissions・permissions を読む（MyBatis Generator が作ったもの） | A-01・A-03、全API |
+| （テスト）api.auth.login・api.auth.logout・api.auth.me | AuthLoginApiTest・AuthLogoutApiTest・AuthMeApiTest | A-01・A-02・A-03 のテスト（API 1本に1つ） | A-01〜A-03 |
+| （テスト）common.security | LoginUserRefresherApiTest | APIを呼ぶたびの読み直しのテスト | 全API |
+| （テスト）testsupport | AuthApiTestBase | 上のテストで共通に使う値と道具（開発用のユーザ、ログインしてセッションを受け取る、など） | |
 
 ### 2.2 Client
 
@@ -93,7 +88,7 @@ mapper は、命名規則（CLAUDE.md 5章）のとおり、テーブルごと�
 | src/features/auth/pages/LoginPage.tsx | ログイン画面 | S-01 |
 | src/features/auth/components/PasswordField.tsx | 目のマークで文字を表示できるパスワードの入力欄（S-03・S-04 でも使う） | S-01 |
 | src/features/auth/api.ts | A-01 の呼び出し（login） | S-01 |
-| src/features/auth/types.ts | LoginRequest | S-01 |
+| src/features/auth/types.ts | AuthLoginRestInDto | S-01 |
 | src/common/auth/（common.md 11.9） | ログイン中の人（A-03）を持つ部品、ログインが要る画面の守り、A-02 の呼び出し | 全画面 |
 | src/common/components/Header.tsx（変更） | ログイン中の人の氏名と、押すと出る「ログアウト」 | 全画面 |
 | src/routes.tsx（変更） | /login と、ログインが要る画面のまとまり | |
@@ -104,7 +99,7 @@ mapper は、命名規則（CLAUDE.md 5章）のとおり、テーブルごと�
 | Enum | 値 | 意味（設計書の言葉） | 使う所 |
 |---|---|---|---|
 | PermissionCode | EQUIPMENT_VIEW ほか18個（データ設計 5.3 のコード） | 権限項目のコード | homePage の判断。各機能の @PreAuthorize の文字と同じ |
-| HomePage | EQUIPMENT_LIST、MY_EQUIPMENT | ログインしたあと最初に出す画面（S-07・S-05） | dto.auth.MeResponse |
+| HomePage | EQUIPMENT_LIST、MY_EQUIPMENT | ログインしたあと最初に出す画面（S-07・S-05） | common.security.LoginUserInfo、AuthLoginRestOutDto・AuthMeRestOutDto |
 
 ### 2.4 使う共通部品
 
@@ -112,7 +107,7 @@ mapper は、命名規則（CLAUDE.md 5章）のとおり、テーブルごと�
 |---|---|
 | common.security.LoginSession（今回足す。common.md 3.10） | ログインを始める（セッションを作り直し、ログイン状態を入れる）・終える |
 | common.security.LoginUser（今回足す） | セッションに入れる「ログインしている人」（ユーザID・ログインした日時） |
-| common.security.LoginUserRefresher（今回足す） | APIを呼ぶたびに権限項目を読み直すための約束（インターフェース）。auth の LoginUserRefresherImpl が中身を持つ |
+| common.security.LoginUserRefresher（今回足す） | APIを呼ぶたびに権限項目を読み直すための約束（インターフェース）。中身は同じ common.security の LoginUserRefresherImpl |
 | common.error.UnauthorizedException（今回足す） | 401 と文を返す |
 | common.error.ApiResponse | 成功の返す値を ok で包む |
 
@@ -144,4 +139,5 @@ mapper は、命名規則（CLAUDE.md 5章）のとおり、テーブルごと�
 |---|---|---|
 | v1.0 | 2026-11-08 | 初版（ZPOP-55・56・57・103） |
 | v1.1 | 2026-11-10 | 4章の判断を人が確かめた（No.3・4・6・7 を済）。No.3 は、命名規則を `<テーブルの名前>Mapper` のままにすると決めたので、AuthMapper をテーブルごとの4つの mapper に分けた（2.1） |
-| v1.2 | 2026-11-10 | controller と service を API 1本に1つずつに分けた（AuthController → LoginController・LogoutController・MeController、AuthService → LoginService・MeService と LoginUserRefresherImpl）。テストも API ごとに分けた（2.1。CLAUDE.md 5章の決まりの変更） |
+| v1.2 | 2026-11-10 | controller と service を API 1本に1つずつに分けた（AuthController → AuthLoginController・AuthLogoutController・AuthMeController、AuthService → AuthLoginService・AuthMeService と LoginUserRefresherImpl）。テストも API ごとに分けた（2.1。CLAUDE.md 5章の決まりの変更） |
+| v2.0 | 2026-11-15 | パッケージ構成の変更で、api.auth に作り直した（2026-11-15）。クラス名・パッケージ・Mapper のメソッドを新しい形（controller・service・validator・model、dao の Mapper と Example、手で書く Mapper、common の部品）に書き換えた。外から見た動きは変わらない。2.1 のクラスの表を書き直した |

@@ -144,7 +144,7 @@ src/features/category/ の下。名前の付け方は CLAUDE.md 5章の命名規
 | No. | 種類 | 内容 | 相手（まとまり・部品） | 対応 |
 |---|---|---|---|---|
 | 1 | 同じテーブルを読む | equipment（備品）を、種別ごとに数える（読むだけ） | equipment・mine・importer（これから作る） | 対応なし。備品の「削除済み」の決まり（deleted_at）が変わったら、ここの数え方も直す |
-| 2 | 備品を足す機能 | K-04 で種別を消すのと同時に、その種別の備品を足されないように、備品を足す・種別を変える機能は、種別の行を FOR SHARE で読み、削除されていないことを確かめてから書き込む（K-04 の8章・12章の No.2） | equipment（C-03 備品を登録する、C-04 で種別を変えるとき）・importer（I-01〜I-03 一括登録） | それぞれの詳細設計に書き、同じように作る。C-03 は作った（equipment/C-03_備品を登録する.md の8章。EquipmentCreateLockTest） |
+| 2 | 備品を足す機能 | K-04 で種別を消すのと同時に、その種別の備品を足されないように、備品を足す・種別を変える機能は、種別の行を FOR SHARE で読み、削除されていないことを確かめてから書き込む（K-04 の8章・12章の No.2） | equipment（C-03 備品を登録する、C-04 で種別を変えるとき）・importer（I-01〜I-03 一括登録） | それぞれの詳細設計に書き、同じように作る。C-03 は作った（equipment/management/C-03_備品を登録する.md の8章。EquipmentManagementEntryItemLockTest） |
 | 3 | K-01 を使う画面 | S-06・S-07 の絞り込み、S-09 の選択、S-13 が、K-01 の返す値（K-01 の3章の形・並び順）を使う | mine・equipment・category の画面 | 返す値の形を変えるときは、使っている画面も直す。S-13 の types.ts（CategoryResponse）は category の中だけで使う（ほかの機能の画面は、自分の機能の types.ts に書く。CLAUDE.md 5章） |
 | 4 | common・Flyway・Enum | K-02 のために common.error に FieldErrorException を足した。2026-11-15 の作り直しで、common.validation・common.text を足し、dao.mapper.custom・dao.entity.custom に手で書く Mapper と結果の形を足した。Flyway・Enum は変更なし | ― | 2人で相談済み（お手本の作り直しで決めた） |
 

@@ -1,8 +1,8 @@
-# 詳細設計：動いているかを答える（health）
+# 詳細設計：動いているかを答える（api.health）
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v2.1 2026-11-08 |
+| 版 | v3.0 2026-11-15 |
 | Jira | ZPOP-21（雛形：サーバー） |
 | 状態 | 作成中（v2.1 の service の分け方は、人の確認がまだ。v2.0 までは人の確認済み 2026-11-04） |
 | もとにした設計書 | API設計.md v1.1 の3.1（A-08）・3.10（見張り役）、基本設計書.md 8章 |
@@ -43,15 +43,12 @@
 
 | パッケージ | クラス・ファイル | 役割 | 使う API |
 |---|---|---|---|
-| health.controller | HealthController | A-08 の入口。HealthService（インターフェース）を呼び、結果を ApiResponse.ok で包んで返す | A-08 |
-| health.service | HealthService（インターフェース） | check() の形だけを決める。controller はこれを使う | A-08 |
-| health.service | HealthServiceImpl | HealthService の中身（`@Service`）。データベースにつながるかを確かめる。つながらなければ ServiceUnavailableException を投げる | A-08 |
-| health.validator | なし | 業務チェックがないため、作らない | |
-| health.model | なし | テーブルの1行を表すものがないため、作らない | |
-| mapper.health | HealthMapper（インターフェース） | データベースを読み書きする部品。`@Mapper` を付けると、MyBatis が中身を自動で作る | A-08 |
-| mapper.health | HealthMapper.xml（src/main/resources/jp/co/highjunk/equipment/mapper/health/） | SQL | A-08 |
-| dto.health | HealthResponse | 返す data の形（state だけ）。state の型は HealthState | A-08 |
-| （テスト）health | HealthApiTest | A-08 のテスト | A-08 |
+| api.health.controller | HealthController | A-08 の入口。HealthService（インターフェース）を呼び、結果を ApiResponse.ok で包んで返す。受け取る値がないので RestInDto は作らない | A-08 |
+| api.health.service | HealthService（インターフェース）・HealthServiceImpl | データベースにつながるかを確かめる（`@Service`）。つながらなければ ServiceUnavailableException。受け取る値がないので ServiceInDto は作らない | A-08 |
+| api.health.model | HealthRestOutDto | 返す data の形（state だけ）。state の型は HealthState | A-08 |
+| api.health.validator | なし | 業務チェックがないため、作らない | |
+| dao.mapper.custom | HealthCustomMapper（XML は src/main/resources/jp/co/highjunk/equipment/dao/mapper/custom/） | SELECT 1。テーブルを使わないので、手で書く Mapper の名前の決まり（`<テーブルの形>CustomMapper`）の例外（2026-11-15 に決めた） | A-08 |
+| （テスト）api.health | HealthApiTest | A-08 のテスト | A-08 |
 
 ### 2.2 Client
 
@@ -61,7 +58,7 @@
 
 | Enum | 値 | 意味（設計書の言葉） | 使う所 |
 |---|---|---|---|
-| HealthState | UP | 動いている（API設計 3.1 の `"state": "UP"`） | dto.health.HealthResponse |
+| HealthState | UP | 動いている（API設計 3.1 の `"state": "UP"`） | api.health.model.HealthRestOutDto |
 
 ### 2.4 使う共通部品
 
@@ -90,6 +87,7 @@
 |---|---|---|
 | v1.0 | 2026-11-03 | 初版（ZPOP-21 で作ったもの） |
 | v1.1 | 2026-11-03 | リポジトリを3つに分けた形に合わせて、場所の書き方を直した |
-| v1.2 | 2026-11-04 | パッケージ構成の変更：HealthMapper を mapper.health に、HealthResponse を dto.health に移した。state を Enum（common.constant.HealthState）にした |
+| v1.2 | 2026-11-04 | パッケージ構成の変更：HealthCustomMapper を dao.mapper.custom に、HealthRestOutDto を api.health.model に移した。state を Enum（common.constant.HealthState）にした |
 | v2.0 | 2026-11-08 | 新しいテンプレートに合わせて、health.md を health/health.md（機能全体）と health/A-08_動いているかを答える.md（API詳細）に分けた。設計書の中身を写した。テストの章を外した（テストは証跡 evidence/20261103_単体結合API_基盤/ と evidence/20261104_単体結合API_パッケージ構成の変更/ を見る）。中身（作り）は変えていない |
 | v2.1 | 2026-11-08 | ディレクトリ構成の変更：HealthService をインターフェースにし、中身を HealthServiceImpl に移した（CLAUDE.md 4.1・5章）。動きは変えていない |
+| v3.0 | 2026-11-15 | パッケージ構成の変更で、api.health に作り直した（2026-11-15）。クラス名・パッケージ・Mapper のメソッドを新しい形（controller・service・validator・model、dao の Mapper と Example、手で書く Mapper、common の部品）に書き換えた。外から見た動きは変わらない。2.1 のクラスの表を書き直した |

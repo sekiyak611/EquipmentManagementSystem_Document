@@ -1,8 +1,8 @@
-# 詳細設計：備品の管理（equipment）
+# 詳細設計：備品の管理（api.equipment.management）
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.2 2026-11-11 |
+| 版 | v2.0 2026-11-15 |
 | Jira | ZPOP-68（C-01）、ZPOP-70（C-03）、ZPOP-73（C-06）。C-02・C-04・C-05・C-07・C-08、S-07〜S-09 は、作るときに書き足す |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の1章・4章（F-05〜F-07・F-09）、API設計.md v1.2 の2.3〜2.5・3.3・4.8、画面設計.md v1.3 の10〜12章、画面一覧.md v1.0 の2章・7章、データ設計.md v1.0 の2章・5.1・5.3・5.5〜5.7・6章 |
@@ -71,34 +71,27 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。C-06 で使う
 
 | パッケージ | クラス・ファイル | 役割 | 使う API |
 |---|---|---|---|
-| equipment.controller | EquipmentListController | C-01 の入口 | C-01 |
-| equipment.service | EquipmentListService（インターフェース）・EquipmentListServiceImpl | C-01 の業務のルール（`@Service`。読むだけなので `@Transactional` は付けない） | C-01 |
-| equipment.controller | EquipmentCreateController | C-03 の入口 | C-03 |
-| equipment.service | EquipmentCreateService（インターフェース）・EquipmentCreateServiceImpl | C-03 の業務のルール（`@Service`、`@Transactional`） | C-03 |
-| equipment.controller | EquipmentConfirmController | C-06 の入口 | C-06 |
-| equipment.service | EquipmentConfirmService（インターフェース）・EquipmentConfirmServiceImpl | C-06 の業務のルール（`@Service`、`@Transactional`） | C-06 |
-| equipment.service | EquipmentItemAssembler | 備品の行から C-01 の1件の形を作る（種別の名前・借用者の氏名を IN でまとめて読んで突き合わせる）。API の service ではないので、役目を表す名前（`@Component`） | C-01・C-06 |
-| equipment.validator | EquipmentValidator | 備品の業務チェック。登録してよいか（validateCreatable。管理番号の重なり、種別、購入日・保証期日）、確認してよいか（validateConfirmable。あるか、管理中か）。2つ以上の API で使うので `<機能名>Validator` にまとめた | C-03・C-06 |
-| equipment.model | Equipment | テーブル equipment の1行（C-03 ですべての列を足した） | C-01・C-03 |
-| equipment.model | Loan | テーブル loans の1行（使う列だけ） | C-01 |
-| equipment.model | Category | テーブル categories の1行（id・name だけ） | C-01・C-03 |
-| equipment.model | User | テーブル users の1行（id・name だけ） | C-01 |
-| equipment.model | EquipmentSearchCondition | 備品を探す条件（mapper に渡す。テーブルの行ではない。4章の No.1） | C-01 |
-| mapper.equipment | EquipmentMapper（インターフェース）・EquipmentMapper.xml | equipment を探す・数える（C-01）、管理番号の重なりを数える・足す（C-03）、FOR UPDATE で読む・最終確認日を変える（C-06） | C-01・C-03・C-06 |
-| mapper.equipment | LoanMapper・LoanMapper.xml | 貸出中の貸出履歴を読む（すべて：C-01、1つの備品：C-06） | C-01・C-06 |
-| mapper.equipment | CategoryMapper・CategoryMapper.xml | 種別の名前を IN でまとめて読む（C-01）、種別を FOR SHARE で読む（C-03） | C-01・C-03 |
-| mapper.equipment | UserMapper・UserMapper.xml | 氏名でユーザを探す、氏名を IN でまとめて読む | C-01 |
-| dto.equipment | EquipmentListRequest | C-01 の条件（受け取った値を確かめて、探す条件にする） | C-01 |
-| dto.equipment | EquipmentListResponse・EquipmentListItem | C-01 の返す値（API設計 2.5 の形と、1件の形）。EquipmentListItem は C-03・C-06 の返す値にも使う | C-01・C-03・C-06 |
-| dto.equipment | EquipmentCreateRequest | C-03 で受け取る値 | C-03 |
-| dto.equipment | EquipmentInputs | 文字の項目の直し方（前後の空白を取り除き、空なら null） | C-03 |
-| （テスト）equipment | EquipmentListApiTest | C-01 のテスト | C-01 |
-| （テスト）equipment | EquipmentCreateApiTest | C-03 のテスト | C-03 |
-| （テスト）equipment | EquipmentConfirmApiTest | C-06 のテスト | C-06 |
-| （テスト）equipment | EquipmentCreateLockTest | C-03 の、同時に種別を消されたときの守り（FOR SHARE）のテスト。2つのまとまりを本当に開いて確かめる | C-03 |
+| api.equipment.management.search.item.controller | EquipmentManagementSearchItemController・EquipmentManagementSearchItemRestInDto | C-01 の入口と、条件の形式のチェック（sort・page） | C-01 |
+| api.equipment.management.search.item.service | EquipmentManagementSearchItemService（インターフェース）・…ServiceImpl・…ServiceInDto | C-01 の業務の処理（読むだけなので `@Transactional` は付けない） | C-01 |
+| api.equipment.management.search.item.model | EquipmentManagementSearchItemRestOutDto（items の1件は中の Item） | C-01 の返す値（API設計 2.5 の形） | C-01 |
+| api.equipment.management.entry.item.controller | EquipmentManagementEntryItemController・EquipmentManagementEntryItemRestInDto | C-03 の入口と、受け取る値（形式のチェック。文字の項目は common.text.TextInputs#stripToNull で直す） | C-03 |
+| api.equipment.management.entry.item.service | EquipmentManagementEntryItemService（インターフェース）・…ServiceImpl・…ServiceInDto | C-03 の業務の処理（`@Transactional`）。ServiceInDto に管理番号の重なり（@EquipmentManagementNoNotDuplicated）と種別（@CategoryExists(forShare = true)） | C-03 |
+| api.equipment.management.entry.item.validator | EquipmentManagementEntryItemValidator・…ValidatorDto | 購入日・保証期日の決まり（今日の日付が要るので Validator） | C-03 |
+| api.equipment.management.entry.item.model | EquipmentManagementEntryItemRestOutDto | C-03 の返す値（C-01 の1件と同じ形） | C-03 |
+| api.equipment.management.update.confirmationitem.controller | EquipmentManagementUpdateConfirmationItemController | C-06 の入口（本文を受け取らないので RestInDto は作らない） | C-06 |
+| api.equipment.management.update.confirmationitem.service | EquipmentManagementUpdateConfirmationItemService（インターフェース）・…ServiceImpl・…ServiceInDto | C-06 の業務の処理（`@Transactional`）。ServiceInDto に、あるか（@EquipmentExists(forUpdate = true)）・管理中か（@EquipmentManaged） | C-06 |
+| api.equipment.management.update.confirmationitem.model | EquipmentManagementUpdateConfirmationItemRestOutDto | C-06 の返す値（C-01 の1件と同じ形） | C-06 |
+| common.equipment | EquipmentSummaryAssembler・EquipmentSummary | 備品の行から一覧の1件の形を作る（種別の名前・借用者の氏名を IN でまとめて読んで突き合わせる）。C-01・C-06 で使うので common（2026-11-15 に決めた） | C-01・C-06 |
+| common.validation | EquipmentManagementNoNotDuplicated・EquipmentExists・EquipmentManaged（中身は …Check）、CategoryExists（forShare を足した） | C-03・C-06 の DB との整合性のチェック | C-03・C-06 |
+| common.text | TextInputs#stripToNull | 文字の項目の直し方（前後の空白を取り除き、空なら null） | C-03 |
+| dao.mapper・dao.entity | EquipmentMapper・LoanMapper・CategoryMapper・UserMapper と、テーブルの形・Example | MyBatis Generator が作ったもの。足す（insertSelective）、最終確認日を変える（updateByExampleSelective）、IN でまとめて読む（selectByExample） | C-01・C-03・C-06 |
+| dao.mapper.custom | EquipmentCustomMapper（countBySearch・selectBySearch・selectByIdForUpdate）、UserCustomMapper（selectIdsByNameContaining）、CategoryCustomMapper（selectByIdForShare） | Example では書けない SQL（LOWER と LIKE の OR、管理中だけに効かせる条件、FOR UPDATE・FOR SHARE） | C-01・C-03・C-06 |
+| dao.entity.custom | EquipmentSearchCondition | 備品を探す条件（EquipmentCustomMapper に渡す。テーブルの行ではない） | C-01 |
+| （テスト）api.equipment.management.search.item | EquipmentManagementSearchItemApiTest | C-01 のテスト | C-01 |
+| （テスト）api.equipment.management.entry.item | EquipmentManagementEntryItemApiTest・EquipmentManagementEntryItemLockTest | C-03 のテストと、同時に種別を消されたときの守り（FOR SHARE）のテスト | C-03 |
+| （テスト）api.equipment.management.update.confirmationitem | EquipmentManagementUpdateConfirmationItemApiTest | C-06 のテスト | C-06 |
 
-- XML は src/main/resources/jp/co/highjunk/equipment/mapper/equipment/ に置く。
-- mapper.equipment の CategoryMapper・UserMapper・EquipmentMapper は、ほかの機能の同じ名前の mapper とは別のもの（common.md 2.3）。import するときは mapper.equipment のものを選ぶ（CLAUDE.md 5章）。
+- XML は、自動で作ったものは src/main/resources/jp/co/highjunk/equipment/dao/mapper/、手で書くものは同じ場所の custom/ に置く。
 
 ### 2.2 Client
 
@@ -138,8 +131,8 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。C-06 で使う
 
 | No. | 判断 | 理由 | 外から見えるか | 人の確認 |
 |---|---|---|---|---|
-| 1 | 探す条件の型 EquipmentSearchCondition を equipment.model に置く | mapper が使ってよいのは、同じ機能の model と common だけ（CLAUDE.md 5章）。category の CategoryEquipmentCount と同じ考え方 | いいえ | まだ |
-| 2 | ページ分けの返す値の形（items・page・size・totalCount・totalPages）は dto.equipment に作る | 共通の形（API設計 2.5）だが、common の変更は2人の相談が要るため、今は equipment の中に作る。2つ目のページ分けの API（D-01 など）を作るときに、common に移すかを相談する | いいえ | まだ |
+| 1 | 探す条件の型 EquipmentSearchCondition を dao.entity に置く | mapper が使ってよいのは、同じ機能の model と common だけ（CLAUDE.md 5章）。category の CategoryEquipmentCount と同じ考え方 | いいえ | まだ |
+| 2 | ページ分けの返す値の形（items・page・size・totalCount・totalPages）は api.equipment.management の model に作る | 共通の形（API設計 2.5）だが、common の変更は2人の相談が要るため、今は equipment の中に作る。2つ目のページ分けの API（D-01 など）を作るときに、common に移すかを相談する | いいえ | まだ |
 
 ## 変更履歴
 
@@ -147,4 +140,5 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。C-06 で使う
 |---|---|---|
 | v1.0 | 2026-11-11 | 初版（ZPOP-68。C-01 の分） |
 | v1.1 | 2026-11-11 | C-03（ZPOP-70）の分を足した（1.1・1.3・2章） |
-| v1.2 | 2026-11-11 | C-06（ZPOP-73）の分を足した（1.1・1.3 の R-9・R-10・2章・3章）。C-01 の1件の形を作る処理を EquipmentItemAssembler にまとめた |
+| v1.2 | 2026-11-11 | C-06（ZPOP-73）の分を足した（1.1・1.3 の R-9・R-10・2章・3章）。C-01 の1件の形を作る処理を common.equipment.EquipmentSummaryAssembler にまとめた |
+| v2.0 | 2026-11-15 | パッケージ構成の変更で、api.equipment.management に作り直した（2026-11-15）。クラス名・パッケージ・Mapper のメソッドを新しい形（controller・service・validator・model、dao の Mapper と Example、手で書く Mapper、common の部品）に書き換えた。外から見た動きは変わらない。置き場所を equipment/management/management.md にし、2.1 のクラスの表を書き直した |

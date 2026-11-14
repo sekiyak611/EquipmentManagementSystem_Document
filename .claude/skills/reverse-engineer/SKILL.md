@@ -23,12 +23,9 @@ argument-hint: "[まとまり（例：equipment.category）、API・画面の ID
 
 まとまり（CLAUDE.md 4.1 の表の1行）が渡されたら、次をすべて読む（パッケージの頭の `jp.co.highjunk.equipment` は省く）。API・画面の ID が渡されたら、その API・画面にかかわる所だけを読む。
 
-コードは作り直しの途中（CLAUDE.md 4.1）なので、新しい形と古い形のどちらかで書かれている。どちらの形かを確かめて読む。
-
 | リポジトリ | 読むもの |
 |---|---|
-| Server（新しい形） | そのまとまりの API のパッケージ（例：`api/equipment/category/` の下。API ごとに controller（Controller・RestInDto）・service（Service・ServiceImpl・ServiceInDto）・model（RestOutDto）・validator（Validator・ValidatorDto））、使っている `dao.mapper`・`dao.entity` と、`dao.mapper.custom` の手で書く Mapper と XML、使っている `common.validation` のチェック用アノテーション、`common.constant` の Enum と common の部品、`application*.yml` の使っている設定値、`src/test/java/` の同じパッケージのテスト |
-| Server（古い形。作り直す前） | `<機能名>/`（controller・service・validator・model）、`mapper/<機能名>/` と XML、`dto/<機能名>/`、使っている Enum と common の部品、設定値、`src/test/java/jp/co/highjunk/equipment/<機能名>/` のテスト |
+| Server | そのまとまりの API のパッケージ（例：`api/equipment/category/` の下。API ごとに controller（Controller・RestInDto）・service（Service・ServiceImpl・ServiceInDto）・model（RestOutDto）・validator（Validator・ValidatorDto））、使っている `dao.mapper`・`dao.entity` と、`dao.mapper.custom` の手で書く Mapper と XML、使っている `common.validation` のチェック用アノテーション、`common.constant` の Enum と common の部品、`application*.yml` の使っている設定値、`src/test/java/` の同じパッケージのテスト |
 | Client | `src/features/` の、そのまとまりのフォルダ（新しい形は `features/equipment/category/` のような入れ子。移す前は `features/category/` のような機能ごと）の pages・components・api.ts・types.ts、`src/routes.tsx` のその行、使っている common の部品、`tests/` の同じ形のフォルダ |
 
 ファイル・フォルダのパスが渡されたら、そのファイルと、そこから呼ばれている所まで読む。
@@ -37,12 +34,12 @@ argument-hint: "[まとまり（例：equipment.category）、API・画面の ID
 
 ## 2. 詳細設計を書き起こす
 
-`internaldesign/詳細設計/README.md` と、テンプレート（`internaldesign/詳細設計/テンプレート/` の機能.md・API.md・画面.md）の形で書く。お手本（作り直した `equipment/category/`）と同じ書き方にする。古い形のコードを書き起こすときも、テンプレートは新しい形を使い、古い形のクラス（validator・model・…Request など）は、そのクラス名のまま書く。
+`internaldesign/詳細設計/README.md` と、テンプレート（`internaldesign/詳細設計/テンプレート/` の機能.md・API.md・画面.md）の形で書く。お手本（作り直した `equipment/category/`）と同じ書き方にする。
 
 | ファイル | 1つずつ作る単位 | 書くもと |
 |---|---|---|
 | まとまり全体 `<まとまりの名前>.md` | まとまりに1つ | Controller の API の一覧、routes.tsx の画面、`@Scheduled`、読んだクラス・ファイル、使っている dao・Enum・common の部品、ほかのまとまりと同じテーブル・同じルールを使っている所 |
-| API詳細 `<APIのID>_<短い名前>.md` | Controller のメソッド（API）ごと | URL・操作・`@PreAuthorize`、RestInDto の項目と印、ServiceInDto の作り方とチェック用アノテーション（古い形なら Validator で確かめていること）、ServiceImpl の順番、Mapper のメソッドと Criteria の条件（手で書く SQL）、`@Transactional`、エラーの返し方、Slack を送る所、IDOR の確かめの有無 |
+| API詳細 `<APIのID>_<短い名前>.md` | Controller のメソッド（API）ごと | URL・操作・`@PreAuthorize`、RestInDto の項目と印、ServiceInDto の作り方とチェック用アノテーション、Validator（ValidatorDto）で確かめていること、ServiceImpl の順番、Mapper のメソッドと Criteria の条件（手で書く SQL）、`@Transactional`、エラーの返し方、Slack を送る所、IDOR の確かめの有無 |
 | 画面詳細 `<画面のID>_<短い名前>.md` | pages の画面ごと | 部品の組み立て、項目と状態（useState）、入力チェック、ボタンの動き、読み込み中・0件・失敗の表示、api.ts の呼び出し、移り方、画面の文 |
 
 - API・画面の ID は、URL・画面のアドレスを API設計 3章・画面一覧 2章と照らして決める。どれにも当たらない API・画面は、ID を「なし」にしてファイル名を `なし_<短い名前>.md` にし、食い違い一覧の「設計書にない」に書く。
@@ -63,7 +60,7 @@ argument-hint: "[まとまり（例：equipment.category）、API・画面の ID
 | externaldesign/画面一覧.md | 画面のアドレス、移り方、スマートフォン優先か |
 | externaldesign/データ設計.md | 使っているテーブル・列・制約。論理削除・version の使い方 |
 | externaldesign/機能一覧.md | 業務のルールが抜けていないか、設計書にない動きがないか |
-| internaldesign/CLAUDE.md | 4.1・4.3（置き場所）、5章（Service の interface と Impl、ServiceInDto は Controller で作る、チェックは RestInDto と ServiceInDto の2段、dao の Mapper と Criteria、JOIN・サブクエリ、N+1、Clock、`@PreAuthorize`、IDOR、`@Transactional`、Slack、`#{}`、論理削除、楽観ロック、ほかの API のパッケージを使わない、命名規則）、6章（テストの決まり）。古い形のコードは、作り直しの途中なので「決まりに合わない」には数えず、「古い形のまま」と書く |
+| internaldesign/CLAUDE.md | 4.1・4.3（置き場所）、5章（Service の interface と Impl、ServiceInDto は Controller で作る、チェックは RestInDto と ServiceInDto の2段、dao の Mapper と Criteria、JOIN・サブクエリ、N+1、Clock、`@PreAuthorize`、IDOR、`@Transactional`、Slack、`#{}`、論理削除、楽観ロック、ほかの API のパッケージを使わない、命名規則）、6章（テストの決まり） |
 | internaldesign/テスト方針.md | API ごとの ①〜⑤ のテスト、画面のテストの大きさ |
 | すでにある詳細設計（あれば） | 書き起こした中身との違い |
 

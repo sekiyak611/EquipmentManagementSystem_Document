@@ -38,7 +38,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 | internaldesign/詳細設計/ | common.md（使える共通部品）、お手本（作り直した equipment/category/）、このまとまりのフォルダ（あれば） |
 | internaldesign/パッケージ構成変更/API_パッケージとクラス名_決定版.md | 作る API のパッケージ名とクラス名の頭（`<頭>`） |
 
-次に、今のコードを調べる：お手本のコード（作り直した `api.equipment.category`。作り直す前の category・health などの古い形のコードは手本にしない。CLAUDE.md 4.1）、使う common の部品（common.validation のチェック用アノテーションを含む）、使う dao の Mapper と Example、同じルールを書いているほかのまとまり（貸出：equipment.mine・equipment.management（取込を含む）、確認：equipment.mine・equipment.management）。
+次に、今のコードを調べる：お手本のコード（`api.equipment.category`。業務チェック（Validator）は `api.equipment.management.entry.item`・`api.auth.login`）、使う common の部品（common.validation のチェック用アノテーションを含む）、使う dao の Mapper と Example、同じルールを書いているほかのまとまり（貸出：equipment.mine・equipment.management（取込を含む）、確認：equipment.mine・equipment.management）。
 
 設計書があいまい、または設計書どうしが食い違うときは、**実装を止めて人に質問する**（CLAUDE.md 2章）。推測で進めない。質問には「どの設計書の何章と何章が、どう食い違うか」と「考えられる案」を書く。
 
@@ -82,7 +82,7 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<まとま
 - [ ] 一覧・検索で、削除済みの行（`deleted_at` が入っている行）を出さない。削除は論理削除。
 - [ ] 編集する API は楽観ロック（`version` 列）で、ほかの人が先に保存していたら 409。
 - [ ] ほかの API のパッケージ（同じまとまりの API も）のクラスを import していない。使うのは自分の API のパッケージと、common・dao だけ（CLAUDE.md 5章）。
-- [ ] Mapper とテーブルの形の import が、新しい `dao.mapper`・`dao.entity` のものになっている（作り直しの途中は、古い `mapper.<機能名>` にも同じ名前の Mapper があるため）。
+- [ ] Mapper とテーブルの形の import が、新しい `dao.mapper`・`dao.entity` のものになっている。
 - [ ] Lombok は、読みやすくなる所で使ってよい。`record` は使わない（CLAUDE.md 3章）。
 - [ ] 変えられる値（時刻・期限・回数）をプログラムに直接書かず、設定にしている（API設計 6章）。
 - [ ] ログに、パスワード・パスワード設定用のリンクの合言葉・Slack のトークンを出さない。

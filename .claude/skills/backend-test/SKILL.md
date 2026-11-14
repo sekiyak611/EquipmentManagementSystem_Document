@@ -41,7 +41,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 
 ## 2. テストを書く
 
-手本は、作り直した `api.equipment.category` のテスト（例：`src/test/java/jp/co/highjunk/equipment/api/equipment/category/search/item/EquipmentCategorySearchItemApiTest.java`）。作り直す前の古い形のテスト（category・health など）は手本にしない（CLAUDE.md 4.1）。
+手本は、作り直した `api.equipment.category` のテスト（例：`src/test/java/jp/co/highjunk/equipment/api/equipment/category/search/item/EquipmentCategorySearchItemApiTest.java`）。
 
 - [ ] API のテストは、その API と同じパッケージ（例：`src/test/java/jp/co/highjunk/equipment/api/equipment/category/search/item/`）に、`<頭>ApiTest` の名前で置く（CLAUDE.md 4.1・5章）。`@SpringBootTest` と `@AutoConfigureMockMvc` を使い、テスト専用のデータベース（equipment_test）で動かす。
 - [ ] POST・PUT・DELETE は `jp.co.highjunk.equipment.testsupport.CsrfTestHelper` の csrfToken を使う。Spring Security の `csrf()` は使わない（CLAUDE.md 6章）。

@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.16 2026-11-15 |
+| 版 | v1.17 2026-11-15 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.3 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -89,20 +89,22 @@
 | common.security | LogTestController | ログに付くユーザIDを確かめるためのAPI（/api/test-security/log-user-id） |
 | common.web | （src/test/resources/static/index.html） | 画面を配る仕組みを確かめるための、テスト用の index.html |
 
-### 2.3 mapper・dto・Enum の置き場所
+### 2.3 Mapper・返す値・Enum の置き場所
 
-CLAUDE.md 4.1 のとおり、mapper と dto は機能のパッケージの外にまとめ、その下に機能と同じ名前のパッケージを作る。Enum は common.constant に置く。
+CLAUDE.md 4.1 のとおり（2026-11-15 に変えた）。Mapper とテーブルの形は dao に、受け取る値・返す値は API のパッケージの中に、Enum は common.constant に置く。
 
 | 置くもの | パッケージ | 例 |
 |---|---|---|
-| mapper（インターフェース） | mapper.<機能名> | mapper.health.HealthMapper |
-| mapper の XML | src/main/resources の、mapper と同じ場所 | src/main/resources/jp/co/highjunk/equipment/mapper/health/HealthMapper.xml |
-| dto | dto.<機能名> | dto.health.HealthResponse |
+| Mapper（MyBatis Generator が作る） | dao.mapper | dao.mapper.UserMapper |
+| テーブルの形と Example（MyBatis Generator が作る） | dao.entity | dao.entity.User、dao.entity.UserExample |
+| 手で書く Mapper と、その結果の形 | dao.mapper.custom、dao.entity.custom | dao.mapper.custom.HealthCustomMapper、dao.entity.custom.EquipmentSearchCondition |
+| Mapper の XML | src/main/resources/jp/co/highjunk/equipment/dao/mapper/（手で書くものは custom/） | …/dao/mapper/custom/HealthCustomMapper.xml |
+| 受け取る値・返す値 | API のパッケージの controller・service・model | api.health.model.HealthRestOutDto |
 | Enum | common.constant | common.constant.HealthState |
 
-- MyBatis は、`@Mapper` を付けたインターフェースを、`jp.co.highjunk.equipment.mapper` の下から探す（common.config.MyBatisConfig の `@MapperScan`）。mapper のパッケージを足しても、設定を足す必要はない。
-- mapper の名前は `<テーブルの名前>Mapper`（CLAUDE.md 5章）なので、同じ名前の mapper がパッケージ違いでできる（例：mapper.auth.UserMapper と mapper.user.UserMapper）。Spring の部品（bean）の名前は、ふつうはクラスの名前（userMapper）でぶつかるため、MyBatisConfig で、パッケージ込みの名前（`jp.co.highjunk.equipment.mapper.auth.UserMapper`）にしている（FullyQualifiedAnnotationBeanNameGenerator）。テストは common.config.MyBatisConfigTest（テストだけの mapper.namecheck.first・second の SameNameMapper で確かめる）。2026-11-10 に決めた。
-- XML は、mapper と同じパッケージの場所にあれば自動で読み込まれる（`mybatis.mapper-locations` は設定しない）。XML の namespace は、mapper のクラスの名前（例：`jp.co.highjunk.equipment.mapper.health.HealthMapper`）にする。
+- MyBatis は、`@Mapper` を付けたインターフェースを、`jp.co.highjunk.equipment.dao.mapper` の下から探す（common.config.MyBatisConfig の `@MapperScan`。dao.mapper.custom も含む）。
+- Spring の部品（bean）の名前は、パッケージ込みの名前（`jp.co.highjunk.equipment.dao.mapper.UserMapper`）にしている（FullyQualifiedAnnotationBeanNameGenerator）。同じ名前の Mapper がパッケージ違いでできても、ぶつからないようにするため。テストは common.config.MyBatisConfigTest（テストだけの dao.mapper.namecheck.first・second の SameNameMapper で確かめる）。2026-11-10 に決め、2026-11-15 に探す場所を dao.mapper にした。
+- XML は、Mapper と同じパッケージの場所にあれば自動で読み込まれる（`mybatis.mapper-locations` は設定しない）。XML の namespace は、Mapper のクラスの名前にする。
 - Enum を JSON で返すと、Enum の名前（例：UP）がそのまま文字になる。API設計の値（例：管理状態の文字）と Enum の名前をそろえる。
 - common.constant は common の一部だが、新しい Enum のファイルを足すだけなら、機能の作業の中で足してよい。すでにある Enum を変えるときは2人で相談する（CLAUDE.md 9章）。
 
@@ -240,12 +242,14 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 
 ### 3.10 ログインの部品（common.security。ZPOP-55・56・57）
 
-ログインそのもの（メールアドレスとパスワードの確かめ）は auth 機能（詳細設計 [auth/auth.md](auth/auth.md)）が行う。common には、どの機能も使う「ログイン状態の持ち方」を置く。
+ログインそのもの（メールアドレスとパスワードの確かめ）は A-01（api.auth.login。詳細設計 [auth/auth.md](auth/auth.md)）が行う。common には、どの API も使う「ログイン状態の持ち方」と、2つ以上の API で使う処理・API でない処理を置く（CLAUDE.md 4.1）。
 
 | クラス | 役割 |
 |---|---|
 | LoginUser | セッションに入れる「ログインしている人」。ユーザID（userId）と、ログインした日時（loggedInAt）だけを持つ。LoginUserId を実装する |
-| LoginUserRefresher | APIを呼ぶたびに、ログインしている人の今の権限項目を返す約束（インターフェース）。返せない（削除された、session_valid_after より前のログイン）ときは空を返す。中身は auth の LoginUserRefresherImpl が持つ（common から機能を使わないため、約束だけを common に置く） |
+| LoginUserRefresher | APIを呼ぶたびに、ログインしている人の今の権限項目を返す約束（インターフェース）。返せない（削除された、session_valid_after より前のログイン）ときは空を返す。中身は LoginUserRefresherImpl |
+| LoginUserRefresherImpl | LoginUserRefresher の中身。dao の UserMapper・RolePermissionMapper で読み直す。API でない処理なので common に置く（2026-11-15 に auth から移した） |
+| LoginUserInfoAssembler・LoginUserInfo | ユーザの行（dao.entity.User）から、ログインしている人の情報と権限項目（API設計 4.2 の形。権限項目は sort_order の順）を作る。A-01・A-03 が自分の RestOutDto に写す（2026-11-15 に、A-03 の MeService#toMeResponse から移した） |
 | LoginRefreshFilter | `/api/` で始まるリクエストのたびに LoginUserRefresher を呼ぶフィルター。空なら、セッションを捨ててログインしていない扱いにする（→ ログインが要る API は 401）。そうでなければ、今の権限項目でログイン状態を作り直す（そのリクエストの間だけ。権限の変更が次の操作から効く。API設計 2.2）。データベースを読めなかったときは、controller の外なので GlobalExceptionHandler を通らないため、ここで 500 を 2.4 の形で返す（ApiResponseWriter） |
 | LoginSession | ログインを始める（start）・終える（end）。start：セッションの番号を変え（すでにあれば）、LoginUser と権限項目のログイン状態をセッションに保存し、XSRF-TOKEN を作り直す。end：ログに「ログアウトしました」を残し、セッションを捨て、XSRF-TOKEN を作り直す |
 | SecurityConfig（変更） | PasswordEncoder（bcrypt）・SecurityContextRepository（セッションにログイン状態を入れる部品）・CsrfTokenRepository（XSRF-TOKEN のクッキーを扱う部品）を、ほかの部品から使えるように用意する。LoginRefreshFilter を、セッションからログイン状態を読んだすぐあと（SecurityContextHolderFilter の後ろ）に置く |
@@ -255,7 +259,7 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 - ログインしている人のユーザIDは、controller の引数に `@AuthenticationPrincipal LoginUserId user` と書いて、`user.getUserId()` で取る。
 - パスワードの照らし合わせ・変換は、PasswordEncoder を受け取って使う（bcrypt。基本設計書 5章）。
 - テストでログインした状態を作るときは、A-01 を呼んでセッション（MockHttpSession）を受け取るか、`authentication(...)` で LoginUser を入れる（9章）。
-- ログインを始める・終える（LoginSession#start・end）は、Web のセッションを扱う仕事なので、auth の controller から呼ぶ（service に HttpServletRequest を渡さないため。auth.md 4章の No.6）。CLAUDE.md 5章の「controller は service を呼ぶだけ」の例外として、2026-11-10 に CLAUDE.md 5章に書いた。
+- ログインを始める・終える（LoginSession#start・end）は、Web のセッションを扱う仕事なので、A-01・A-02 の Controller から呼ぶ（Service に HttpServletRequest を渡さないため。auth.md 4章の No.6）。CLAUDE.md 5章の「controller は service を呼ぶだけ」の例外として、2026-11-10 に CLAUDE.md 5章に書いた。
 
 **あとのタスクへの申し送り**
 
@@ -276,6 +280,15 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 | isConfirmedThisMonth(LocalDate lastConfirmedOn) | 今月確認済みなら true（null は false） | 読んだ行ごとに、返す値の confirmedThisMonth などを決めるときに使う |
 
 - 祝日の取り込みと催促日の計算（25日。土日祝日なら前の平日）は、ZPOP-126 でこのパッケージに足す。
+
+### 3.12 備品の一覧の1件の形（common.equipment。2026-11-15）
+
+| クラス | 役割 |
+|---|---|
+| EquipmentSummary | 備品の一覧の1件の形（C-01 の items の1件。id・managementNo・categoryName・maker・model・status・loanStatus・borrowerName・lastConfirmedOn・confirmedThisMonth） |
+| EquipmentSummaryAssembler | 備品の行（dao.entity.Equipment）と「備品のID → 借用者のユーザID」から EquipmentSummary を作る。種別の名前と借用者の氏名は、dao の CategoryMapper・UserMapper の selectByExample（andIdIn）でまとめて読む（削除済みも読む）。今月確認済みかは MonthlyConfirmationRule（3.11） |
+
+- C-01・C-06 で使うので common に置く（API どうしは使い合わない。CLAUDE.md 4.1）。各 API は、EquipmentSummary を自分の RestOutDto に写して返す。
 
 ## 4. データベース
 
@@ -338,7 +351,6 @@ common には mapper（データベースを読み書きする部品）はない
 
 設定値（AppProperties）は、起動時に入力チェックをする。値がなければ起動しない（3.7）。
 
-- **作り直しの途中の注意**：まだ作り直していない古い形のコードは、業務チェックを、まとまりの中の `<機能名>/validator/<名前>Validator` で確かめている（CLAUDE.md 4.1 の作り直しの途中の注意）。
 
 ## 6. エラー
 
@@ -653,3 +665,4 @@ EquipmentManagementSystem_Client/
 | v1.14 | 2026-11-11 | common.calendar の「今月確認済み」の判定（MonthlyConfirmationRule。3.11）を足した。C-01（ZPOP-68）の前に、共通の小さな作業として作った（2026-11-11 に人が決めた）。祝日・催促日は ZPOP-126 で足す |
 | v1.15 | 2026-11-14 | 開発のPCの MySQL を、Docker で動かす形から、PC に直接入れる形に戻したので、4章の「開発のPCの MySQL」の行を直した（接続先の設定は変えない） |
 | v1.16 | 2026-11-15 | パッケージ構成の変更で、お手本の種別（api.equipment.category）を作り直したときに、common.validation（ServiceInDtoChecker・ServiceCheckOrder・ServiceErrorType と種別のチェック用アノテーション）と common.text（TextInputs）を足した。5章を、RestInDto・ServiceInDto の2段のチェックと、返し方の決まりに書き直した |
+| v1.17 | 2026-11-15 | A-01〜A-03・A-08・C-01・C-03・C-06 を新しい形に作り直したので、2.3（置き場所）を dao と API のパッケージの形に書き直した。3.10 に LoginUserRefresherImpl・LoginUserInfoAssembler（auth から移した）を足し、3.12 に common.equipment を足した |

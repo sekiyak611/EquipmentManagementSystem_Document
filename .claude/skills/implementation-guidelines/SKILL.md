@@ -15,7 +15,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 3. **直しやすさ**：仕様変更や不具合の修正が、狭い範囲で済む。
 4. **安全**：入力、権限、秘密の情報、例外を正しく扱う。
 5. **テストのしやすさ**：成功と失敗の両方を確かめられる形になっている。
-6. **そろっていること**：お手本（作り直した `api.equipment.category`）と同じ書き方。作り直す前の古い形のコードは手本にしない（CLAUDE.md 4.1）。
+6. **そろっていること**：お手本（作り直した `api.equipment.category`）と同じ書き方。
 
 **優先順位**：CLAUDE.md と設計書 ＞ この skill。この skill は、CLAUDE.md・設計書に書いていない所で使う心得。CLAUDE.md の決まりに反することは、この skill に書いてあってもしない。
 
