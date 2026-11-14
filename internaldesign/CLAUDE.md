@@ -47,9 +47,8 @@
 | APIの形 | REST（URLで「もの」を、GET・POST・PUT・DELETEで「操作」を表す）。値はJSONでやり取りする（docs/API設計.md） |
 | データベース | MySQL 8.4（開発は 8.4.13。AWS は RDS for MySQL の 8.4 系）。テーブルの作成・変更は Flyway |
 | テスト | JUnit 5（単体・API）、Playwright（画面） |
-| 実行環境 | 開発は各自のPC（Temurin 21、Node.js 24.12.0。MySQL 8.4.13 は Docker で動かす。版と入れ方は docs/環境構築手順書.md 1章）。シナリオテストとリリースはAWS（Amazon Corretto 21）。AWSでは CloudFront → 内部用のALB → EC2 → RDS の形で動かす（docs/基本設計書.md 2・3章） |
-| Docker | 開発のPCで MySQL を動かすためだけに使う（2026-11-09 に決めた。docs/基本設計書.md 9章）。設定は Server の compose.yaml。サーバー・画面は Docker に入れず、PC で動かす。AWS では使わない |
-| 使わないもの | AI機能、メール送信（お知らせはすべてSlackのDM） |
+| 実行環境 | 開発は各自のPC（Temurin 21、Node.js 24.12.0。MySQL 8.4.13 も PC に直接入れる。版と入れ方は docs/環境構築手順書.md 1章）。シナリオテストとリリースはAWS（Amazon Corretto 21）。AWSでは CloudFront → 内部用のALB → EC2 → RDS の形で動かす（docs/基本設計書.md 2・3章） |
+| 使わないもの | Docker（開発のPCの MySQL も、PC に直接入れる。2026-11-14 に、Docker で動かす形をやめた。docs/基本設計書.md 9章）、AI機能、メール送信（お知らせはすべてSlackのDM） |
 
 - ライブラリの版は、build.gradle と package.json に書いた版を使う。勝手に上げ下げしない。新しく足すときは、人に確かめる。
 - Spring Security は、CVE-2025-22228 の修正が入った版（6.4.4・6.3.8）以降を使う。
@@ -215,7 +214,7 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 
 **全体**
 - ファイルのパスにドライブ名（F:\ など）や、個人のPCの決まった場所を書かない。2人のPCで置き場所が違うため。
-- 秘密の情報（Slackのトークン、データベースのパスワード、最初の総務の担当者のメールアドレスなど）は、プログラムや設定ファイルに書かない。開発では、Gitで管理しない Server の `secret.yml` に書く（書き方の見本は Server の `secret.example.yml`）。Docker の MySQL のパスワードは、Gitで管理しない Server の `.env` に書く（見本は `.env.example`）。AWSでは環境変数で渡す。
+- 秘密の情報（Slackのトークン、データベースのパスワード、最初の総務の担当者のメールアドレスなど）は、プログラムや設定ファイルに書かない。開発では、Gitで管理しない Server の `secret.yml` に書く（書き方の見本は Server の `secret.example.yml`）。MySQL の root と `equipment` のパスワードは、PC の MySQL の中にだけある（手順は docs/環境構築手順書.md）。AWSでは環境変数で渡す。
 - ログに、パスワード、パスワード設定用のリンクの合言葉、Slackのトークンを出さない（docs/API設計.md 7章）。
 - 変えられる値（時刻、期限、回数など）は、プログラムに直接書かず設定にする（docs/API設計.md 6章）。
 - テスト用の切り替え（Slackの偽物、送った内容を読み出すAPI）は、本番の設定で動かないようにする。
@@ -296,7 +295,7 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 npx playwright test
 ```
 
-- テストには、自分のPCのMySQL（Docker で動かす。Server のフォルダで `docker compose up -d`）に作ったテスト専用のデータベース（equipment_test）を使う。開発用のデータベースでテストしない。テストを始める前に、Flywayでテーブルを作り直す（Server の src/test にある TestFlywayConfig が行う）。
+- テストには、自分のPCのMySQL（PC に直接入れたもの。docs/環境構築手順書.md）に作ったテスト専用のデータベース（equipment_test）を使う。開発用のデータベースでテストしない。テストを始める前に、Flywayでテーブルを作り直す（Server の src/test にある TestFlywayConfig が行う）。
 - テストで POST・PUT・DELETE を送るときは、Spring Security のテスト用の csrf() を使わず、`jp.co.highjunk.equipment.testsupport.CsrfTestHelper` の csrfToken を使う。csrf() は、ほかのテストと共有している部品の中身を書き換えてしまい、あとで動くテストを壊すため。
 - Slackには本物のDMを送らない。テストでは偽物に置き換える。
 - テストが失敗したときに、テストを消したり、期待する結果を書き換えたりして合格させない。原因が分からないときや、設計書と食い違うときは、人に知らせる。
