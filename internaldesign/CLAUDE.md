@@ -27,7 +27,7 @@
 | internaldesign/テスト方針.md | テストの種類・やり方・証跡の残し方 |
 | internaldesign/実装タスク一覧.md | 実装のタスクと分担 |
 | internaldesign/環境構築手順書.md | 開発用のPCに入れる道具の版と、環境の作り方（skill の env-setup が使う） |
-| internaldesign/詳細設計/ | 機能ごとの中の作り（クラス・処理の流れ・SQL）と、設計書から写した中身。1つの機能（4.1のパッケージ）に1つのフォルダを作り、機能全体・APIごと・画面ごとのファイルに分ける。書き方は internaldesign/詳細設計/README.md、テンプレートは internaldesign/詳細設計/テンプレート/。例外：共通部品は common.md、テーブルと最初のデータは テーブル.md（列の表は写さず、データ設計 5章を見る。2026-11-08 に決めた） |
+| internaldesign/詳細設計/ | 機能ごとの中の作り（クラス・処理の流れ・SQL）と、設計書から写した中身。1つのまとまり（4.1 の表の1行。例：api.equipment.category）に1つのフォルダを作り、機能全体・APIごと・画面ごとのファイルに分ける。書き方は internaldesign/詳細設計/README.md、テンプレートは internaldesign/詳細設計/テンプレート/。例外：共通部品は common.md、テーブルと最初のデータは テーブル.md（列の表は写さず、データ設計 5章を見る。2026-11-08 に決めた） |
 
 - 設計書やコードの中で「docs/○○.md」と書いてある所は、上の表の同じ名前のファイルのこと（以前は1つのリポジトリの docs フォルダに置いていたため）。
 - 画面設計.md とデータ設計.md は、externaldesign と internaldesign の2か所に同じものを置いている。直すときは、必ず2つとも同じに直す。
@@ -53,9 +53,11 @@
 - ライブラリの版は、build.gradle と package.json に書いた版を使う。勝手に上げ下げしない。新しく足すときは、人に確かめる。
 - Spring Security は、CVE-2025-22228 の修正が入った版（6.4.4・6.3.8）以降を使う。
 - 使ってよいライブラリ（人が確かめ済み）
-  - サーバー：Spring Boot（Web・Security・Validation）、MyBatis、Flyway（MySQL用のモジュールを含む）、MySQL Connector/J（MySQLにつなぐ部品）、Slack Java SDK
+  - サーバー：Spring Boot（Web・Security・Validation）、MyBatis、Flyway（MySQL用のモジュールを含む）、MySQL Connector/J（MySQLにつなぐ部品）、Slack Java SDK、Lombok（コンストラクタやゲッターなどを、アノテーション＝`@` で始まる印で自動で作る部品）、MyBatis Generator（テーブルから Mapper・テーブルの形・Example を自動で作る道具。Example は、取得の条件を Java で組み立てる部品）
   - 画面：Vite（開発用のサーバーと、画面の組み立て）、React Router（画面の切り替え）、MUI（@mui/material と、MUIが使う @emotion/react・@emotion/styled）、Playwright
   - 使わないと決めたもの：TanStack Query（APIの値の取り込みと保持）、React Hook Form（入力欄の管理）
+- Java の `record`（値を入れるだけのクラスを短く書く書き方）は使わない。値の入れ物のクラスは、普通のクラスに Lombok のアノテーション（`@Getter`、`@AllArgsConstructor` など）を付けて作る。Lombok のアノテーションは、読みやすくなるなら、どのクラスでも使ってよい（2026-11-15 に決めた）。
+- Eclipse で Lombok を使うには、各自の Eclipse に Lombok を入れる（手順は docs/環境構築手順書.md）。
 
 ## 4. リポジトリとフォルダの構成
 
@@ -80,21 +82,23 @@
 
 ### 4.1 サーバー（Server）のパッケージ
 
-パッケージ名の頭は `jp.co.highjunk.equipment`。機能は、docs/API設計.md 3章の節のまとまりで分ける。
+パッケージ名の頭は `jp.co.highjunk.equipment`（2026-11-15 に、機能ごとの分け方から、1つの API に1つのパッケージの形に変えた）。
 
 | パッケージ | 受け持つもの |
 |---|---|
-| auth | A-01〜A-07、アカウントロック、パスワードの決まり |
-| health | A-08（動いているかを答える） |
-| mine | B-01〜B-05（自分の備品。S-05、S-06） |
-| equipment | C-01〜C-08 |
-| loan | D-01〜D-03 |
-| confirmation | E-01、E-02 |
-| reminder | E-03、E-04、Slack催促の定期実行 |
-| category | K-01〜K-04 |
-| user | G-01〜G-07 |
-| role | H-01〜H-06 |
-| importer | I-01〜I-03 |
+| api | API。1つの API に1つのパッケージ（一覧は Document の internaldesign/パッケージ構成変更/API_パッケージとクラス名_決定版.md。のちに API設計.md か詳細設計に移す） |
+| api.auth | A-01〜A-07（ログイン・パスワード） |
+| api.health | A-08 |
+| api.equipment.mine | B-01〜B-05（自分の備品。社員向け） |
+| api.equipment.management | C-01〜C-08、D-01〜D-03、E-01・E-02、I-02・I-03（備品・貸出履歴・確認の一括更新・取込。総務向け） |
+| api.equipment.reminder | E-03・E-04（催促履歴） |
+| api.equipment.category | K-01〜K-04 |
+| api.user | G-01〜G-07、I-01 |
+| api.role | H-01〜H-06 |
+| batch.reminder | Slack 催促の定期実行（API ではない処理） |
+| dao.mapper | MyBatis Generator が作る Mapper（テーブルごとに1つ）。全 API で共通 |
+| dao.mapper.custom | 自動で作れない SQL を書く、手で書く Mapper |
+| dao.entity | MyBatis Generator が作る、テーブルの1行の形と Example（取得条件の Criteria＝「削除されていない」などの条件を1つずつ足していく部品） |
 | common | 共通部品（下の表） |
 
 | 共通部品 | 中身 |
@@ -109,35 +113,41 @@
 | common.web | 組み立てた画面（Client の dist）を配る。画面のアドレスでは index.html を返す |
 | common.constant | Enum（列挙型＝決まった値だけを持つ型。例：備品の管理状態、権限項目のコード）。Enum はすべてここに置く |
 
-mapper と dto は、機能のパッケージの外にまとめて置く。その下に、機能と同じ名前のパッケージを作る。
+- 2つ以上の API で使う処理と、API でない処理（例：ログインしている人の情報を返す値に組み立てる処理、アカウントロック、パスワードの決まり、ログイン中の人の情報を読み直す処理）は、common に置く。API のパッケージどうしは使い合わないため（5章）。パッケージの名前は、その処理を作り直すときに決め、上の表に足す（2026-11-15 に決めた）。
+- パッケージ名は英小文字だけ。言葉はつなげて書く（例：`itemformanager`）。`import` は Java の予約語（Java が使うので名前にできない言葉）なので、取込は `importer` にする。
+- 1つの API のパッケージには、次のクラスを置く。クラス名の頭（以下 `<頭>`）は、パッケージの `api` より後ろを全部つなげ、言葉の頭を大文字にしたもの（例：`api.equipment.management.search.item` → `EquipmentManagementSearchItem`）。
 
-| パッケージ | 中身 |
+| クラス | 役割 |
 |---|---|
-| 機能（例：category） | controller（APIの入口）、service（業務のルール）、validator（業務チェック）、model（テーブルの1行の形）の4つに分ける。controller と service は **API 1本に1つずつ** 作る（2026-11-10 に決めた）。service には、interface（インターフェース＝メソッドの名前・受け取る値・返す値だけを決めた型）の `<APIの名前>Service` と、中身を書いた `<APIの名前>ServiceImpl` を並べて置く。業務チェックがない機能（例：health）は、validator を作らない |
-| mapper.<機能名>（例：mapper.loan） | MyBatisでデータベースを読み書きする部品（インターフェース） |
-| dto.<機能名>（例：dto.loan） | APIで受け取る値・返す値の形 |
-| common.constant | Enum（上の表） |
+| `<頭>Controller` | API の入口。受け取る・Service を呼ぶ・返すだけ |
+| `<頭>Service` | 業務の処理の interface（インターフェース＝メソッドの名前・受け取る値・返す値だけを決めた型） |
+| `<頭>ServiceImpl` | 業務の処理の中身 |
+| `<頭>RestInDto` | 画面から受け取る値。形式のチェック（必須、文字数、形）をアノテーションで書く |
+| `<頭>ServiceInDto` | Service に渡す値。DB との整合性（重複、存在するか、使われているか）と Enum のチェックを、自作のチェック用アノテーションで書く |
+| `<頭>RestOutDto` | 画面に返す値（この名前は、あとで変わるかもしれない。2026-11-15） |
 
 ```
 jp.co.highjunk.equipment
-├─ category/
-│  ├─ controller/   CategoryListController（K-01）、CategoryCreateController（K-02）、
-│  │                CategoryUpdateController（K-03）、CategoryDeleteController（K-04）
-│  ├─ service/      CategoryListService（interface）、CategoryListServiceImpl（中身）、
-│  │                CategoryCreateService、CategoryCreateServiceImpl …（API ごと）
-│  ├─ validator/    CategoryValidator など（業務チェック）
-│  └─ model/        Category（テーブルの1行）
-├─ mapper/
-│  └─ category/     CategoryMapper
-├─ dto/
-│  └─ category/     CategoryCreateRequest、CategoryResponse など
+├─ api
+│  └─ equipment
+│     └─ category
+│        └─ search
+│           └─ item/   EquipmentCategorySearchItemController、EquipmentCategorySearchItemService、
+│                      EquipmentCategorySearchItemServiceImpl、EquipmentCategorySearchItemRestOutDto など（K-01）
+├─ batch
+│  └─ reminder/
+├─ dao
+│  ├─ mapper/          MyBatis Generator が作る Mapper
+│  │  └─ custom/       手で書く Mapper
+│  └─ entity/          テーブルの1行の形と Example
 └─ common/
-   └─ constant/     Enum（例：EquipmentStatus）
+   └─ constant/        Enum（例：EquipmentStatus）
 ```
 
-- MyBatisのXMLは、`src/main/resources` の、mapperと同じパッケージの場所に置く（例：`src/main/resources/jp/co/highjunk/equipment/mapper/loan/LoanMapper.xml`）。
-- Enum は、機能の中にも mapper・dto の中にも作らない。1つの機能でしか使わない Enum も common.constant に置く（同じ値の Enum が2つできるのを防ぐため）。
-- テストは、本体と同じパッケージ名で `src/test/java` に置く（API のテストは、機能のパッケージ。例：`jp.co.highjunk.equipment.loan`）。
+- MyBatis の XML は、`src/main/resources/jp/co/highjunk/equipment/dao/mapper/` に置く（MyBatis Generator が作る）。手で書く Mapper の XML は `src/main/resources/jp/co/highjunk/equipment/dao/mapper/custom/` に置く。
+- Enum は、api・dao の中に作らない。1つの API でしか使わない Enum も common.constant に置く（同じ値の Enum が2つできるのを防ぐため）。
+- テストは、本体と同じパッケージ名で `src/test/java` に置く（API のテストは、その API のパッケージ。例：`jp.co.highjunk.equipment.api.equipment.category.search.item`）。
+- **作り直しの途中の注意（2026-11-15〜）**：今のコード（auth・category・equipment・health のパッケージと、mapper・dto の下のパッケージ）は、まだ古い形（機能ごとのパッケージ、validator、…Request・…Response）のまま残っている。古い形のコードは手本にしない。新しく作るコードは、この 4.1 の形にする。全部を作り直したら、この行を消す。
 
 ### 4.2 見張り役（monitor）のパッケージ
 
@@ -158,19 +168,21 @@ EquipmentManagementSystem_Client/
 │  │  ├─ format/          日付・空の値の表示の形（画面設計 1.3）
 │  │  └─ theme/           MUIのテーマ（色・文字の大きさ・スマートフォンとPCの境目の幅）
 │  ├─ dev/                共通部品の見本の画面（開発とテストのときだけ開ける。組み立てた画面には入らない）
-│  └─ features/           機能ごと（サーバーと同じ名前）
+│  └─ features/           サーバーの api と同じまとまり
 │     ├─ auth/            S-01〜S-04
-│     ├─ mine/            S-05、S-06
-│     ├─ equipment/       S-07〜S-09
-│     ├─ loan/            S-10
-│     ├─ confirmation/    S-11
-│     ├─ reminder/        S-12
-│     ├─ category/        S-13
+│     ├─ equipment/
+│     │  ├─ mine/         S-05、S-06
+│     │  ├─ management/   S-07〜S-11
+│     │  ├─ reminder/     S-12
+│     │  └─ category/     S-13
 │     ├─ user/            S-14、S-15
 │     ├─ role/            S-16、S-17
-│     └─ importer/        S-18
-└─ tests/                 Playwrightのテスト（features と同じ名前のフォルダに分ける）
+│     └─ importer/        S-18（1つの画面のまま置くか、画面を分けるかは未定。フォルダを移すまでに決める）
+└─ tests/                 Playwrightのテスト（features と同じ形のフォルダに分ける）
 ```
+
+- tests/ のフォルダも、features と同じ形に分ける。
+- **移す途中の注意（2026-11-15〜）**：今の features/ と tests/ は、まだ古い形（auth・mine・equipment・loan・confirmation・reminder・category・user・role・importer）のまま。新しいまとまりに移すまでに新しい画面を作るときは、どちらに置くかを人に確かめる。移し終えたら、この行を消す。
 
 - 各機能の中は、pages/（画面）、components/（その機能だけで使う部品）、api.ts（その機能のAPIの呼び出し）、types.ts（APIで受け渡す値の型）に分ける。
 - 画面からAPIを呼ぶときは、common/api の apiGet・apiPost・apiPut・apiDelete を使う。失敗すると ApiError（status・message・errors）が投げられる（詳細設計 common.md 11.3）。
@@ -220,37 +232,32 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 - テスト用の切り替え（Slackの偽物、送った内容を読み出すAPI）は、本番の設定で動かないようにする。
 
 **サーバー（Java）**
-- パッケージは 4.1 のとおり機能ごとに分ける。業務のルールは service（`<APIの名前>ServiceImpl`）に、業務チェックは validator に書き、controller には書かない。
-- controller と service は、API 1本（API設計の ID 1つ。例：K-01）に1つずつ作る（2026-11-10 に決めた）。controller には、その API の URL と操作を1つだけ書く。
-- service は、interface の `<APIの名前>Service` と、中身の `<APIの名前>ServiceImpl`（`implements <APIの名前>Service`）に分け、同じ service パッケージに置く。`@Service` は ServiceImpl に付ける。controller は、自分の API の service の interface を受け取って使い、ServiceImpl を直接使わない。
-- 同じ機能の中で、ほかの API と同じ処理が要るときは、その API の service（interface）を呼んでよい（例：A-01 ログインは、返す値を A-03 の MeService で作る）。ほかの機能の service は使わない（下の決まり）。
-- API でない処理（Slack 催促の定期実行、common の約束の中身など）の service は、役目を表す名前にする（例：auth の LoginUserRefresherImpl、reminder の定期実行）。
-- 確かめることは、次の2つに分ける。
-  - **入力チェック**：受け取った値だけで分かるもの（必須、文字数、形式、数の範囲など）。dto の印（`@NotBlank`・`@Size` など）と、controller の `@Valid` で確かめる。
-  - **業務チェック**：データベースの中身や業務のルールと照らして確かめるもの（例：同じ名前の種別がもうある、使われている種別は消せない、すでに貸し出されている、その人が操作してよい対象か）。`<機能名>/validator/` の `<名前>Validator` に書く。
-- Validator の決まり
-  - `@Component` を付ける。ServiceImpl から、書き換えの前に呼ぶ（ServiceImpl の `@Transactional` の中で呼び、確かめてから書き換えるまでを1つのまとまりにする）。controller からは呼ばない。
-  - 守れないときは、common.error の例外（BusinessRuleException・NotFoundException・ConflictException など。投げる例外と文は、その API の詳細設計 9章）を投げる。
-  - 読むだけにする（mapper の `select…`・`count…` だけを使う）。書き換えは ServiceImpl で行う。確かめるために読んだ行（model）は、返して ServiceImpl で使ってよい（同じ行を2回読まないため）。
-- controller は、Web のセッションを扱う common.security.LoginSession（ログインの開始・終了）だけは、service を通さずに呼んでよい。業務のルールとデータベースの読み書きは、これまでどおり service に書く（2026-11-10 に決めた例外。service に HttpServletRequest を渡さないため。詳細設計 common.md 3.10）。
-- 機能は、その機能の中だけで完結させる。ほかの機能の service・validator・model と、mapper・dto の下のほかの機能のパッケージ（例：loan から mapper.equipment、dto.equipment）は使わない。使ってよいのは、自分の機能の mapper.<機能名>・dto.<機能名> と、common の部品だけ。
-- mapper.<機能名> が使ってよいのは、同じ機能の model と common だけ。dto.<機能名> が使ってよいのは common だけ（common.constant の Enum など）。
-- mapper は `<テーブルの名前>Mapper` なので、同じ名前の mapper がほかの機能にもある（例：mapper.auth.UserMapper と mapper.user.UserMapper）。import するときは、自分の機能の mapper.<機能名> のものかを確かめる（Eclipse の自動の import で選び間違えやすい）。
-- common から機能のパッケージ（mapper・dto の下も含む）を使わない。循環（AがBを使い、BもAを使う形）を作らない。
-- 2つ以上の機能で使う業務のルール（4.1の common.calendar・common.passwordlink）は、common に1つだけ置き、書き写さない。
-- 機能をまたいで同じルールが書かれている所（貸出のルール：mine・equipment・importer、確認のルール：mine・equipment・confirmation）は、1か所を直したらほかも同じように直し、テストも直す。
-- 各機能の mapper は、必要なテーブルを直接読み書きしてよい（テーブルの持ち主は決めない）。例：mine は、貸出のときに equipment の最終確認日を書き換える。
+- パッケージは 4.1 のとおり、1つの API に1つ。業務のルールは ServiceImpl に書き、Controller には書かない（2026-11-15 に決めた）。
+- Controller には、その API の URL と操作を1つだけ書く。
+- Service は、interface の `<頭>Service` と、中身の `<頭>ServiceImpl`（`implements <頭>Service`）に分け、同じパッケージに置く。`@Service` は ServiceImpl に付ける。Controller は、自分の API の Service の interface を受け取って使い、ServiceImpl を直接使わない。
+- API のパッケージは、ほかの API のパッケージのクラスを使わない（同じまとまりの API どうしも同じ）。使ってよいのは、`common` と `dao` だけ。`batch` も同じで、使ってよいのは `common` と `dao` だけ（api と batch は互いに使わない）。`common` と `dao` から `api`・`batch` を使わない。循環（AがBを使い、BもAを使う形）を作らない。
+- 2つ以上の API で使う処理と、API でない処理は、common に置く（4.1）。API でない処理のクラスは、役目を表す名前にする（例：ログイン中の人の情報を読み直す LoginUserRefresher）。
+- 入力のチェックは2段に分ける。
+  - RestInDto：画面設計のとおりの形式のチェック（受け取った値だけで分かるもの。必須、文字数、形式、数の範囲など）。`@NotBlank`・`@Size` などのアノテーションで書き、Controller の引数に `@Valid` を付けて確かめる（Bean Validation＝アノテーションで値を確かめる仕組み）。
+  - ServiceInDto：DB との整合性と Enum のチェック（例：同じ名前の種別がもうある、使われている種別は消せない、すでに貸し出されている、その人が操作してよい対象か）。自作のチェック用アノテーション（`ConstraintValidator`＝自作のチェックの中身を書くための Bean Validation の仕組み。Mapper を読める）で書く。ServiceImpl の `@Transactional` の中で、Bean Validation で確かめる（確かめてから書き換えるまでを1つのまとまりにするため）。今の Validator クラスは使わない。
+  - ServiceInDto のチェックは、読むだけにする（Mapper の取得・数える処理だけを使う）。書き換えは ServiceImpl で行う。
+  - チェックのメッセージは、画面設計の文のまま。守れないときに返す状態コード（404・409・422 など）と文は、API設計とその API の詳細設計のとおり。ServiceInDto のチェックからそれをどう返すかは、お手本（api.equipment.category）を作り直すときに決めて、ここに書き足す。
+- DB の読み書きは、`dao.mapper` の Mapper で行う。取得の条件は、`dao.entity` の Example の Criteria で組み立てる（例：`example.createCriteria().andDeletedAtIsNull()`）。
+- MyBatis Generator が作ったファイル（`dao.mapper`・`dao.entity` と、その XML）は手で直さない。テーブルが変わったら作り直す。自動で作れない SQL（件数をまとめる SQL など）は、手で書く Mapper を `dao.mapper.custom` に置く（XML は `src/main/resources/jp/co/highjunk/equipment/dao/mapper/custom/`）。手で書く Mapper は、自動で作り直しても消えない。
+- Controller は、Web のセッションを扱う common.security.LoginSession（ログインの開始・終了）だけは、Service を通さずに呼んでよい。業務のルールとデータベースの読み書きは、これまでどおり Service に書く（2026-11-10 に決めた例外。Service に HttpServletRequest を渡さないため。詳細設計 common.md 3.10）。
+- 2つ以上の API で使う業務のルール（4.1の common.calendar・common.passwordlink など）は、common に1つだけ置き、書き写さない。
+- API をまたいで同じルールが書かれている所（貸出のルール：equipment.mine・equipment.management（取込を含む）、確認のルール：equipment.mine・equipment.management）は、1か所を直したらほかも同じように直し、テストも直す。
 - SQLで JOIN とサブクエリ（SQLの中にもう1つSQLを入れる書き方）を使わない。複数のテーブルの情報は、テーブルごとにSQLを出し、Javaで突き合わせる。
-- 1件ずつSQLを出さない（N+1問題＝一覧の件数だけSQLが出てしまう問題を防ぐ）。IDをまとめて集め、`IN`（MyBatisの `<foreach>`）で1回で読む。
+- 1件ずつSQLを出さない（N+1問題＝一覧の件数だけSQLが出てしまう問題を防ぐ）。IDをまとめて集め、`IN`（Example の `andIdIn`、手で書く XML なら `<foreach>`）で1回で読む。
 - 今の日時は、直接取らずに java.time.Clock から取る（テストで日時を止められるようにするため）。
 - APIごとに、必要な権限項目をサーバー側で必ず確かめる（例：@PreAuthorize("hasAuthority('EQUIPMENT_UPDATE')")）。権限項目のコードは docs/データ設計.md の5.3。
-- 画面設計に書かれたチェック（入力チェックと業務チェック）は、サーバー側でも必ず行う。画面側のチェックだけに頼らない。
+- 画面設計に書かれたチェック（形式のチェックと DB との整合性のチェック）は、サーバー側でも必ず行う。画面側のチェックだけに頼らない。
 - 編集するAPIは、楽観ロック（version 列）で、ほかの人が先に保存していたら 409 を返す。
-- SQLは MyBatis の XML に書く。値は必ずパラメータ（#{}）で渡し、文字をつなげてSQLを作らない（SQLインジェクション＝外から入れた文字でデータベースを操られる攻撃を防ぐため）。
+- SQLは MyBatis の XML に書く（MyBatis Generator が作るものと、dao.mapper.custom に手で書くもの）。値は必ずパラメータ（#{}）で渡し、文字をつなげてSQLを作らない（SQLインジェクション＝外から入れた文字でデータベースを操られる攻撃を防ぐため）。
 - 削除は論理削除（deleted_at）。一覧や検索では、削除済みの行を出さない。
-- 2つ以上の書き換え（INSERT・UPDATE・DELETE）を1つの操作として行う処理は、ServiceImpl のメソッドに `@Transactional` を付け、途中で失敗したら全部を元に戻す。controller・validator・mapper と、interface の `<APIの名前>Service` には付けない。
+- 2つ以上の書き換え（INSERT・UPDATE・DELETE）を1つの操作として行う処理は、ServiceImpl のメソッドに `@Transactional` を付け、途中で失敗したら全部を元に戻す。Controller・Mapper と、interface の `<頭>Service` には付けない。
 - Slack の送信は、`@Transactional` の中で行わない。データベースへの書き込みが確定してから送る（送ったのにデータベースは元に戻った、を防ぐため）。送るのに失敗したときの扱いは、その機能の設計書・詳細設計に従う。
-- 操作する対象（備品・貸出など）の ID を画面から受け取る API は、権限項目の確認に加えて、その人が操作してよい対象かを validator で確かめる（業務チェックの1つ。ServiceImpl から呼ぶ）（例：B-03 の返す・B-04 の確認したは、ログインしている人が借りている備品だけを対象にする。B-04 は docs/API設計.md 4.7 のとおり、ほかの人の備品が含まれていたら 403）。ID を書き換えて他人のデータを読む・変えることを防ぐため（IDOR と呼ばれる穴）。
+- 操作する対象（備品・貸出など）の ID を画面から受け取る API は、権限項目の確認に加えて、その人が操作してよい対象かを ServiceInDto のチェックで確かめる（DB との整合性のチェックの1つ）（例：B-03 の返す・B-04 の確認したは、ログインしている人が借りている備品だけを対象にする。B-04 は docs/API設計.md 4.7 のとおり、ほかの人の備品が含まれていたら 403）。ID を書き換えて他人のデータを読む・変えることを防ぐため（IDOR と呼ばれる穴）。
 
 **画面（React）**
 - スマートフォン優先の画面（S-01〜S-06、S-19）は、スマートフォンの画面を先に作る。
@@ -266,21 +273,21 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 
 | もの | 付け方 | 例 |
 |---|---|---|
-| `<APIの名前>` | API 1本を表す英語。基本は `<対象><操作>`：一覧は `List`、1件は `Detail`、追加は `Create`、変更は `Update`、削除は `Delete`。この形に当てはまらない API は、何をするかを表す名前 | CategoryList（K-01）、CategoryCreate（K-02）、Login（A-01）、Logout（A-02）、Me（A-03） |
-| controller | `<APIの名前>Controller`（API 1本に1つ） | CategoryListController、LoginController |
-| service | interface は `<APIの名前>Service`、中身は `<APIの名前>ServiceImpl`（API 1本に1つ） | CategoryListService、CategoryListServiceImpl |
-| validator | 語尾を `Validator` にする。基本は `<APIの名前>Validator`。同じ機能の2つ以上の API で同じことを確かめるときは、まとめて `<機能名>Validator` にしてよい | LoginValidator、CategoryValidator（K-02〜K-04 で使う） |
-| mapper | `<テーブルの名前>Mapper`。1つのテーブルに1つ作り、テーブルの名前の単数形を PascalCase にする。ほかの機能に同じ名前の mapper があってよい（Spring の部品の名前をパッケージ込みにしているので、ぶつからない。common.config.MyBatisConfig）。テーブルを使わない mapper（health の `SELECT 1`）だけは `<機能名>Mapper`（2026-11-10 に決めた） | UserMapper（users）、CategoryMapper（categories）、RolePermissionMapper（role_permissions）、HealthMapper（テーブルを使わない） |
-| mapper のメソッド | 読む：`select…`（1件は `selectById`、まとめては `selectByIds`）、数える：`count…`、足す：`insert`、変える：`update…`、論理削除：`markDeleted` | selectById、countByName、markDeleted |
-| model（テーブルの1行） | テーブルの名前の単数形 | Category（categories）、Loan（loans） |
-| dto | 受け取る値は `…Request`、返す値は `…Response` | CategoryCreateRequest、CategoryResponse |
+| `<頭>`（API のクラス名の頭） | パッケージの `api` より後ろを全部つなげ、言葉の頭を大文字にしたもの（4.1。API ごとの一覧は Document の internaldesign/パッケージ構成変更/API_パッケージとクラス名_決定版.md） | EquipmentCategorySearchItem（K-01）、AuthLogin（A-01）、Health（A-08） |
+| Controller | `<頭>Controller`（API 1本に1つ） | EquipmentCategorySearchItemController、AuthLoginController |
+| Service | interface は `<頭>Service`、中身は `<頭>ServiceImpl`（API 1本に1つ） | EquipmentCategorySearchItemService、EquipmentCategorySearchItemServiceImpl |
+| 受け取る値 | 画面から受け取る値は `<頭>RestInDto`、Service に渡す値は `<頭>ServiceInDto` | EquipmentCategoryEntryItemRestInDto、EquipmentCategoryEntryItemServiceInDto |
+| 返す値 | `<頭>RestOutDto`（あとで変わるかもしれない。2026-11-15） | EquipmentCategorySearchItemRestOutDto |
+| Mapper・テーブルの形・Example | MyBatis Generator が付ける名前のまま（手で名前を付けない）。付け方の例と、手で書く Mapper（dao.mapper.custom）の名前は、MyBatis Generator の設定を作るときに決めて、ここに書き足す | |
 | Enum | 意味を表す名前。値は大文字と「_」で、API設計・データ設計の値と同じ文字 | EquipmentStatus.MANAGED（データ設計の管理状態 MANAGED） |
-| テスト（Server） | API のテストは `<APIの名前>ApiTest`（API 1本に1つ。同じ機能のテストで共通に使う値と道具は `<機能名>ApiTestBase` にまとめてよい）、単体テストは `<テストするクラス>Test` | CategoryListApiTest、LoginApiTest、CategoryValidatorTest、ReminderDateCalculatorTest |
+| テスト（Server） | API のテストは `<頭>ApiTest`（API 1本に1つ）、単体テストは `<テストするクラス>Test`。テストで共通に使う値と道具の置き場所は、お手本（api.equipment.category）を作り直すときに決めて、ここに書き足す | EquipmentCategorySearchItemApiTest、AuthLoginApiTest、ReminderDateCalculatorTest |
 | 画面（Client） | 画面は `…Page.tsx`、部品は役目を表す名前の `.tsx`（どちらも PascalCase） | CategoryListPage.tsx、CategoryForm.tsx |
 | api.ts の関数 | 読む：`get…`、足す：`create…`、変える：`update…`、消す：`delete…`（camelCase＝最初の単語だけ小文字） | getCategories、createCategory |
 | types.ts の型 | Server の dto と同じ名前 | CategoryResponse |
 | テスト（Client） | `tests/<機能名>/<画面を表す名前>.spec.ts`（小文字と「-」） | tests/category/category-list.spec.ts |
 | 変数・メソッド・関数 | camelCase。定数は大文字と「_」 | lentOn、SUCCESS_DISPLAY_MS |
+
+- 画面（Client）・api.ts・types.ts・テスト（Client）の行は、まだ古い形のまま。画面のフォルダを新しいまとまりに移すとき（4.3）に直す。
 
 ## 6. テスト
 
@@ -381,11 +388,12 @@ npx playwright test
 
 **お手本**
 
-- 新しい機能は、category（種別管理。API は ZPOP-83〜86、画面は ZPOP-115）を手本にして、同じ書き方で作る。category ができるまでは、health（A-08）の controller・service（HealthService と HealthServiceImpl）と、mapper.health・dto.health の書き方に合わせる（health には業務チェックがないため、validator の書き方は 5章の決まりに従う）。詳細設計も、Document の internaldesign/詳細設計/ の category/（できるまでは health/）を手本にする。
+- 新しい API は、作り直した `api.equipment.category`（K-01〜K-04）を手本にして、同じ書き方で作る。詳細設計も、Document の internaldesign/詳細設計/ の、作り直した category の詳細設計を手本にする。作り直す前の category・health は手本にしない（4.1 の作り直しの途中の注意）。
+- 画面は、category（S-13。ZPOP-115）を手本にする。
 
 **担当**
 
-- 担当は機能ごとに分ける（Document の internaldesign/実装タスク一覧.md の分担、Jiraの担当者）。自分の担当でない機能のフォルダは変えない。
+- 担当は機能ごとに分ける（Document の internaldesign/実装タスク一覧.md の分担、Jiraの担当者）。自分の担当でない API のパッケージ（画面は features のフォルダ）は変えない。
 
 **2人で共有するファイル**
 
@@ -393,6 +401,7 @@ npx playwright test
 |---|---|
 | common（サーバー・画面の共通部品）と internaldesign/詳細設計/common.md | 変えるときは2人で相談し、その変更だけの小さな作業にして、先に main に入れる |
 | common.constant（Enum） | 新しい Enum のファイルを足すだけなら、機能の作業の中で足してよい（足したことを相手に伝える）。すでにある Enum を変えるときは、common と同じく2人で相談する |
+| Server の dao（MyBatis Generator の設定と、作ったファイル。dao.mapper.custom を含む） | 作り直すときは2人で相談し、その作業だけを先に main に入れる |
 | routes.tsx、共通ヘッダーのメニュー | 1行足すだけにする。ぶつかったら人が手で直す |
 | Flyway のファイル（Server の src/main/resources/db/migration。テーブルを作る・変えるSQL） | テーブルは ZPOP-122 で全部作る。あとから足すときは、先に相手に伝える（2人が同じ版の番号を使うと、Flyway がエラーで止まるため） |
 | Server の build.gradle・settings.gradle、Client の package.json | ライブラリを足すときは、2人で合意してから（3章） |
