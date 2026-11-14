@@ -2,9 +2,9 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.14 2026-11-11 |
+| 版 | v1.15 2026-11-14 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー） |
-| もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.2 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
+| もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.3 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
 ## 1. 概要
 
@@ -285,7 +285,7 @@ common には mapper（データベースを読み書きする部品）はない
 |---|---|---|
 | 接続先（dev） | jdbc:mysql://localhost:3306/equipment_dev | 開発用のデータベース |
 | 接続先（test） | jdbc:mysql://localhost:3306/equipment_test | テスト専用のデータベース（CLAUDE.md 6章） |
-| 開発のPCの MySQL | Docker で動かす（Server の compose.yaml。`mysql:8.4.13`、127.0.0.1 の 3306番、文字コード utf8mb4・照合順序 utf8mb4_ja_0900_as_cs_ks）。equipment_dev とユーザ `equipment` は compose.yaml の環境変数で、equipment_test は docker/mysql/init/01_create_test_database.sql で、最初の起動のときに作る。パスワードは Server の .env（Git で管理しない） | PC に直接入れると重くなったため（基本設計書 v1.2 の9章。2026-11-09 に決めた）。3306番で待つので、接続先の設定は変えない |
+| 開発のPCの MySQL | PC に直接入れる（8.4.13、127.0.0.1 の 3306番）。文字コード utf8mb4・照合順序 utf8mb4_ja_0900_as_cs_ks は、データベースを作るときに指定する。equipment_dev・equipment_test とユーザ `equipment` は、環境構築手順書の SQL で、人が1回作る。パスワードは Server の secret.yml（Git で管理しない） | Docker をやめた（基本設計書 v1.3 の9章。2026-11-14 に決めた）。3306番で待つので、接続先の設定は変えない |
 | 接続先（prod） | 環境変数 SPRING_DATASOURCE_URL | RDS。ZPOP-48 で決める |
 | 接続のオプション | `connectionTimeZone=+09:00`、`forceConnectionTimeZoneToSession=true`、`characterEncoding=UTF-8` | データベースとのやり取りを日本時間にそろえる。`+` はアドレスの中で `%2B` と書く |
 | つながるまで待つ時間 | 5秒（`spring.datasource.hikari.connection-timeout: 5000`） | 見張り役は10秒で失敗とみなすので、それより短くする（health/A-08_動いているかを答える.md） |
@@ -627,3 +627,4 @@ EquipmentManagementSystem_Client/
 | v1.12 | 2026-11-11 | 共通ヘッダーのメニュー（11.4）と menuItems.ts（11.2）、設計書にない判断の7・8（11.8）を足した。S-13（ZPOP-115）の前に、共通の小さな作業として作った（2026-11-11 に人が決めた） |
 | v1.13 | 2026-11-11 | ZPOP-121：エラー画面 S-19（11.10）を足し、見つからないときの仮の画面を置き換えた（11.2・11.7・11.8 の2・9） |
 | v1.14 | 2026-11-11 | common.calendar の「今月確認済み」の判定（MonthlyConfirmationRule。3.11）を足した。C-01（ZPOP-68）の前に、共通の小さな作業として作った（2026-11-11 に人が決めた）。祝日・催促日は ZPOP-126 で足す |
+| v1.15 | 2026-11-14 | 開発のPCの MySQL を、Docker で動かす形から、PC に直接入れる形に戻したので、4章の「開発のPCの MySQL」の行を直した（接続先の設定は変えない） |
