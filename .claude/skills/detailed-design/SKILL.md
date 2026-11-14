@@ -82,8 +82,8 @@ argument-hint: "[まとまり（例：equipment.category）、API・画面の ID
 | API詳細 2・3章（リクエスト・レスポンス） | RestInDto・RestOutDto の項目名・型・必須・制約。返す項目が、どのテーブルの列か計算か。パスワードのハッシュなど、返してはいけない項目を返していない |
 | API詳細 2.5（ServiceInDto） | Controller が何から作るか（RestInDto の項目・パスの値・ログインしている人）、付けるチェック用アノテーション。受け取る値がなければ「なし」 |
 | API詳細 4章（処理フロー） | 受け取る → 形式のチェック（RestInDto）→ 権限 → ServiceInDto を作る（Controller）→ DB との整合性のチェック（ServiceImpl の `@Transactional` の中で ServiceInDto を確かめる）→ 書き換え → 返す（RestOutDto）。順番が大事なものは Mermaid の図も |
-| API詳細 5章（業務のルール） | ルールごとに、守る場所（確かめて止めるものは ServiceInDto のチェック用アノテーション、値を作る・書き換えるものは `<頭>ServiceImpl`）と、守れないときのエラー |
-| API詳細 6章（バリデーション） | RestInDto の印で確かめるもの（形式のチェック）、ServiceInDto のチェック用アノテーションで確かめるもの（DB との整合性と Enum。重複など） |
+| API詳細 5章（業務のルール） | ルールごとに、守る場所（受け取った値だけで DB と照らせば確かめられるものは ServiceInDto のチェック用アノテーション、ServiceImpl が読んだ・計算した値が要るものは `<頭>Validator`、値を作る・書き換えるものは `<頭>ServiceImpl`）と、守れないときのエラー |
+| API詳細 6章（バリデーション） | RestInDto の印で確かめるもの（形式のチェック）、ServiceInDto のチェック用アノテーションで確かめるもの（DB との整合性と Enum。重複など）、Validator で確かめるもの（業務チェック。ValidatorDto に何を入れるかも） |
 | API詳細 7章（DB操作） | dao の Mapper のメソッドと Criteria の条件、JOIN・サブクエリを使わない読み方、`andIdIn` でまとめて読む所、削除済みを除く条件、更新が0件のときの扱い、手で書く Mapper を使うならその SQL と理由 |
 | API詳細 8章（トランザクション・排他） | 2つ以上の書き換えなら `@Transactional`、編集なら version、Slack は書き込みの確定後（CLAUDE.md 5章） |
 | API詳細 10章（認証・認可） | 権限項目と、ID を受け取るならその人が操作してよい対象かの確かめ方（IDOR。ServiceInDto のチェックで確かめる） |

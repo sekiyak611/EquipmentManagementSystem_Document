@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.15 2026-11-14 |
+| 版 | v1.16 2026-11-15 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.3 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -307,14 +307,38 @@ common には mapper（データベースを読み書きする部品）はない
 
 ## 5. 入力チェック
 
-common には、入力チェックそのものはない。各機能で入力チェックを作るときの決まりは次のとおり。
+確かめることは3つに分ける（CLAUDE.md 5章。2026-11-15 に変えた。お手本は api.equipment.category）。
 
-- 受け取る値の形（dto）の項目に、入力チェックの印（`@NotBlank`・`@Size` など。Bean Validation と呼ぶ）を付け、controller の引数に `@Valid` を付ける。
-- 印の `message` には、画面設計のメッセージをそのまま書く。例：`@NotBlank(message = "ユーザー名は必須です。")`
+**1段目：形式のチェック（RestInDto）**
+- 画面から受け取る値（`<頭>RestInDto`）の項目に、チェックの印（`@NotBlank`・`@Size` など。Bean Validation と呼ぶ）を付け、Controller の引数に `@Valid` を付ける。
+- 印の `message` には、画面設計のメッセージをそのまま書く。例：`@NotBlank(message = "名前を入力してください")`
 - 誤りがあれば、GlobalExceptionHandler が 400 と errors（入力欄ごとのメッセージ）に変えて返す（3.6）。
-- 印だけでは確かめられない決まり（「同じ管理番号がすでにある」など。業務チェックと呼ぶ）は、各機能の validator（`<機能名>/validator/<名前>Validator`）で確かめ、BusinessRuleException か、errors 付きの例外を投げる。Validator は ServiceImpl から呼ぶ（CLAUDE.md 5章）。
+- 形式のチェックの前に値を直すとき（前後の空白を取る、大文字にする など）は、RestInDto の `@JsonCreator` のコンストラクタで、common.text.TextInputs を使って直す。
+
+**2段目：DB との整合性と Enum のチェック（ServiceInDto）**
+- Controller が、RestInDto・パスの値・ログインしている人の ID から `<頭>ServiceInDto` を作る。
+- ServiceInDto に、common.validation の自作のチェック用アノテーションを付ける（中身は ConstraintValidator を実装した `<アノテーションの名前>Check`。Mapper を読む。読むだけ）。
+- ServiceImpl が、`@Transactional` の中で、書き換えの前に ServiceInDtoChecker#check を呼ぶ。ServiceInDtoChecker は、Spring の Bean Validation（jakarta.validation.Validator）で、groups の順（ServiceCheckOrder.First → Second → groups なし）に確かめ、ある段で守れなければ、そこで止める。
+- 守れないときの返し方は、payload（ServiceErrorType）で決める。
+
+| payload | 例外 | status | message・errors |
+|---|---|---|---|
+| ServiceErrorType.NotFound | NotFoundException | 404 | 決まった文。errors なし |
+| ServiceErrorType.Conflict | ConflictException | 409 | アノテーションの message（画面設計の文）。errors なし |
+| ServiceErrorType.BusinessRule | BusinessRuleException | 400 | アノテーションの message（画面設計の文）。errors なし |
+| なし | FieldErrorException | 400 | 「入力内容に誤りがあります。」。errors に入力欄ごとの文（ServiceInDto の項目の順） |
+
+- 1つの段で2つ以上の種類が出たら、NotFound → Conflict → BusinessRule → 入力欄のエラーの順に、先のものを返す。
+- クラスに付けるチェック（2つ以上の項目を見るもの）は、アノテーションの中の Target という interface を ServiceInDto が実装して、値を渡す。入力欄のエラーにするときは、CategoryChecks#addFieldViolation のように、誤りを入力欄に付ける。
+- 今あるチェック用アノテーション（種別）：CategoryExists（forUpdate で行を押さえる）、CategoryVersionMatches、CategoryNameNotDuplicated、CategoryInitialNotDuplicated、CategoryNotInUse。使い方は equipment/category/ の詳細設計。
+
+**3つ目：業務チェック（Validator）**
+- ServiceImpl が読んだ・計算した値が要る業務チェック（例：貸出の期間の重なり、その人が借りている備品か）は、その API の `validator.<頭>Validator`（`@Component`）に書く。common には置かない。
+- ServiceImpl が `validator.<頭>ValidatorDto` に値を入れて、`@Transactional` の中で、書き換えの前に呼ぶ。守れなければ、その場で 6章の例外を投げる。読むだけ。
 
 設定値（AppProperties）は、起動時に入力チェックをする。値がなければ起動しない（3.7）。
+
+- **作り直しの途中の注意**：まだ作り直していない古い形のコードは、業務チェックを、まとまりの中の `<機能名>/validator/<名前>Validator` で確かめている（CLAUDE.md 4.1 の作り直しの途中の注意）。
 
 ## 6. エラー
 
@@ -338,7 +362,7 @@ common には、入力チェックそのものはない。各機能で入力チ�
 |---|---|---|---|
 | BusinessRuleException(文) | 400 | 決まりに合わない操作 | 画面設計の文を渡す |
 | NotFoundException() | 404 | 見つからない（削除された備品など） | 決まった文 |
-| FieldErrorException(入力欄, 文) ／ FieldErrorException(入力欄のエラーの一覧) | 400 | 業務チェック（データベースの中身と照らした結果）を、入力欄の下に出すエラーとして返すとき。例：種別の名前・頭文字が、ほかの種別ともう重なっている（画面設計 16章） | 決まった文「入力内容に誤りがあります。」。入力欄ごとの文は ErrorItem.ofField(入力欄, 画面設計の文)。受け取った値だけで分かる入力チェックには使わない（dto の印で行う） |
+| FieldErrorException(入力欄, 文) ／ FieldErrorException(入力欄のエラーの一覧) | 400 | DB との整合性のチェックの結果を、入力欄の下に出すエラーとして返すとき（新しい形では、ServiceInDtoChecker が payload のないチェックの誤りから作る）。例：種別の名前・頭文字が、ほかの種別ともう重なっている（画面設計 16章） | 決まった文「入力内容に誤りがあります。」。入力欄ごとの文は ErrorItem.ofField(入力欄, 画面設計の文)。受け取った値だけで分かる形式のチェックには使わない（RestInDto の印で行う） |
 | ConflictException(文) | 409 | ほかの人が先に保存した、すでに貸し出されている、すでに返却されている | 画面設計の文を渡す |
 | CsvErrorException(行のエラーの一覧) | 400 | CSVの行にエラーがある | 決まった文。行ごとの理由は ErrorItem.ofCsvRow(行番号, 管理番号, 理由) |
 | ServiceUnavailableException() | 503 | A-08 でデータベースにつながらない | 決まった文 |
@@ -628,3 +652,4 @@ EquipmentManagementSystem_Client/
 | v1.13 | 2026-11-11 | ZPOP-121：エラー画面 S-19（11.10）を足し、見つからないときの仮の画面を置き換えた（11.2・11.7・11.8 の2・9） |
 | v1.14 | 2026-11-11 | common.calendar の「今月確認済み」の判定（MonthlyConfirmationRule。3.11）を足した。C-01（ZPOP-68）の前に、共通の小さな作業として作った（2026-11-11 に人が決めた）。祝日・催促日は ZPOP-126 で足す |
 | v1.15 | 2026-11-14 | 開発のPCの MySQL を、Docker で動かす形から、PC に直接入れる形に戻したので、4章の「開発のPCの MySQL」の行を直した（接続先の設定は変えない） |
+| v1.16 | 2026-11-15 | パッケージ構成の変更で、お手本の種別（api.equipment.category）を作り直したときに、common.validation（ServiceInDtoChecker・ServiceCheckOrder・ServiceErrorType と種別のチェック用アノテーション）と common.text（TextInputs）を足した。5章を、RestInDto・ServiceInDto の2段のチェックと、返し方の決まりに書き直した |
