@@ -278,7 +278,7 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 | Service | interface は `<頭>Service`、中身は `<頭>ServiceImpl`（API 1本に1つ） | EquipmentCategorySearchItemService、EquipmentCategorySearchItemServiceImpl |
 | 受け取る値 | 画面から受け取る値は `<頭>RestInDto`、Service に渡す値は `<頭>ServiceInDto` | EquipmentCategoryEntryItemRestInDto、EquipmentCategoryEntryItemServiceInDto |
 | 返す値 | `<頭>RestOutDto`（あとで変わるかもしれない。2026-11-15） | EquipmentCategorySearchItemRestOutDto |
-| Mapper・テーブルの形・Example | MyBatis Generator が付ける名前のまま（手で名前を付けない）。付け方の例と、手で書く Mapper（dao.mapper.custom）の名前は、MyBatis Generator の設定を作るときに決めて、ここに書き足す | |
+| テーブルの形・Mapper・Example | MyBatis Generator が作る。テーブルの形はテーブルの名前の単数形（Server の mybatis-generator/generatorConfig.xml で指定する。2026-11-15 に決めた）、Mapper は `<テーブルの形>Mapper`、Example は `<テーブルの形>Example`。Mapper のメソッドの名前も MyBatis Generator のまま（`selectByExample`・`selectByPrimaryKey`・`countByExample`・`insert`・`updateByPrimaryKey` など）。手で書く Mapper（dao.mapper.custom）の名前は、初めて作るときに決めて、ここに書き足す | Category・CategoryMapper・CategoryExample（categories）、Equipment（equipment）、RolePermission（role_permissions） |
 | Enum | 意味を表す名前。値は大文字と「_」で、API設計・データ設計の値と同じ文字 | EquipmentStatus.MANAGED（データ設計の管理状態 MANAGED） |
 | テスト（Server） | API のテストは `<頭>ApiTest`（API 1本に1つ）、単体テストは `<テストするクラス>Test`。テストで共通に使う値と道具の置き場所は、お手本（api.equipment.category）を作り直すときに決めて、ここに書き足す | EquipmentCategorySearchItemApiTest、AuthLoginApiTest、ReminderDateCalculatorTest |
 | 画面（Client） | 画面は `…Page.tsx`、部品は役目を表す名前の `.tsx`（どちらも PascalCase） | CategoryListPage.tsx、CategoryForm.tsx |
