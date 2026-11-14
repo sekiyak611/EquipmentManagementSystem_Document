@@ -54,7 +54,7 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<まとま
 
 | 作るもの | 置き場所 |
 |---|---|
-| API のクラス | その API のパッケージ（例：`api/equipment/category/search/item/`）に、`<頭>Controller`、interface の `<頭>Service`、中身の `<頭>ServiceImpl`（`@Service`）、`<頭>RestInDto`、`<頭>ServiceInDto`、`<頭>RestOutDto`。受け取る値がなければ RestInDto・ServiceInDto は作らない。返す値がなければ RestOutDto は作らない |
+| API のクラス | その API のパッケージ（例：`api/equipment/category/update/item/`）の中を controller・service・validator・model に分けて置く（CLAUDE.md 4.1）。controller に `<頭>Controller`・`<頭>RestInDto`、service に interface の `<頭>Service`・中身の `<頭>ServiceImpl`（`@Service`）・`<頭>ServiceInDto`、model に `<頭>RestOutDto`、validator に `<頭>Validator`（`@Component`）・`<頭>ValidatorDto`。受け取る値・業務チェック・返す値がなければ、そのクラス（とパッケージ）は作らない |
 | Mapper・テーブルの形・Example | 作らない。`dao.mapper`・`dao.entity` にある、MyBatis Generator が作ったものを使う。手で直さない。テーブルが変わったら作り直す（`.\gradlew.bat mybatisGenerator`。2人で相談してから。CLAUDE.md 9章） |
 | 自動で作れない SQL（件数をまとめる SQL など） | `dao/mapper/custom/` に手で書く Mapper、XML は `src/main/resources/jp/co/highjunk/equipment/dao/mapper/custom/`。作る前に、Example では書けない理由を作業メモに書く |
 | 自作のチェック用アノテーション | `common/validation/`（common の部品なので、新しく足すときは止めて人に相談する。CLAUDE.md 4.1・9章）。すでにあるものは使ってよい |
@@ -69,7 +69,8 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<まとま
 - [ ] 業務のルールは ServiceImpl に書き、Controller は受け取る・ServiceInDto を作る・Service を呼ぶ・返すだけ。Controller は自分の API の interface（`<頭>Service`）を使い、ServiceImpl を直接使わない。（例外：ログインの開始・終了の LoginSession だけは Controller から呼んでよい。CLAUDE.md 5章）
 - [ ] Controller が、RestInDto・パスの値・ログインしている人の ID から `<頭>ServiceInDto` を作って Service に渡している。Service は ServiceInDto だけを受け取り、RestInDto やパスの値をそのまま受け取らない（CLAUDE.md 5章）。
 - [ ] 形式のチェック（必須・文字数・形など、受け取った値だけで分かるもの）は RestInDto の印（`@NotBlank`・`@Size` など）に書き、Controller の引数に `@Valid` を付けている。メッセージは画面設計の文のまま。
-- [ ] DB との整合性と Enum のチェック（例：重なり、使われているか、貸出中か、本人か）は、ServiceInDto に common.validation のチェック用アノテーションで書き、ServiceImpl の `@Transactional` の中で Bean Validation で確かめている。チェック用アノテーションの中は読むだけ（Mapper の `selectByExample`・`countByExample` など）で、書き換えない。古い形の Validator クラスは作らない。
+- [ ] 受け取った値だけで、DB と照らせば確かめられるもの（例：ある、重なり、version、使われているか、Enum）は、ServiceInDto に common.validation のチェック用アノテーションで書き、ServiceImpl の `@Transactional` の中で ServiceInDtoChecker で確かめている。チェック用アノテーションの中は読むだけ（Mapper の `selectByExample`・`countByExample` など）で、書き換えない。
+- [ ] ServiceImpl が読んだ・計算した値が要る業務チェック（例：貸出の期間の重なり、その人が借りている備品か）は、`validator.<頭>Validator` に書き、ServiceImpl が `<頭>ValidatorDto` に値を入れて、`@Transactional` の中で、書き換えの前に呼んでいる。守れなければ common.error の例外を投げる。Validator は読むだけで、Controller からは呼ばない。
 - [ ] 返す値は `<頭>RestOutDto` を `ApiResponse`（ok・created・accepted）で包む。dao.entity をそのまま返さない。エラーは CLAUDE.md 5章の返し方で返し、自分で JSON を組み立てない。
 - [ ] すべての API に、必要な権限項目の確認（`@PreAuthorize("hasAuthority('…')")`）がある。コードはデータ設計 5.3 のもの。
 - [ ] ID を受け取る API は、その人が操作してよい対象かを ServiceInDto のチェックで確かめている（ログインしている人の ID は Controller が ServiceInDto に入れる。IDOR を防ぐ）。

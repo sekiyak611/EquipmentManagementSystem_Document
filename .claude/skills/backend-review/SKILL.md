@@ -57,11 +57,11 @@ Server のフォルダ（`EquipmentManagementSystem_Server`）と Document の�
 - [ ] 詳細設計とコードが食い違っていない（クラス・SQL・メッセージ・テスト）。
 
 **パッケージと API の分け方**（CLAUDE.md 4.1・5章）
-- [ ] API のクラスが、その API のパッケージ（API_パッケージとクラス名_決定版.md のとおり）にある。名前が `<頭>Controller`・`<頭>Service`（interface）・`<頭>ServiceImpl`（`@Service`）・`<頭>RestInDto`・`<頭>ServiceInDto`・`<頭>RestOutDto`（CLAUDE.md 5章の命名規則）。Enum は `common.constant`、自作のチェック用アノテーションは `common.validation`。
+- [ ] API のクラスが、その API のパッケージ（API_パッケージとクラス名_決定版.md のとおり）の、役割どおりのパッケージにある：`controller`（`<頭>Controller`・`<頭>RestInDto`）、`service`（`<頭>Service`（interface）・`<頭>ServiceImpl`（`@Service`）・`<頭>ServiceInDto`）、`model`（`<頭>RestOutDto`）、`validator`（`<頭>Validator`・`<頭>ValidatorDto`）。要らないクラスを作っていない。Enum は `common.constant`、自作のチェック用アノテーションは `common.validation`。
 - [ ] Controller に URL と操作が1つだけ。Controller は自分の API の interface を使い、ServiceImpl を直接使っていない。
 - [ ] Controller が、RestInDto・パスの値・ログインしている人の ID から ServiceInDto を作り、Service に渡している。Service が RestInDto やパスの値をそのまま受け取っていない。
-- [ ] 形式のチェックが RestInDto の印と Controller の `@Valid` にある。DB との整合性と Enum のチェックが、ServiceInDto の common.validation のチェック用アノテーションにあり、ServiceImpl の `@Transactional` の中で Bean Validation で確かめている。これらのチェックが ServiceImpl や Controller に直接書かれていない。古い形の Validator クラスを作っていない。
-- [ ] チェック用アノテーションの中が読むだけ（Mapper の select・count だけ）で、書き換えをしていない。
+- [ ] 形式のチェックが RestInDto の印と Controller の `@Valid` にある。受け取った値だけで DB と照らして確かめられるものが、ServiceInDto の common.validation のチェック用アノテーションにあり、ServiceImpl の `@Transactional` の中で ServiceInDtoChecker で確かめている。ServiceImpl が読んだ・計算した値が要る業務チェックが、`validator.<頭>Validator` にあり、ServiceImpl が `<頭>ValidatorDto` を渡して、書き換えの前に呼んでいる（Controller から呼んでいない）。これらのチェックが ServiceImpl や Controller に直接書かれていない。
+- [ ] チェック用アノテーションの中と Validator が読むだけ（Mapper の select・count だけ）で、書き換えをしていない。
 - [ ] 業務のルールが Controller に書かれていない。（Controller から common.security.LoginSession を呼ぶのは、決まった例外なので指摘しない。CLAUDE.md 5章）
 - [ ] ほかの API のパッケージ（同じまとまりの API も）のクラスを import していない（import の行を見て確かめる）。使っているのは自分の API のパッケージと common・dao だけ。common・dao から api・batch を使っていない。循環がない。
 - [ ] Mapper・テーブルの形・Example の import が `dao.mapper`・`dao.entity` のもの（古い `mapper.<機能名>` のものでない）。dao.entity をそのまま画面に返していない（RestOutDto に移している）。

@@ -31,8 +31,9 @@ API詳細設計のテンプレート。1つの API に1ファイル。
 | 使う画面 | S-xx（[S-xx_….md](S-xx_….md)） |
 | パッケージ | api.equipment.category.search.item（API_パッケージとクラス名_決定版.md のとおり） |
 | クラス名の頭（`<頭>`） | EquipmentCategorySearchItem |
-| Controller のメソッド | `<頭>Controller#xxx`（API 1本に1つ。CLAUDE.md 5章） |
-| Service のメソッド | `<頭>Service#xxx`（中身は `<頭>ServiceImpl`） |
+| Controller のメソッド | `controller.<頭>Controller#xxx`（API 1本に1つ。CLAUDE.md 5章） |
+| Service のメソッド | `service.<頭>Service#xxx`（中身は `service.<頭>ServiceImpl`） |
+| Validator のメソッド | `validator.<頭>Validator#xxx`（渡す値は `<頭>ValidatorDto`） ／ なし（業務チェックがない） |
 
 ## 2. リクエスト定義
 
@@ -114,7 +115,7 @@ RestOutDto：`<頭>RestOutDto`
 1. Controller が受け取る。`@Valid` で RestInDto の形式のチェック（6章）。
 2. `@PreAuthorize` で権限項目を確かめる（10章）。
 3. Controller が、RestInDto・パスの値・ログインしている人の ID から `<頭>ServiceInDto` を作り、`<頭>Service#xxx` を呼ぶ（中身は `<頭>ServiceImpl`。`@Transactional` を付けるなら、ここから8章の範囲）。
-4. ServiceImpl が、`@Transactional` の中で ServiceInDto を Bean Validation で確かめる（DB との整合性と Enum。5章・6章）。守れなければ9章のエラーにする（返し方は CLAUDE.md 5章）。
+4. ServiceImpl が、`@Transactional` の中で ServiceInDto を確かめる（ServiceInDtoChecker。DB との整合性と Enum。5章・6章）。業務チェックがあれば、読んだ値を `<頭>ValidatorDto` に入れて `<頭>Validator` を呼ぶ。守れなければ9章のエラーにする（返し方は CLAUDE.md 5章）。業務チェックがなければ Validator の所を消す。
 5. ServiceImpl が dao の Mapper で書き換える（7章）。
 6. Controller が `<頭>RestOutDto` を `ApiResponse.ok(…)` で包んで返す。
 
@@ -196,7 +197,7 @@ sequenceDiagram
 |---|---|
 | ログイン | 要る ／ 要らない |
 | 権限項目 | `@PreAuthorize("hasAuthority('XXX')")` |
-| 対象の確かめ（IDOR） | ID を受け取らない ／ （例）貸出履歴の借用者が、ログインしている人かを ServiceInDto のチェック用アノテーションで確かめる（ログインしている人の ID は Controller が ServiceInDto に入れる）。違えば 9章の No.x |
+| 対象の確かめ（IDOR） | ID を受け取らない ／ （例）貸出履歴の借用者が、ログインしている人かを確かめる（受け取った値だけで確かめられるなら ServiceInDto のチェック用アノテーション、ServiceImpl が読んだ値が要るなら Validator。ログインしている人の ID は Controller が ServiceInDto に入れる）。違えば 9章の No.x |
 
 ## 11. 外部API連携仕様
 

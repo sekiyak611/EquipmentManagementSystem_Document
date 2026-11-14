@@ -27,7 +27,7 @@ argument-hint: "[まとまり（例：equipment.category）、API・画面の ID
 
 | リポジトリ | 読むもの |
 |---|---|
-| Server（新しい形） | そのまとまりの API のパッケージ（例：`api/equipment/category/` の下。Controller・Service・ServiceImpl・RestInDto・ServiceInDto・RestOutDto）、使っている `dao.mapper`・`dao.entity` と、`dao.mapper.custom` の手で書く Mapper と XML、使っている `common.validation` のチェック用アノテーション、`common.constant` の Enum と common の部品、`application*.yml` の使っている設定値、`src/test/java/` の同じパッケージのテスト |
+| Server（新しい形） | そのまとまりの API のパッケージ（例：`api/equipment/category/` の下。API ごとに controller（Controller・RestInDto）・service（Service・ServiceImpl・ServiceInDto）・model（RestOutDto）・validator（Validator・ValidatorDto））、使っている `dao.mapper`・`dao.entity` と、`dao.mapper.custom` の手で書く Mapper と XML、使っている `common.validation` のチェック用アノテーション、`common.constant` の Enum と common の部品、`application*.yml` の使っている設定値、`src/test/java/` の同じパッケージのテスト |
 | Server（古い形。作り直す前） | `<機能名>/`（controller・service・validator・model）、`mapper/<機能名>/` と XML、`dto/<機能名>/`、使っている Enum と common の部品、設定値、`src/test/java/jp/co/highjunk/equipment/<機能名>/` のテスト |
 | Client | `src/features/` の、そのまとまりのフォルダ（新しい形は `features/equipment/category/` のような入れ子。移す前は `features/category/` のような機能ごと）の pages・components・api.ts・types.ts、`src/routes.tsx` のその行、使っている common の部品、`tests/` の同じ形のフォルダ |
 

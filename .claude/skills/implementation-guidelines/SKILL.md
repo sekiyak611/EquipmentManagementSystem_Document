@@ -25,8 +25,8 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 |---|---|
 | Repository（データベースを読み書きする部品） | Mapper（`dao.mapper`。MyBatis Generator が作る。自動で作れない SQL は `dao.mapper.custom` に手で書く） |
 | Entity（テーブルの1行の形） | テーブルの形（`dao.entity`。MyBatis Generator が作る。取得の条件は同じ場所の Example） |
-| Request / Response DTO | `<頭>RestInDto`（受け取る値）・`<頭>ServiceInDto`（Service に渡す値）・`<頭>RestOutDto`（返す値）。API のパッケージに置く |
-| カスタムバリデータ（自作のチェック） | チェック用アノテーション（`common.validation`。ConstraintValidator で中身を書く） |
+| Request / Response DTO | `controller.<頭>RestInDto`（受け取る値）・`service.<頭>ServiceInDto`（Service に渡す値）・`model.<頭>RestOutDto`（返す値）。API のパッケージの中に置く |
+| カスタムバリデータ（自作のチェック） | チェック用アノテーション（`common.validation`。ConstraintValidator で中身を書く）。ServiceImpl の値が要る業務チェックは `validator.<頭>Validator`（渡す値は `<頭>ValidatorDto`） |
 | 定数・区分値 | Enum（`common.constant`） |
 | 差分を確認する（git diff） | 状態を見るコマンド（git status・git diff など）は使ってよい（CLAUDE.md 7章）。作業記録 `output/<タスク名>/変更ファイル一覧.md` もあわせて見る |
 
@@ -81,7 +81,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 
 ### 3.3 1つの部品に1つの役目（SRP）
 
-- Controller は受け取る・ServiceInDto を作る・Service を呼ぶ・返すだけ、ServiceImpl は業務のルール、RestInDto は形式のチェック、ServiceInDto（とチェック用アノテーション）は DB との整合性と Enum のチェック（読むだけ）、dao の Mapper はデータベース（CLAUDE.md 4.1・5章）。形式のチェックを ServiceInDto に、DB を読むチェックを RestInDto に書かない。
+- Controller は受け取る・ServiceInDto を作る・Service を呼ぶ・返すだけ、ServiceImpl は業務のルール、RestInDto は形式のチェック、ServiceInDto（とチェック用アノテーション）は受け取った値と DB の整合性と Enum のチェック、Validator は ServiceImpl の値が要る業務チェック（どちらも読むだけ）、dao の Mapper はデータベース（CLAUDE.md 4.1・5章）。形式のチェックを ServiceInDto に、DB を読むチェックを RestInDto に書かない。
 - ただし、機械的に細かく分けない。分けることで読みやすく・直しやすくなるときに分ける。
 
 ### 3.4 簡単に保つ（KISS）・今いらないものは作らない（YAGNI）

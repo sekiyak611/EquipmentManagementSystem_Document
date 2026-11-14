@@ -43,7 +43,7 @@ internaldesign/詳細設計/
       └─ S-13_種別管理.md         画面詳細（画面ごとに1つ）
 ```
 
-- **作り直しの途中の注意（2026-11-15〜）**：今ある category/・equipment/・health/・auth/ の中身は、古い形（機能ごとのパッケージ、validator、…Request・…Response）のまま。API を新しい形に作り直すときに、その詳細設計も新しい場所・新しい形に移す。古い形の詳細設計は手本にしない。全部を移したら、この行を消す。
+- **作り直しの途中の注意（2026-11-15〜）**：今ある equipment/ の直下（C-01 など）・health/・auth/ の中身は、古い形（category は 2026-11-15 に equipment/category/ に移した）（機能ごとのパッケージ、validator、…Request・…Response）のまま。API を新しい形に作り直すときに、その詳細設計も新しい場所・新しい形に移す。古い形の詳細設計は手本にしない。全部を移したら、この行を消す。
 
 | ファイル | 名前 | テンプレート | 中身 |
 |---|---|---|---|
@@ -93,7 +93,7 @@ internaldesign/詳細設計/
 | こと | 書いてある場所 |
 |---|---|
 | フォルダ・パッケージの構成 | CLAUDE.md 4章（4.1 サーバー、4.3 画面） |
-| 部品の役目の分け方（Controller・Service（interface と Impl）・RestInDto・ServiceInDto・RestOutDto・dao の Mapper、common.validation のチェック用アノテーション） | CLAUDE.md 4.1・5章、基本設計書 2・4章 |
+| 部品の役目の分け方（API のパッケージの中の controller・service・validator・model と、その中のクラス、dao の Mapper、common.validation のチェック用アノテーション） | CLAUDE.md 4.1・5章、基本設計書 2・4章 |
 | 書き方の決まり（JOIN を使わない、Clock から時刻を取る など） | CLAUDE.md 5章 |
 | 名前の付け方 | CLAUDE.md 5章の命名規則 |
 | 書き方の心得（読みやすさ、例外、型 など） | Document の .claude/skills/implementation-guidelines/SKILL.md |
