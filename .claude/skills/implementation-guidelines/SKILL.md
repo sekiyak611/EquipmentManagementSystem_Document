@@ -15,7 +15,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 3. **直しやすさ**：仕様変更や不具合の修正が、狭い範囲で済む。
 4. **安全**：入力、権限、秘密の情報、例外を正しく扱う。
 5. **テストのしやすさ**：成功と失敗の両方を確かめられる形になっている。
-6. **そろっていること**：お手本（category、まだなければ health）と同じ書き方。
+6. **そろっていること**：お手本（作り直した `api.equipment.category`）と同じ書き方。作り直す前の古い形のコードは手本にしない（CLAUDE.md 4.1）。
 
 **優先順位**：CLAUDE.md と設計書 ＞ この skill。この skill は、CLAUDE.md・設計書に書いていない所で使う心得。CLAUDE.md の決まりに反することは、この skill に書いてあってもしない。
 
@@ -23,17 +23,18 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 
 | 一般的な言い方 | このプロジェクト |
 |---|---|
-| Repository（データベースを読み書きする部品） | mapper（`mapper.<機能名>`。SQL は MyBatis の XML） |
-| Entity（テーブルの1行の形） | model（`<機能名>.model`） |
-| Request / Response DTO | dto（`dto.<機能名>`） |
+| Repository（データベースを読み書きする部品） | Mapper（`dao.mapper`。MyBatis Generator が作る。自動で作れない SQL は `dao.mapper.custom` に手で書く） |
+| Entity（テーブルの1行の形） | テーブルの形（`dao.entity`。MyBatis Generator が作る。取得の条件は同じ場所の Example） |
+| Request / Response DTO | `<頭>RestInDto`（受け取る値）・`<頭>ServiceInDto`（Service に渡す値）・`<頭>RestOutDto`（返す値）。API のパッケージに置く |
+| カスタムバリデータ（自作のチェック） | チェック用アノテーション（`common.validation`。ConstraintValidator で中身を書く） |
 | 定数・区分値 | Enum（`common.constant`） |
-| 差分を確認する（git diff） | Git は使わない。作業記録 `output/<タスク名>/変更ファイル一覧.md` とファイルを読んで確かめる |
+| 差分を確認する（git diff） | 状態を見るコマンド（git status・git diff など）は使ってよい（CLAUDE.md 7章）。作業記録 `output/<タスク名>/変更ファイル一覧.md` もあわせて見る |
 
 ## 2. 作業の基本
 
 ### 2.1 先に今のプロジェクトを知る
 
-- お手本の controller・service（interface と Impl）・validator・mapper・dto・テスト、詳細設計（common.md、お手本の .md）を読んでから書く。
+- お手本の Controller・Service（interface と Impl）・RestInDto・ServiceInDto・RestOutDto・テストと、使っている dao・common.validation、詳細設計（common.md、お手本の .md）を読んでから書く。
 - 使う部品が common にすでにあるかを先に探す。common にあるものを機能の中に作り直さない。
 - ライブラリの版は build.gradle・package.json のとおり。新しいライブラリを足さない（CLAUDE.md 3章）。
 
@@ -58,7 +59,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 4. 条件で分かれる所
 5. 失敗のしかたと、そのときの返し方
 6. 使うテーブル・外のサービス（Slack）
-7. ほかの機能への影響（貸出・確認のルールなど、機能ごとに同じルールを書いている所）
+7. ほかのまとまりへの影響（貸出・確認のルールなど、まとまりごとに同じルールを書いている所）
 8. どのテストで確かめるか
 
 これは API詳細・画面詳細に書く内容と同じ（detailed-design の skill）。
@@ -75,12 +76,12 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 ### 3.2 直しやすさと「重ねて書かない」（DRY）
 
 - 変わりうる値は設定に集める（CLAUDE.md 5章、API設計 6章）。
-- **このプロジェクトでの DRY**：機能は自分の中で完結させるため、貸出のルール（mine・equipment・importer）と確認のルール（mine・equipment・confirmation）は、機能ごとに書いてよい。そのかわり、1か所を直したらほかも同じように直し、テストも直す（CLAUDE.md 5章）。2つ以上の機能で使う計算（催促日、今月確認済み、パスワード設定用のリンク）は common に1つだけ置く。
+- **このプロジェクトでの DRY**：API のパッケージどうしは使い合わないため、貸出のルール（equipment.mine・equipment.management（取込を含む））と確認のルール（equipment.mine・equipment.management）は、API ごとに書いてよい。そのかわり、1か所を直したらほかも同じように直し、テストも直す（CLAUDE.md 5章）。2つ以上の API で使う処理（催促日、今月確認済み、パスワード設定用のリンク、DB との整合性のチェック用アノテーションなど）は common に1つだけ置く。
 - 見た目が似ているだけで意味の違う処理は、無理にまとめない。
 
 ### 3.3 1つの部品に1つの役目（SRP）
 
-- controller は受け取って返すだけ、service（ServiceImpl）は業務のルール、validator は業務チェック（データベースの中身や業務のルールと照らして確かめ、守れなければ例外を投げる。読むだけ）、mapper はデータベース（CLAUDE.md 4.1・5章）。入力の形のチェックは dto の印で行い、Validator に書かない。
+- Controller は受け取る・ServiceInDto を作る・Service を呼ぶ・返すだけ、ServiceImpl は業務のルール、RestInDto は形式のチェック、ServiceInDto（とチェック用アノテーション）は DB との整合性と Enum のチェック（読むだけ）、dao の Mapper はデータベース（CLAUDE.md 4.1・5章）。形式のチェックを ServiceInDto に、DB を読むチェックを RestInDto に書かない。
 - ただし、機械的に細かく分けない。分けることで読みやすく・直しやすくなるときに分ける。
 
 ### 3.4 簡単に保つ（KISS）・今いらないものは作らない（YAGNI）
@@ -124,23 +125,25 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 ### 4.5 equals と hashCode
 
 - 値の比較は `equals`。`==` は数値や同じものかどうかの確認に使う。
-- `equals` を書き換えたら `hashCode` もそろえる（record を使えば自動でそろう）。
+- `equals` を書き換えたら `hashCode` もそろえる（Lombok の `@EqualsAndHashCode` を使えば自動でそろう。`record` は使わない決まり。CLAUDE.md 3章）。
 
 ## 5. Spring Boot
 
 ### 5.1 部品の受け取り方（DI）
 
-- 部品はコンストラクタで受け取る（お手本の health と同じ形）。フィールドに `@Autowired` を付けない（テストのコードは別）。
+- 部品はコンストラクタで受け取る（お手本と同じ形。Lombok の `@RequiredArgsConstructor` を使ってよい）。フィールドに `@Autowired` を付けない（テストのコードは別）。
 - 循環（A が B を使い、B も A を使う）が出たら、遅らせて作る設定で隠さず、役目の分け方を見直す。
 
-### 5.2 dto と model
+### 5.2 受け取る値・返す値と、テーブルの形
 
-- model をそのまま API で返さない。dto に移して、返してよい項目だけを返す（パスワードのハッシュ、version など、画面に要らない項目を出さない。version は編集画面で要るときだけ）。
-- dto の入力チェックの印は、画面設計の決まりに合わせる。`@Email` だけでは必須にならないので、必須なら `@NotBlank` も付ける。`@Min`・`@Max` も null を拒まないので、必須なら `@NotNull` も付ける。
+- dao.entity（テーブルの形）をそのまま API で返さない。`<頭>RestOutDto` に移して、返してよい項目だけを返す（パスワードのハッシュ、version など、画面に要らない項目を出さない。version は編集画面で要るときだけ）。
+- RestInDto の形式のチェックの印は、画面設計の決まりに合わせる。`@Email` だけでは必須にならないので、必須なら `@NotBlank` も付ける。`@Min`・`@Max` も null を拒まないので、必須なら `@NotNull` も付ける。
+- ServiceInDto は Controller が作る（CLAUDE.md 5章）。チェック用アノテーションが見る項目（ID など）に null が入らないように作る。
+- 値の入れ物のクラスは、普通のクラスに Lombok のアノテーション（`@Getter`、`@AllArgsConstructor` など）を付けて作る（CLAUDE.md 3章）。
 
 ### 5.3 トランザクション（まとめて確定・まとめて取り消し）
 
-- 2つ以上の書き換えを1つの操作として行う ServiceImpl のメソッドに `@Transactional` を付ける（CLAUDE.md 5章）。Validator の呼び出しもこの中に入れ、確かめてから書き換えるまでを1つのまとまりにする。interface の `<機能名>Service` には付けない。
+- 2つ以上の書き換えを1つの操作として行う ServiceImpl のメソッドに `@Transactional` を付ける（CLAUDE.md 5章）。ServiceInDto のチェックもこの中で行い、確かめてから書き換えるまでを1つのまとまりにする。interface の `<頭>Service` には付けない。
 - 何も付けないと、SQL が1本ずつその場で確定する。途中で失敗すると、半分だけ変わったデータが残る。
 - `@Transactional` は、実行時の例外（RuntimeException）が起きると元に戻す。common.error の例外は実行時の例外。
 - 同じクラスの中のメソッドから呼んだメソッドの `@Transactional` は効かない（Spring の仕組みのため）。外から呼ばれる public のメソッドに付ける。
@@ -185,10 +188,11 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 ## 7. MySQL・SQL
 
 - テーブル・列・制約はデータ設計のとおり。テーブルを作る・変えるのは ZPOP-23 と、相談したうえでの作業だけ（CLAUDE.md 9章）。
-- SELECT は、使う列を書く（`SELECT *` を使わない）。読む列が分かり、パスワードの列などを、うっかり読むことも防げる。
+- DB の読み書きは、MyBatis Generator が作った dao の Mapper で行い、条件は Example の Criteria で組み立てる（CLAUDE.md 5章）。SQL を手で書くのは、Example では書けないものを dao.mapper.custom に書くときだけ。
+- 手で SQL を書くときは、SELECT に使う列を書く（`SELECT *` を使わない）。読む列が分かり、パスワードの列などを、うっかり読むことも防げる。
 - JOIN とサブクエリは使わない（CLAUDE.md 5章）。複数のテーブルはテーブルごとに読み、`IN` でまとめて読んで Java で突き合わせる。
 - 値は `#{}` で渡す。
-- UPDATE・DELETE は、対象を決める条件（id、`deleted_at IS NULL`、`version`）が足りているかを確かめる。条件の抜けで全件が変わらないようにする。
+- UPDATE・DELETE は、対象を決める条件（id、`deleted_at IS NULL`、`version`）が足りているかを確かめる。条件の抜けで全件が変わらないようにする（`updateByExample` などで Criteria を空のまま渡さない）。
 - 更新した件数を見る。`version` を条件にした更新が0件なら、ほかの人が先に保存したとして 409（CLAUDE.md 5章）。
 - 一覧で大量の行を読むときは、設計書に件数の上限やページの分け方があるかを確かめる。
 - 大文字・小文字を区別しない検索は、データ設計 2章のやり方（両方を小文字にそろえる）に合わせる。
@@ -239,7 +243,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 **仕様・設計**
 - [ ] 設計書を読み、成功と失敗の両方を考えた。
 - [ ] 分からない仕様を、自分で決めていない。
-- [ ] ほかの機能への影響（同じルールを書いている所）を確かめた。
+- [ ] ほかのまとまりへの影響（同じルールを書いている所）を確かめた。
 
 **コード**
 - [ ] 名前が役目を表している。部品の役目が分かれている。

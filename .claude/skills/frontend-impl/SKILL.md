@@ -32,15 +32,15 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 | externaldesign/画面一覧.md | 画面ID、移り方、スマートフォン優先かどうか（7章） |
 | internaldesign/API設計.md | 画面が呼ぶ API の送る値・返す値・エラー |
 | internaldesign/詳細設計/common.md | 11章（画面の共通部品の使い方） |
-| internaldesign/詳細設計/ | お手本（category/。まだなければ health/）、この機能のフォルダ（あれば。API詳細も読む） |
+| internaldesign/詳細設計/ | お手本（作り直した equipment/category/）、このまとまりのフォルダ（あれば。API詳細も読む。フォルダの決め方は README 2章） |
 
-次に、今のコードを調べる：お手本の画面、使う common の部品（common/api、common/components、common/format、common/auth）。
+次に、今のコードを調べる：お手本の画面（category の S-13）、使う common の部品（common/api、common/components、common/format、common/auth）。
 
 設計書があいまい、または設計書どうしが食い違うときは、**実装を止めて人に質問する**（CLAUDE.md 2章）。画面設計にない動き（ボタン、メッセージ、移り方）を自分の判断で足さない。
 
 ## 2. 詳細設計を書く
 
-detailed-design の skill に従って、`internaldesign/詳細設計/<機能名>/` に、作る画面ごとのファイル（`<画面のID>_<短い名前>.md`）を書く。機能全体（`<機能名>.md`）の 1.2（画面一覧）と 2.2（Client のファイル）も書き足す（なければ作る）。
+detailed-design の skill に従って、`internaldesign/詳細設計/<まとまりのフォルダ>/`（例：`equipment/category/`）に、作る画面ごとのファイル（`<画面のID>_<短い名前>.md`）を書く。まとまり全体（`<まとまりの名前>.md`）の 1.2（画面一覧）と 2.2（Client のファイル）も書き足す（なければ作る）。
 
 「設計書にない判断」に、外から見た動き（画面の文、移り方など）を変える項目が出たら、実装の前に人に確かめる。それ以外は、そのまま実装に進む。
 
@@ -48,12 +48,14 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<機能名
 
 **置き場所**（CLAUDE.md 4.3）
 
+**置き場所の注意（features を移す途中。CLAUDE.md 4.3）**：今の `src/features/` と `tests/` は、まだ古い形（機能ごと。例：`features/category/`）のまま。新しいまとまり（例：`features/equipment/category/`）に移し終えるまでに、新しい画面を作るときは、どちらに置くかを人に確かめる。下の表の `<まとまりのフォルダ>` は、新しい形のフォルダ（CLAUDE.md 4.3 の features の表）。
+
 | 作るもの | 置き場所 |
 |---|---|
-| 画面 | `src/features/<機能名>/pages/` |
-| その機能だけで使う部品 | `src/features/<機能名>/components/` |
-| API の呼び出し | `src/features/<機能名>/api.ts`（common/api の `apiGet`・`apiPost`・`apiPut`・`apiDelete` を使う） |
-| API で受け渡す値の型 | `src/features/<機能名>/types.ts` |
+| 画面 | `src/features/<まとまりのフォルダ>/pages/` |
+| そのまとまりだけで使う部品 | `src/features/<まとまりのフォルダ>/components/` |
+| API の呼び出し | `src/features/<まとまりのフォルダ>/api.ts`（common/api の `apiGet`・`apiPost`・`apiPut`・`apiDelete` を使う） |
+| API で受け渡す値の型 | `src/features/<まとまりのフォルダ>/types.ts`（型の名前の付け方は、CLAUDE.md 5章の命名規則。Client の行は features を移すときに直すので、それまでは今の名前の付け方） |
 | URL と画面の対応 | `src/routes.tsx` に1行足すだけ（CLAUDE.md 9章） |
 | 共通ヘッダーのメニュー | 1行足すだけ（CLAUDE.md 9章） |
 | 2つ以上の機能で使う部品、common の変更 | 作らない・変えない。必要になったら止めて人に相談する（CLAUDE.md 9章） |
@@ -74,7 +76,7 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<機能名
 - [ ] 日付・空の値は common/format の部品で表示する（画面設計 1.3）。
 - [ ] 権限によってボタンを出し分ける画面は、common/auth の部品を使う（ログインのタスク ZPOP-25 で作る）。画面で隠しても、確認はサーバーで行う。
 - [ ] 入力された文字を HTML として出していない（`dangerouslySetInnerHTML` を使わない）。
-- [ ] ほかの機能（`src/features/<ほかの機能>/`）のものを import していない。使うのは自分の機能と common だけ。
+- [ ] ほかのまとまりのフォルダ（`src/features/` の下の、自分のまとまり以外のフォルダ。同じ `equipment/` の下のほかのフォルダも）のものを import していない。使うのは自分のまとまりと common だけ。
 - [ ] タスクに関係のない所を、ついでに変えていない。気づいた不具合は作業メモの「確認してほしい点」に書く。
 
 足した・変えた・消したファイルは、そのつど `output/<タスク名>/変更ファイル一覧.md` に書く。
@@ -89,7 +91,7 @@ npm run typecheck
 
 ## 5. 詳細設計とコードを突き合わせる
 
-- [ ] 機能全体の 2.2（Client のファイル）と、画面詳細の 2.2・3章（部品・項目）・4章（入力チェック）・5章（操作）・6章（状態）・7章（API）・9章（メッセージ）が、作ったコードと同じ（detailed-design の skill の5章）。
+- [ ] まとまり全体の 2.2（Client のファイル）と、画面詳細の 2.2・3章（部品・項目）・4章（入力チェック）・5章（操作）・6章（状態）・7章（API）・9章（メッセージ）が、作ったコードと同じ（detailed-design の skill の5章）。
 - [ ] 作りの途中で変えた所は、詳細設計も直した（版と変更履歴も）。
 
 ## 6. 作業記録を書いて、人に報告する

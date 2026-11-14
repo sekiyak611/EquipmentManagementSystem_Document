@@ -37,7 +37,7 @@ Client のフォルダ（`EquipmentManagementSystem_Client`）と Document の�
 同じフォルダに並んだ Document リポジトリ（`../EquipmentManagementSystem_Document`）の中を読む。
 
 - [ ] `internaldesign/CLAUDE.md`（とくに 2章、3章、4.3、5章、6章、9章）
-- [ ] その機能の詳細設計 `internaldesign/詳細設計/<機能名>/`（機能全体と、変わった画面の画面詳細）と、`common.md` 11章
+- [ ] そのまとまりの詳細設計 `internaldesign/詳細設計/<まとまりのフォルダ>/`（まとまり全体と、変わった画面の画面詳細）と、`common.md` 11章
 - [ ] `externaldesign/画面設計.md` の1章と、その画面の章。`externaldesign/画面一覧.md`（スマートフォン優先かどうか）
 - [ ] 画面が呼ぶ API の章（`internaldesign/API設計.md`）
 - [ ] `internaldesign/テスト方針.md` 5章と、作業メモのテストの結果、Client の `playwright-report/`（あれば。zip の前のフォルダなら evidence のテスト結果.md）
@@ -56,8 +56,8 @@ Client のフォルダ（`EquipmentManagementSystem_Client`）と Document の�
 - [ ] 詳細設計とコードが食い違っていない。
 
 **フォルダと部品の使い方**（CLAUDE.md 4.3・5章）
-- [ ] `src/features/<機能名>/` の中が pages・components・api.ts・types.ts に分かれている。ファイル名に画面ID がない。
-- [ ] ほかの機能（`src/features/<ほかの機能>/`）のものを import していない。使うのは自分の機能と common だけ。
+- [ ] `src/features/<まとまりのフォルダ>/` の中が pages・components・api.ts・types.ts に分かれている。ファイル名に画面ID がない。フォルダが CLAUDE.md 4.3 の features の表のとおり（features を移す途中に作った画面は、置き場所を人に確かめたかを作業メモで見る）。
+- [ ] ほかのまとまりのフォルダ（同じ `equipment/` の下のほかのフォルダも）のものを import していない。使うのは自分のまとまりと common だけ。
 - [ ] API は common/api の `apiGet`・`apiPost`・`apiPut`・`apiDelete`・`useApi` で呼んでいる。`fetch` を直接呼んでいない。
 - [ ] 入力欄は MUI と `useState`。使わないと決めたライブラリ（TanStack Query、React Hook Form）や、新しいライブラリを使っていない（package.json が変わっていたら指摘）。
 - [ ] 押すと処理が動くボタンは `SubmitButton`（処理が終わるまで押せない）。確認がいる操作は `ConfirmDialog`。
@@ -74,7 +74,7 @@ Client のフォルダ（`EquipmentManagementSystem_Client`）と Document の�
 - [ ] パスワード・合言葉を、画面の表示・console・URL の後ろの値に出していない。
 
 **テスト**（テスト方針 5章、CLAUDE.md 6章）
-- [ ] テストは `tests/<機能名>/` にある。
+- [ ] テストは `tests/<まとまりのフォルダ>/`（features と同じ形）にある。
 - [ ] 画面設計のボタンの動き・入力の誤りのメッセージ・操作できなかったときの表示を確かめている。
 - [ ] スマートフォン優先の画面は、スマートフォンと PC の両方で動かしている。
 - [ ] メッセージを画面設計の文そのもので確かめている（一部だけの一致で済ませていない）。

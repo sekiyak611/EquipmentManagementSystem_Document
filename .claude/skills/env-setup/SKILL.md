@@ -1,6 +1,6 @@
 ---
 name: env-setup
-description: 備品管理システムの開発環境（Windows のPC）を、Document の internaldesign/環境構築手順書.md のとおりに作る・確かめるときの手順。Java 21、PC に直接入れる MySQL 8.4.13（データベース2つと利用者）、secret.yml、Node.js 24.12.0、Eclipse、Playwright、Claude Code の設定を、1つずつ人に案内し、最後にテストと /api/health で動くことを確かめる。
+description: 備品管理システムの開発環境（Windows のPC）を、Document の internaldesign/環境構築手順書.md のとおりに作る・確かめるときの手順。Java 21、PC に直接入れる MySQL 8.4.13（データベース2つと利用者）、secret.yml、Node.js 24.12.0、Eclipse（と Eclipse の Lombok）、Playwright、Claude Code の設定を、1つずつ人に案内し、最後にテストと /api/health で動くことを確かめる。
 when_to_use: 「開発環境を作りたい」「新しいPCで動かしたい」「Docker をやめてローカルの MySQL を使いたい」「テストが動かない・つながらないので環境を見て」と頼まれたとき。Server・Client がまだ動かなくても、Document のフォルダで claude を起動して /env-setup と打てば使える。
 argument-hint: "[確かめたい所（例：MySQL、Client）。空ならはじめから]"
 ---
@@ -41,7 +41,7 @@ Claude Code のコマンドは Git Bash で動く。PowerShell のコマンド�
 | 8 | 手順8 | Node.js 24.12.0 と、PowerShell の npm | `node -v` と `powershell -NoProfile -Command "npm -v"` | `v24.12.0`。npm の版が出る（「デジタル署名されていません」と出たら手順8の2） |
 | 9 | 手順9 | 画面の部品 | Client のフォルダで `npm install`、続けて `npx playwright install chromium` | エラーなし |
 | 10 | 手順10 | 画面のテスト | 開発用のサーバーが動いていないことを確かめてから、Client のフォルダで `npx playwright test` | すべて passed |
-| 11 | 手順11 | Eclipse | 人に、エラーの印がないかを聞く | エラーの印がない |
+| 11 | 手順11 | Eclipse と、Eclipse の Lombok（手順11の4） | Server のフォルダで `./gradlew -q dependencyInsight --dependency lombok --configuration compileClasspath` を動かし、1行目の Lombok の版を人に伝える。そのうえで、人に、エラーの印がないかと、「ヘルプ」→「Eclipse IDE について」に出る Lombok の版を聞く | エラーの印がない。Eclipse の Lombok の版が、build.gradle の版（Spring Boot が決めたもの）と同じ |
 | 12 | 手順12 | Claude Code の設定 | `test -f ../EquipmentManagementSystem_Server/.claude/settings.json && test -f ../EquipmentManagementSystem_Client/.claude/settings.json && echo ある` | 「ある」と出る |
 | 13 | 手順13 | Git で管理しないもの | Server・Client・Document の .gitignore を読み、Server・Client の CLAUDE.md 4章の一覧と比べる。足りなければ足す（CLAUDE.md 7章。git のコマンドは動かさない） | 一覧のものが入っている。とくに secret.yml（.env が残っていれば .env も） |
 

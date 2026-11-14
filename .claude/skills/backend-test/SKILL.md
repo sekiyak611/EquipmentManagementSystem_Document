@@ -22,7 +22,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 
 テストは**設計書から**考える。コードを読んで「このとおり動くこと」を確かめるだけのテストにしない（コードの誤りまで正しいことにしてしまうため）。
 
-読むもの：その API の API設計、画面設計の入力チェックとメッセージ、機能一覧の業務のルール、詳細設計（API詳細の5章の業務のルール、6章のバリデーション、9章のエラー、10章の認証・認可）、テスト方針 3・4章。
+読むもの：その API の API設計、画面設計の入力チェックとメッセージ、機能一覧の業務のルール、詳細設計（API詳細の2.5 の ServiceInDto、5章の業務のルール、6章のバリデーション、9章のエラー、10章の認証・認可）、テスト方針 3・4章。
 
 洗い出す観点（テスト方針 4章、implementation-guidelines 9章）：
 
@@ -37,23 +37,24 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 | まとめて取り消し | `@Transactional` の処理で途中が失敗したら、途中までの書き換えが残らない（作れる場合） |
 | 削除済み | 削除済みの行が一覧に出ない、操作できない |
 | 日付 | 時計を止めて、境目（前日・当日・翌日、月末、祝日）を確かめる |
-| 計算・判断の部品 | 単体テスト（テスト方針 3章に挙げた部品は必ず）。業務チェックの Validator のうち、テスト方針 3章に当たるもの（例：貸出の期間の重なりのチェック）は `<名前>ValidatorTest` で境目まで確かめる。当たらないものは、API のテストの⑤で確かめる |
+| 計算・判断の部品 | 単体テスト（テスト方針 3章に挙げた部品は必ず）。common.validation のチェック用アノテーションのうち、テスト方針 3章に当たるもの（例：貸出の期間の重なりのチェック）は、その中身（ConstraintValidator）の単体テスト `<クラス名>Test` で境目まで確かめる。当たらないものは、API のテストの⑤で確かめる |
 
 ## 2. テストを書く
 
-手本は `src/test/java/jp/co/highjunk/equipment/health/HealthApiTest.java`（category ができたら、そのテスト）。
+手本は、作り直した `api.equipment.category` のテスト（例：`src/test/java/jp/co/highjunk/equipment/api/equipment/category/search/item/EquipmentCategorySearchItemApiTest.java`）。作り直す前の古い形のテスト（category・health など）は手本にしない（CLAUDE.md 4.1）。
 
-- [ ] API のテストは `src/test/java/jp/co/highjunk/equipment/<機能名>/` に置く。`@SpringBootTest` と `@AutoConfigureMockMvc` を使い、テスト専用のデータベース（equipment_test）で動かす。
+- [ ] API のテストは、その API と同じパッケージ（例：`src/test/java/jp/co/highjunk/equipment/api/equipment/category/search/item/`）に、`<頭>ApiTest` の名前で置く（CLAUDE.md 4.1・5章）。`@SpringBootTest` と `@AutoConfigureMockMvc` を使い、テスト専用のデータベース（equipment_test）で動かす。
 - [ ] POST・PUT・DELETE は `jp.co.highjunk.equipment.testsupport.CsrfTestHelper` の csrfToken を使う。Spring Security の `csrf()` は使わない（CLAUDE.md 6章）。
-- [ ] 単体テストは、テストする部品と同じパッケージに置く（例：`<機能名>/validator/<名前>ValidatorTest`）。
+- [ ] 単体テストは、テストする部品と同じパッケージに置く（例：`common/validation/<クラス名>Test`）。
 - [ ] 今の日時は、止めた時計（`Clock.fixed`）に差し替えて確かめる。
 - [ ] Slack には本物を送らない（偽物に置き換え、だれにどんな文を送ったかを確かめる）。
 - [ ] テストの名前（`@DisplayName`）は、何を確かめるかを日本語で書く。証跡の一覧にそのまま出るため。
 - [ ] status だけでなく、message・errors・data の中身、データベースの中身まで確かめる。
 - [ ] テストどうしが影響しないようにする（テスト方針 4章）。やり方は common.md とお手本に合わせる。決まっていなければ、作業メモの「確認してほしい点」に書いて人に確かめる。
+- [ ] テストで共通に使う値と道具の置き場所は、お手本に合わせる（CLAUDE.md 5章の命名規則。決まるまでは人に確かめる）。
 - [ ] テストが、private のメソッドなど中の作りに頼りすぎていない。
 
-backend-impl の作業メモに「ほかの機能の同じルールを直した」とあれば、その機能のテストも直す。
+backend-impl の作業メモに「ほかのまとまりの同じルールを直した」とあれば、そのまとまりのテストも直す。
 
 足した・変えたテストのファイルは、そのつど `output/<タスク名>/変更ファイル一覧.md` に書く。
 

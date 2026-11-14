@@ -35,55 +35,57 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 | externaldesign/画面設計.md | その画面の入力チェックとメッセージ（サーバー側でも同じチェックをするため） |
 | externaldesign/データ設計.md | 使うテーブルの列と制約。5.3（権限項目のコード） |
 | externaldesign/機能一覧.md | 業務のルール |
-| internaldesign/詳細設計/ | common.md（使える共通部品）、お手本（category/。まだなければ health/）、この機能のフォルダ（あれば） |
+| internaldesign/詳細設計/ | common.md（使える共通部品）、お手本（作り直した equipment/category/）、このまとまりのフォルダ（あれば） |
+| internaldesign/パッケージ構成変更/API_パッケージとクラス名_決定版.md | 作る API のパッケージ名とクラス名の頭（`<頭>`） |
 
-次に、今のコードを調べる：お手本のコード、使う common の部品、同じルールを書いているほかの機能（貸出：mine・equipment・importer、確認：mine・equipment・confirmation）。
+次に、今のコードを調べる：お手本のコード（作り直した `api.equipment.category`。作り直す前の category・health などの古い形のコードは手本にしない。CLAUDE.md 4.1）、使う common の部品（common.validation のチェック用アノテーションを含む）、使う dao の Mapper と Example、同じルールを書いているほかのまとまり（貸出：equipment.mine・equipment.management（取込を含む）、確認：equipment.mine・equipment.management）。
 
 設計書があいまい、または設計書どうしが食い違うときは、**実装を止めて人に質問する**（CLAUDE.md 2章）。推測で進めない。質問には「どの設計書の何章と何章が、どう食い違うか」と「考えられる案」を書く。
 
 ## 2. 詳細設計を書く
 
-detailed-design の skill に従って、`internaldesign/詳細設計/<機能名>/` に、機能全体（`<機能名>.md`）と、作る API ごとのファイル（`<APIのID>_<短い名前>.md`）を書く（あれば書き足す）。
+detailed-design の skill に従って、`internaldesign/詳細設計/<まとまりのフォルダ>/`（例：`equipment/category/`）に、まとまり全体（`<まとまりの名前>.md`）と、作る API ごとのファイル（`<APIのID>_<短い名前>.md`）を書く（あれば書き足す）。
 
 「設計書にない判断」に、外から見た動き（返す値、エラー、メッセージなど）を変える項目が出たら、実装の前に人に確かめる。それ以外は、そのまま実装に進む。
 
 ## 3. 作る
 
-**置き場所**（CLAUDE.md 4.1。パッケージの頭の `jp.co.highjunk.equipment` は省く）
+**置き場所**（CLAUDE.md 4.1。パッケージの頭の `jp.co.highjunk.equipment` は省く。`<頭>` は API_パッケージとクラス名_決定版.md のクラス名の頭）
 
 | 作るもの | 置き場所 |
 |---|---|
-| controller（APIの入口） | `<機能名>/controller/` の `<APIの名前>Controller`。API 1本に1つ（URL と操作を1つだけ書く） |
-| service（業務のルール） | `<機能名>/service/` に、interface の `<APIの名前>Service` と、中身の `<APIの名前>ServiceImpl`（`@Service`）を並べて置く。API 1本に1つ |
-| validator（業務チェック） | `<機能名>/validator/` の `<名前>Validator`（`@Component`）。業務チェックがない機能は作らない |
-| model（テーブルの1行の形） | `<機能名>/model/` |
-| mapper（データベースを読み書きする部品） | `mapper/<機能名>/` に、テーブルごとの `<テーブルの名前>Mapper`（ほかの機能に同じ名前があってよい）。SQLの XML は `src/main/resources/jp/co/highjunk/equipment/mapper/<機能名>/` |
-| dto（APIで受け取る値・返す値の形） | `dto/<機能名>/` |
+| API のクラス | その API のパッケージ（例：`api/equipment/category/search/item/`）に、`<頭>Controller`、interface の `<頭>Service`、中身の `<頭>ServiceImpl`（`@Service`）、`<頭>RestInDto`、`<頭>ServiceInDto`、`<頭>RestOutDto`。受け取る値がなければ RestInDto・ServiceInDto は作らない。返す値がなければ RestOutDto は作らない |
+| Mapper・テーブルの形・Example | 作らない。`dao.mapper`・`dao.entity` にある、MyBatis Generator が作ったものを使う。手で直さない。テーブルが変わったら作り直す（`.\gradlew.bat mybatisGenerator`。2人で相談してから。CLAUDE.md 9章） |
+| 自動で作れない SQL（件数をまとめる SQL など） | `dao/mapper/custom/` に手で書く Mapper、XML は `src/main/resources/jp/co/highjunk/equipment/dao/mapper/custom/`。作る前に、Example では書けない理由を作業メモに書く |
+| 自作のチェック用アノテーション | `common/validation/`（common の部品なので、新しく足すときは止めて人に相談する。CLAUDE.md 4.1・9章）。すでにあるものは使ってよい |
 | Enum（決まった値だけを持つ型） | `common/constant/`。新しく足すだけなら作業の中で足してよい（作業メモの「確認してほしい点」に書く）。すでにある Enum を変えるときは、止めて人に相談する（CLAUDE.md 9章） |
+| 2つ以上の API で使う処理、API でない処理 | common に置く（CLAUDE.md 4.1）。common の部品なので、止めて人に相談する |
 | テーブルの変更（Flyway のファイル） | 作らない。必要になったら止めて人に相談する（CLAUDE.md 9章） |
 | common の部品の変更 | しない。必要になったら止めて人に相談する（CLAUDE.md 9章） |
 | ライブラリを足す | しない。必要になったら人に確かめる（CLAUDE.md 3章） |
 
 **書きながら確かめること**（くわしくは CLAUDE.md 5章）
 
-- [ ] 業務のルールは ServiceImpl に書き、controller は受け取る・service を呼ぶ・返すだけ。controller は自分の API の interface（`<APIの名前>Service`）を使い、ServiceImpl を直接使わない。（例外：ログインの開始・終了の LoginSession だけは controller から呼んでよい。CLAUDE.md 5章）
-- [ ] 業務チェック（データベースの中身や業務のルールと照らして確かめるもの。例：重なり、使われているか、貸出中か、本人か）は Validator に書き、ServiceImpl から書き換えの前に呼んでいる。controller からは呼ばない。Validator は読むだけ（`select…`・`count…`）で、書き換えない。
-- [ ] 返す値は `ApiResponse`（ok・created・accepted）で包む。エラーは common.error の例外（BusinessRuleException、NotFoundException、ConflictException、CsvErrorException など）を投げ、自分で JSON を組み立てない。
+- [ ] 業務のルールは ServiceImpl に書き、Controller は受け取る・ServiceInDto を作る・Service を呼ぶ・返すだけ。Controller は自分の API の interface（`<頭>Service`）を使い、ServiceImpl を直接使わない。（例外：ログインの開始・終了の LoginSession だけは Controller から呼んでよい。CLAUDE.md 5章）
+- [ ] Controller が、RestInDto・パスの値・ログインしている人の ID から `<頭>ServiceInDto` を作って Service に渡している。Service は ServiceInDto だけを受け取り、RestInDto やパスの値をそのまま受け取らない（CLAUDE.md 5章）。
+- [ ] 形式のチェック（必須・文字数・形など、受け取った値だけで分かるもの）は RestInDto の印（`@NotBlank`・`@Size` など）に書き、Controller の引数に `@Valid` を付けている。メッセージは画面設計の文のまま。
+- [ ] DB との整合性と Enum のチェック（例：重なり、使われているか、貸出中か、本人か）は、ServiceInDto に common.validation のチェック用アノテーションで書き、ServiceImpl の `@Transactional` の中で Bean Validation で確かめている。チェック用アノテーションの中は読むだけ（Mapper の `selectByExample`・`countByExample` など）で、書き換えない。古い形の Validator クラスは作らない。
+- [ ] 返す値は `<頭>RestOutDto` を `ApiResponse`（ok・created・accepted）で包む。dao.entity をそのまま返さない。エラーは CLAUDE.md 5章の返し方で返し、自分で JSON を組み立てない。
 - [ ] すべての API に、必要な権限項目の確認（`@PreAuthorize("hasAuthority('…')")`）がある。コードはデータ設計 5.3 のもの。
-- [ ] ID を受け取る API は、その人が操作してよい対象かを Validator で確かめている（IDOR を防ぐ）。
-- [ ] 入力チェックを、画面設計のとおりにサーバー側でも行う（dto に `@NotBlank`・`@Size` などの印、controller の引数に `@Valid`）。メッセージは画面設計の文のまま。
-- [ ] 2つ以上の書き換えを1つの操作として行う ServiceImpl のメソッドに `@Transactional` を付けた（Validator の呼び出しもこの中）。interface・controller・validator・mapper には付けない。Slack の送信はその外で、書き込みが確定してから行う。
+- [ ] ID を受け取る API は、その人が操作してよい対象かを ServiceInDto のチェックで確かめている（ログインしている人の ID は Controller が ServiceInDto に入れる。IDOR を防ぐ）。
+- [ ] 2つ以上の書き換えを1つの操作として行う ServiceImpl のメソッドに `@Transactional` を付けた（ServiceInDto のチェックもこの中）。interface・Controller・Mapper には付けない。Slack の送信はその外で、書き込みが確定してから行う。
 - [ ] 今の日時は `java.time.Clock` から取る（`LocalDate.now(clock)`）。`LocalDate.now()` のように直接取らない。
-- [ ] SQL は XML に書き、値は `#{}` で渡す（`${}` で文字をつなげない）。
+- [ ] DB の読み書きは dao の Mapper で行い、条件は Example の Criteria で組み立てる（例：`example.createCriteria().andDeletedAtIsNull()`）。手で書く SQL（dao.mapper.custom）は XML に書き、値は `#{}` で渡す（`${}` で文字をつなげない）。
 - [ ] SQL に JOIN とサブクエリ（SQLの中にもう1つ SELECT を入れる書き方）がない。複数のテーブルはテーブルごとに読み、Java で突き合わせる。
-- [ ] ループの中で mapper を呼んでいない（N+1 を防ぐ）。ID を集めて `IN`（`<foreach>`）で1回で読む。
+- [ ] ループの中で Mapper を呼んでいない（N+1 を防ぐ）。ID を集めて `IN`（Criteria の `andIdIn`、手で書く XML なら `<foreach>`）で1回で読む。
 - [ ] 一覧・検索で、削除済みの行（`deleted_at` が入っている行）を出さない。削除は論理削除。
 - [ ] 編集する API は楽観ロック（`version` 列）で、ほかの人が先に保存していたら 409。
-- [ ] ほかの機能の service・validator・model と、`mapper.<ほかの機能>`・`dto.<ほかの機能>` を import していない。使うのは自分の機能と common だけ。
-- [ ] mapper の import が、自分の機能の `mapper.<機能名>` のものになっている（同じ名前の mapper がほかの機能にもあるため。CLAUDE.md 5章）。
+- [ ] ほかの API のパッケージ（同じまとまりの API も）のクラスを import していない。使うのは自分の API のパッケージと、common・dao だけ（CLAUDE.md 5章）。
+- [ ] Mapper とテーブルの形の import が、新しい `dao.mapper`・`dao.entity` のものになっている（作り直しの途中は、古い `mapper.<機能名>` にも同じ名前の Mapper があるため）。
+- [ ] Lombok は、読みやすくなる所で使ってよい。`record` は使わない（CLAUDE.md 3章）。
 - [ ] 変えられる値（時刻・期限・回数）をプログラムに直接書かず、設定にしている（API設計 6章）。
 - [ ] ログに、パスワード・パスワード設定用のリンクの合言葉・Slack のトークンを出さない。
-- [ ] 貸出のルール、確認のルールを変えたら、ほかの機能の同じルールも同じように直した（テストは backend-test で直す。作業メモに書いておく）。
+- [ ] 貸出のルール、確認のルールを変えたら、ほかのまとまり（equipment.mine・equipment.management）の同じルールも同じように直した（テストは backend-test で直す。作業メモに書いておく）。
 - [ ] タスクに関係のない所を、ついでに変えていない。気づいた不具合は作業メモの「確認してほしい点」に書く。
 
 足した・変えた・消したファイルは、そのつど `output/<タスク名>/変更ファイル一覧.md` に書く。
@@ -100,7 +102,7 @@ Server のフォルダで、本体とテストのコードが組み立てられ�
 
 ## 5. 詳細設計とコードを突き合わせる
 
-- [ ] 機能全体の2章（クラス・ファイル構成）と、API詳細の4章（処理フロー）・6章（バリデーション）・7章（DB操作）・8章（トランザクション）・9章（エラー）・10章（認証・認可）が、作ったコードと同じ（detailed-design の skill の5章）。
+- [ ] まとまり全体の2章（クラス・ファイル構成）と、API詳細の2.5（ServiceInDto）・4章（処理フロー）・6章（バリデーション）・7章（DB操作）・8章（トランザクション）・9章（エラー）・10章（認証・認可）が、作ったコードと同じ（detailed-design の skill の5章）。
 - [ ] 作りの途中で変えた所は、詳細設計も直した（版と変更履歴も）。
 
 ## 6. 作業記録を書いて、人に報告する

@@ -2,14 +2,14 @@
 name: reverse-engineer
 description: 備品管理システムの今あるコード（Server・Client）を読み、詳細設計（機能全体・APIごと・画面ごと。internaldesign/詳細設計/テンプレート/ の形）を書き起こし、設計書（機能一覧・画面一覧・画面設計・API設計・データ設計）と CLAUDE.md の決まりとの食い違いを一覧にする。コードと設計書は直さない。
 when_to_use: 詳細設計なしに作られたコードの中身を知りたいとき、相手が作った機能の作りを知りたいとき、「loan の作りを書き起こして」「このコードと設計書が合っているか調べて」と頼まれたとき。
-argument-hint: "[機能名（例：category）、API・画面の ID、またはファイル・フォルダのパス]"
+argument-hint: "[まとまり（例：equipment.category）、API・画面の ID、またはファイル・フォルダのパス]"
 ---
 
 # 実装から詳細設計を書き起こす（リバースエンジニアリング）
 
 対象：$ARGUMENTS
 
-（空なら、人に機能名を聞く。）
+（空なら、人にまとまり（または API・画面の ID）を聞く。）
 
 **この skill でしないこと**
 - コード（Server・Client）を直さない。おかしな所を見つけても、食い違い一覧に書くだけにする。
@@ -21,12 +21,15 @@ argument-hint: "[機能名（例：category）、API・画面の ID、または�
 
 ## 1. 読む範囲を決める
 
-機能名が渡されたら、次をすべて読む（パッケージの頭の `jp.co.highjunk.equipment` は省く）。API・画面の ID が渡されたら、その API・画面にかかわる所だけを読む。
+まとまり（CLAUDE.md 4.1 の表の1行）が渡されたら、次をすべて読む（パッケージの頭の `jp.co.highjunk.equipment` は省く）。API・画面の ID が渡されたら、その API・画面にかかわる所だけを読む。
+
+コードは作り直しの途中（CLAUDE.md 4.1）なので、新しい形と古い形のどちらかで書かれている。どちらの形かを確かめて読む。
 
 | リポジトリ | 読むもの |
 |---|---|
-| Server | `<機能名>/`（controller・service（interface と Impl）・validator・model）、`mapper/<機能名>/` と XML（`src/main/resources/jp/co/highjunk/equipment/mapper/<機能名>/`）、`dto/<機能名>/`、使っている `common.constant` の Enum と common の部品、`application*.yml` の使っている設定値、`src/test/java/jp/co/highjunk/equipment/<機能名>/` のテスト |
-| Client | `src/features/<機能名>/`（pages・components・api.ts・types.ts）、`src/routes.tsx` のその機能の行、使っている common の部品、`tests/<機能名>/` |
+| Server（新しい形） | そのまとまりの API のパッケージ（例：`api/equipment/category/` の下。Controller・Service・ServiceImpl・RestInDto・ServiceInDto・RestOutDto）、使っている `dao.mapper`・`dao.entity` と、`dao.mapper.custom` の手で書く Mapper と XML、使っている `common.validation` のチェック用アノテーション、`common.constant` の Enum と common の部品、`application*.yml` の使っている設定値、`src/test/java/` の同じパッケージのテスト |
+| Server（古い形。作り直す前） | `<機能名>/`（controller・service・validator・model）、`mapper/<機能名>/` と XML、`dto/<機能名>/`、使っている Enum と common の部品、設定値、`src/test/java/jp/co/highjunk/equipment/<機能名>/` のテスト |
+| Client | `src/features/` の、そのまとまりのフォルダ（新しい形は `features/equipment/category/` のような入れ子。移す前は `features/category/` のような機能ごと）の pages・components・api.ts・types.ts、`src/routes.tsx` のその行、使っている common の部品、`tests/` の同じ形のフォルダ |
 
 ファイル・フォルダのパスが渡されたら、そのファイルと、そこから呼ばれている所まで読む。
 
@@ -34,12 +37,12 @@ argument-hint: "[機能名（例：category）、API・画面の ID、または�
 
 ## 2. 詳細設計を書き起こす
 
-`internaldesign/詳細設計/README.md` と、テンプレート（`internaldesign/詳細設計/テンプレート/` の機能.md・API.md・画面.md）の形で書く。お手本（category/、まだなければ health/）と同じ書き方にする。
+`internaldesign/詳細設計/README.md` と、テンプレート（`internaldesign/詳細設計/テンプレート/` の機能.md・API.md・画面.md）の形で書く。お手本（作り直した `equipment/category/`）と同じ書き方にする。古い形のコードを書き起こすときも、テンプレートは新しい形を使い、古い形のクラス（validator・model・…Request など）は、そのクラス名のまま書く。
 
 | ファイル | 1つずつ作る単位 | 書くもと |
 |---|---|---|
-| 機能全体 `<機能名>.md` | 機能に1つ | controller の API の一覧、routes.tsx の画面、`@Scheduled`、読んだクラス・ファイル、使っている Enum と common の部品、ほかの機能と同じテーブル・同じルールを使っている所 |
-| API詳細 `<APIのID>_<短い名前>.md` | controller のメソッド（API）ごと | URL・操作・`@PreAuthorize`、dto の項目と印、ServiceImpl の順番、Validator で確かめていること、mapper と XML の SQL、`@Transactional`、投げている例外、Slack を送る所、IDOR の確かめの有無 |
+| まとまり全体 `<まとまりの名前>.md` | まとまりに1つ | Controller の API の一覧、routes.tsx の画面、`@Scheduled`、読んだクラス・ファイル、使っている dao・Enum・common の部品、ほかのまとまりと同じテーブル・同じルールを使っている所 |
+| API詳細 `<APIのID>_<短い名前>.md` | Controller のメソッド（API）ごと | URL・操作・`@PreAuthorize`、RestInDto の項目と印、ServiceInDto の作り方とチェック用アノテーション（古い形なら Validator で確かめていること）、ServiceImpl の順番、Mapper のメソッドと Criteria の条件（手で書く SQL）、`@Transactional`、エラーの返し方、Slack を送る所、IDOR の確かめの有無 |
 | 画面詳細 `<画面のID>_<短い名前>.md` | pages の画面ごと | 部品の組み立て、項目と状態（useState）、入力チェック、ボタンの動き、読み込み中・0件・失敗の表示、api.ts の呼び出し、移り方、画面の文 |
 
 - API・画面の ID は、URL・画面のアドレスを API設計 3章・画面一覧 2章と照らして決める。どれにも当たらない API・画面は、ID を「なし」にしてファイル名を `なし_<短い名前>.md` にし、食い違い一覧の「設計書にない」に書く。
@@ -60,31 +63,32 @@ argument-hint: "[機能名（例：category）、API・画面の ID、または�
 | externaldesign/画面一覧.md | 画面のアドレス、移り方、スマートフォン優先か |
 | externaldesign/データ設計.md | 使っているテーブル・列・制約。論理削除・version の使い方 |
 | externaldesign/機能一覧.md | 業務のルールが抜けていないか、設計書にない動きがないか |
-| internaldesign/CLAUDE.md | 4.1・4.3（置き場所）、5章（service の interface と Impl、業務チェックは Validator、JOIN・サブクエリ、N+1、Clock、`@PreAuthorize`、IDOR、`@Transactional`、Slack、`#{}`、論理削除、楽観ロック、ほかの機能を使わない、命名規則）、6章（テストの決まり） |
+| internaldesign/CLAUDE.md | 4.1・4.3（置き場所）、5章（Service の interface と Impl、ServiceInDto は Controller で作る、チェックは RestInDto と ServiceInDto の2段、dao の Mapper と Criteria、JOIN・サブクエリ、N+1、Clock、`@PreAuthorize`、IDOR、`@Transactional`、Slack、`#{}`、論理削除、楽観ロック、ほかの API のパッケージを使わない、命名規則）、6章（テストの決まり）。古い形のコードは、作り直しの途中なので「決まりに合わない」には数えず、「古い形のまま」と書く |
 | internaldesign/テスト方針.md | API ごとの ①〜⑤ のテスト、画面のテストの大きさ |
 | すでにある詳細設計（あれば） | 書き起こした中身との違い |
 
 ## 4. 書き出す
 
-書き出す場所は `output/<機能名>_リバース_<日付>/`（日付は今日。例：`output/loan_リバース_20261210/`）。
+書き出す場所は `output/<まとまりの名前>_リバース_<日付>/`（日付は今日。例：`output/management_リバース_20261210/`）。
 
 ```
-output/loan_リバース_20261210/
+output/management_リバース_20261210/
 ├─ 食い違い一覧.md
-└─ loan/                     書き起こした詳細設計（Document の詳細設計と同じ形）
-   ├─ loan.md
-   ├─ D-01_貸出履歴を探す.md
-   └─ S-10_貸出履歴.md
+└─ equipment/
+   └─ management/            書き起こした詳細設計（Document の詳細設計と同じ形）
+      ├─ management.md
+      ├─ D-01_貸出履歴を探す.md
+      └─ S-10_貸出履歴.md
 ```
 
 **詳細設計を Document に置くとき**
-- `internaldesign/詳細設計/<機能名>/` が**まだない**ときは、人に「Document に置いてよいか」を確かめてから写す。置くときは、設計書から写す所（「写したもと」）を、README 3章の決まりで設計書の中身に書き直す（コードの中身のままにしない）。
+- `internaldesign/詳細設計/<まとまりのフォルダ>/` が**まだない**ときは、人に「Document に置いてよいか」を確かめてから写す。置くときは、設計書から写す所（「写したもと」）を、README 3章の決まりで設計書の中身に書き直す（コードの中身のままにしない）。
 - **すでにある**ときは、上書きしない。違いを食い違い一覧の「すでにある詳細設計との違い」に書き、どちらに合わせるかを人に決めてもらう。
 
 **食い違い一覧.md の形**
 
 ```
-# 食い違い一覧（<機能名>　YYYY-MM-DD）
+# 食い違い一覧（<まとまり>　YYYY-MM-DD）
 
 読んだコード：（ファイルの数と一覧）
 比べた設計書：（ファイル名・版・章）

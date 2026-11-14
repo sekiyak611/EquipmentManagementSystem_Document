@@ -112,6 +112,7 @@
 | common.passwordlink | パスワード設定用のリンク（合言葉）を作り、DMを送る（A-04、G-03、G-06で使う） |
 | common.web | 組み立てた画面（Client の dist）を配る。画面のアドレスでは index.html を返す |
 | common.constant | Enum（列挙型＝決まった値だけを持つ型。例：備品の管理状態、権限項目のコード）。Enum はすべてここに置く |
+| common.validation | 自作のチェック用アノテーション（ServiceInDto に付け、DB との整合性や Enum を確かめるもの。例：種別があるか）と、その中身（ConstraintValidator）。1つの API でしか使わないものも、ここに置く（2026-11-15 に決めた。API のパッケージどうしは使い合わないため） |
 
 - 2つ以上の API で使う処理と、API でない処理（例：ログインしている人の情報を返す値に組み立てる処理、アカウントロック、パスワードの決まり、ログイン中の人の情報を読み直す処理）は、common に置く。API のパッケージどうしは使い合わないため（5章）。パッケージの名前は、その処理を作り直すときに決め、上の表に足す（2026-11-15 に決めた）。
 - パッケージ名は英小文字だけ。言葉はつなげて書く（例：`itemformanager`）。`import` は Java の予約語（Java が使うので名前にできない言葉）なので、取込は `importer` にする。
@@ -123,7 +124,7 @@
 | `<頭>Service` | 業務の処理の interface（インターフェース＝メソッドの名前・受け取る値・返す値だけを決めた型） |
 | `<頭>ServiceImpl` | 業務の処理の中身 |
 | `<頭>RestInDto` | 画面から受け取る値。形式のチェック（必須、文字数、形）をアノテーションで書く |
-| `<頭>ServiceInDto` | Service に渡す値。DB との整合性（重複、存在するか、使われているか）と Enum のチェックを、自作のチェック用アノテーションで書く |
+| `<頭>ServiceInDto` | Service に渡す値。Controller が、RestInDto・パスの値・ログインしている人の ID から作る。DB との整合性（重複、存在するか、使われているか）と Enum のチェックを、自作のチェック用アノテーション（common.validation）で書く |
 | `<頭>RestOutDto` | 画面に返す値（この名前は、あとで変わるかもしれない。2026-11-15） |
 
 ```
@@ -234,12 +235,13 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 **サーバー（Java）**
 - パッケージは 4.1 のとおり、1つの API に1つ。業務のルールは ServiceImpl に書き、Controller には書かない（2026-11-15 に決めた）。
 - Controller には、その API の URL と操作を1つだけ書く。
+- Controller は、RestInDto・パスの値・ログインしている人の ID から ServiceInDto を作り、Service に渡す（2026-11-15 に決めた）。Service は、受け取る値を ServiceInDto だけにする（RestInDto やパスの値をそのまま受け取らない）。受け取る値がない API（例：一覧で条件がないもの）は、ServiceInDto を作らない。
 - Service は、interface の `<頭>Service` と、中身の `<頭>ServiceImpl`（`implements <頭>Service`）に分け、同じパッケージに置く。`@Service` は ServiceImpl に付ける。Controller は、自分の API の Service の interface を受け取って使い、ServiceImpl を直接使わない。
 - API のパッケージは、ほかの API のパッケージのクラスを使わない（同じまとまりの API どうしも同じ）。使ってよいのは、`common` と `dao` だけ。`batch` も同じで、使ってよいのは `common` と `dao` だけ（api と batch は互いに使わない）。`common` と `dao` から `api`・`batch` を使わない。循環（AがBを使い、BもAを使う形）を作らない。
 - 2つ以上の API で使う処理と、API でない処理は、common に置く（4.1）。API でない処理のクラスは、役目を表す名前にする（例：ログイン中の人の情報を読み直す LoginUserRefresher）。
 - 入力のチェックは2段に分ける。
   - RestInDto：画面設計のとおりの形式のチェック（受け取った値だけで分かるもの。必須、文字数、形式、数の範囲など）。`@NotBlank`・`@Size` などのアノテーションで書き、Controller の引数に `@Valid` を付けて確かめる（Bean Validation＝アノテーションで値を確かめる仕組み）。
-  - ServiceInDto：DB との整合性と Enum のチェック（例：同じ名前の種別がもうある、使われている種別は消せない、すでに貸し出されている、その人が操作してよい対象か）。自作のチェック用アノテーション（`ConstraintValidator`＝自作のチェックの中身を書くための Bean Validation の仕組み。Mapper を読める）で書く。ServiceImpl の `@Transactional` の中で、Bean Validation で確かめる（確かめてから書き換えるまでを1つのまとまりにするため）。今の Validator クラスは使わない。
+  - ServiceInDto：DB との整合性と Enum のチェック（例：同じ名前の種別がもうある、使われている種別は消せない、すでに貸し出されている、その人が操作してよい対象か）。自作のチェック用アノテーション（`ConstraintValidator`＝自作のチェックの中身を書くための Bean Validation の仕組み。Mapper を読める）で書き、common.validation に置く（4.1）。新しく足すときは、common の変更として2人で相談する（9章）。ServiceImpl の `@Transactional` の中で、Bean Validation で確かめる（確かめてから書き換えるまでを1つのまとまりにするため）。今の Validator クラスは使わない。
   - ServiceInDto のチェックは、読むだけにする（Mapper の取得・数える処理だけを使う）。書き換えは ServiceImpl で行う。
   - チェックのメッセージは、画面設計の文のまま。守れないときに返す状態コード（404・409・422 など）と文は、API設計とその API の詳細設計のとおり。ServiceInDto のチェックからそれをどう返すかは、お手本（api.equipment.category）を作り直すときに決めて、ここに書き足す。
 - DB の読み書きは、`dao.mapper` の Mapper で行う。取得の条件は、`dao.entity` の Example の Criteria で組み立てる（例：`example.createCriteria().andDeletedAtIsNull()`）。
