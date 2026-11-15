@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.common.passwordlink.PasswordLinkVerifierApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.common.passwordlink.PasswordLinkVerifierApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>common.passwordlink 合言葉が使えるかの確かめ</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">9</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">0.085s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="blank().html">空・ない合言葉：使えない</a>
+</td>
+<td class="path">blank()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="2">0.002s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="deletedUser().html">削除されたユーザのリンク：使えない</a>
+</td>
+<td class="path">deletedUser()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="doesNotWrite().html">確かめるだけでは何も書き換えない（used_at・revoked_at は空のまま。何度でも使える）</a>
+</td>
+<td class="path">doesNotWrite()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="8">0.008s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="expired().html">期限切れ：使えない（期限の1秒後）。期限の1分前なら使える（境界値）</a>
+</td>
+<td class="path">expired()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="otherUsersLink().html">ほかの人のリンクの合言葉でも、その人のリンクとして確かめる</a>
+</td>
+<td class="path">otherUsersLink()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="revokedByNewerLink().html">より新しいリンクが作られた（前のリンクは revoked_at が入る）：前のリンクは使えず、新しいリンクは使える</a>
+</td>
+<td class="path">revokedByNewerLink()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="unknown().html">データベースにない合言葉：使えない</a>
+</td>
+<td class="path">unknown()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="8">0.008s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="usable().html">作ったばかりのリンク：使える。リンクの行・ユーザ・用途を返す（用途ごと）</a>
+</td>
+<td class="path">usable()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="14">0.014s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="used().html">使用済み（used_at が入っている）：使えない</a>
+</td>
+<td class="path">used()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="8">0.008s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.common.passwordlink.PasswordLinkVerifierApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.common.passwordlink.PasswordLinkVerifierApiTest">2026-11-15T17:44:41.877+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.passwordlink.PasswordLinkVerifierApiTest]: PasswordLinkVerifierApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:44:41.878+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.passwordlink.PasswordLinkVerifierApiTest
+2026-11-15T17:44:41.879+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.passwordlink.PasswordLinkVerifierApiTest]: PasswordLinkVerifierApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:44:41.879+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:44:41.880+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.passwordlink.PasswordLinkVerifierApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at 2026/11/15 17:44:45</p>
+</div>
+</div>
+</body>
+</html>

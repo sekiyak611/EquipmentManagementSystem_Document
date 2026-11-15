@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="A-03 ログイン中の人の情報" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-15T08:44:31.633Z" hostname="DESKTOP-32H5PQ0" time="0.145">
+  <properties/>
+  <testcase name="ログインしていなければ 401（ログインしてください。）" classname="jp.co.highjunk.equipment.api.auth.me.AuthMeApiTest" time="0.005"/>
+  <testcase name="ログインしていれば、A-01 と同じ形で返す" classname="jp.co.highjunk.equipment.api.auth.me.AuthMeApiTest" time="0.067"/>
+  <system-out><![CDATA[2026-11-15T17:44:31.634+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.me.AuthMeApiTest]: AuthMeApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:44:31.702+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.me.AuthMeApiTest
+2026-11-15T17:44:31.703+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.me.AuthMeApiTest]: AuthMeApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:44:31.703+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:44:31.705+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.me.AuthMeApiTest
+2026-11-15T17:44:31.770+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
