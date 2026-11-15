@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="A-01 ログイン" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-15T08:24:46.935Z" hostname="DESKTOP-32H5PQ0" time="1.023">
+  <properties/>
+  <testcase name="パスワードがまだない人（最初の総務の担当者）：401。同じ文" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.128"/>
+  <testcase name="メールアドレスの大文字・小文字は区別しない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.096"/>
+  <testcase name="登録のないメールアドレス：401。パスワードが違うときと同じ文" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.067"/>
+  <testcase name="削除されたユーザ：正しいパスワードでも 401。同じ文" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.069"/>
+  <testcase name="パスワードが違う：401。ログインできない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.075"/>
+  <testcase name="ログインすると、ログイン状態がセッションに入り、セッションの番号が変わり、XSRF-TOKEN が作り直される" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.111"/>
+  <testcase name="入力の誤り：メールアドレス・パスワードが空なら 400。入力欄ごとに画面設計の文" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.021"/>
+  <testcase name="一般社員：権限項目は LOAN_SELF・CONFIRM_SELF の順、最初の画面は自分の備品（MY_EQUIPMENT）" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.069"/>
+  <testcase name="総務：200。data に氏名・権限・18個の権限項目（並び順どおり）、最初の画面は備品一覧（EQUIPMENT_LIST）" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.081"/>
+  <testcase name="入力の誤り：メールアドレスの形でなければ 400" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.009"/>
+  <testcase name="ロック中のユーザ：正しいパスワードでも 401。同じ文（画面設計 2.1）" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.067"/>
+  <testcase name="メールアドレスは254文字まで。254文字は入力の誤りにならず（登録がないので 401）、255文字は 400" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.067"/>
+  <testcase name="ログインしたままにする（rememberMe）を送っても、今はふつうにログインする（ZPOP-125 で作る）" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest" time="0.066"/>
+  <system-out><![CDATA[2026-11-15T17:24:46.937+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest]: AuthLoginApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:24:47.018+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest
+2026-11-15T17:24:47.019+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest]: AuthLoginApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:24:47.020+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:24:47.021+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.login.AuthLoginApiTest
+2026-11-15T17:24:47.112+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードがまだない userId=1）
+2026-11-15T17:24:47.214+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+2026-11-15T17:24:47.312+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-15T17:24:47.379+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-15T17:24:47.447+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=2）
+2026-11-15T17:24:47.524+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+2026-11-15T17:24:47.655+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-15T17:24:47.730+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+2026-11-15T17:24:47.818+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（ロック中 userId=3）
+2026-11-15T17:24:47.884+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-15T17:24:47.951+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
