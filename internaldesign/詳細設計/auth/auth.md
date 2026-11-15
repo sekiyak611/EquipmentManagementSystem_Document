@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v2.0 2026-11-15 |
-| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01） |
+| 版 | v2.1 2026-11-15 |
+| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01）、ZPOP-124（アカウントロック） |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の4章（F-01・F-02）・8章、API設計.md v1.1 の2.2・3.1・4.1・4.2・7章、画面設計.md v1.1 の1・2章、データ設計.md v1.0 の5.1〜5.4、基本設計書.md v1.1 の5章 |
 
@@ -20,7 +20,7 @@ F-02：ログアウト。
 | 作らないもの | タスク | 今回の動き |
 |---|---|---|
 | ログインしたままにする（60日間） | ZPOP-125 | rememberMe は受け取るが使わない。画面のチェックも送るだけ |
-| アカウントロック（失敗の回数を数える、ロックする、DM） | ZPOP-124 | 失敗の回数は数えない。locked_at が入っている人（ロック中）はログインできない（ここだけ今回作る） |
+| アカウントロック（失敗の回数を数える、ロックする、DM） | ZPOP-124 | **作成済み（ZPOP-124）**。A-01 が、パスワードを間違えた回数を数え、5回続けたらロックして DM（③）を送る（A-01 の 4.1）。ロックの解除（パスワードの再設定）は A-06 |
 | パスワード設定・再設定・変更（A-04〜A-07、S-02〜S-04） | ZPOP-58〜61、104〜106 | 画面の「パスワードを忘れた方はこちら」は置くが、移る先（S-02）はまだない |
 
 ### 1.1 API一覧
@@ -68,6 +68,7 @@ F-02：ログアウト。
 |---|---|---|---|
 | api.auth.login.controller | AuthLoginController・AuthLoginRestInDto | A-01 の入口と、受け取る値（形式のチェック） | A-01 |
 | api.auth.login.service | AuthLoginService（インターフェース）・AuthLoginServiceImpl・AuthLoginServiceInDto | A-01 の業務の処理。メールアドレスでユーザを読み、Validator に渡す。返す値は common.security.LoginUserInfoAssembler で作る | A-01 |
+| api.auth.login.service | AuthLoginFailureRecorder・AuthLoginLockNotifier | パスワードを間違えた回数を数える・ロックする・リンクを作る（`@Transactional`）／ロックしたときのDM（③）を作って送る（ZPOP-124。A-01 の 4.1） | A-01 |
 | api.auth.login.validator | AuthLoginValidator・AuthLoginValidatorDto | パスワードの照らし合わせ・ロック（R-1・R-2・R-7）。読んだユーザが要るので Validator。守れなければ UnauthorizedException | A-01 |
 | api.auth.login.model | AuthLoginRestOutDto | A-01 で返す値（API設計 4.2 の形） | A-01 |
 | api.auth.logout.controller | AuthLogoutController | A-02 の入口。Service はなく、LoginSession を直接呼ぶ（CLAUDE.md 5章の例外）。受け取る値・返す値もない | A-02 |
@@ -76,7 +77,8 @@ F-02：ログアウト。
 | api.auth.me.model | AuthMeRestOutDto | A-03 で返す値（API設計 4.2 の形） | A-03 |
 | common.security | LoginUserInfoAssembler・LoginUserInfo | ユーザの行から、ログインしている人の情報と権限項目を作る（A-01・A-03 で使うので common。2026-11-15 に決めた） | A-01・A-03 |
 | common.security | LoginUserRefresherImpl | LoginUserRefresher の中身。APIを呼ぶたびの権限項目の読み直し（R-3・R-4）。API でない処理なので common（2026-11-15 に auth から移した） | 全API |
-| dao.mapper・dao.entity | UserMapper・RoleMapper・RolePermissionMapper・PermissionMapper と、テーブルの形・Example | users・roles・role_permissions・permissions を読む（MyBatis Generator が作ったもの） | A-01・A-03、全API |
+| dao.mapper.custom | UserCustomMapper#incrementFailedLoginCount | 失敗の回数を1増やす（`+ 1`。Example では書けない。ZPOP-124） | A-01 |
+| dao.mapper・dao.entity | UserMapper・RoleMapper・RolePermissionMapper・PermissionMapper・PasswordTokenMapper と、テーブルの形・Example | users・roles・role_permissions・permissions を読む（MyBatis Generator が作ったもの） | A-01・A-03、全API |
 | （テスト）api.auth.login・api.auth.logout・api.auth.me | AuthLoginApiTest・AuthLogoutApiTest・AuthMeApiTest | A-01・A-02・A-03 のテスト（API 1本に1つ） | A-01〜A-03 |
 | （テスト）common.security | LoginUserRefresherApiTest | APIを呼ぶたびの読み直しのテスト | 全API |
 | （テスト）testsupport | AuthApiTestBase | 上のテストで共通に使う値と道具（開発用のユーザ、ログインしてセッションを受け取る、など） | |
@@ -110,6 +112,8 @@ F-02：ログアウト。
 | common.security.LoginUserRefresher（今回足す） | APIを呼ぶたびに権限項目を読み直すための約束（インターフェース）。中身は同じ common.security の LoginUserRefresherImpl |
 | common.error.UnauthorizedException（今回足す） | 401 と文を返す |
 | common.error.ApiResponse | 成功の返す値を ok で包む |
+| common.passwordlink.PasswordLinkIssuer・IssuedPasswordLink（ZPOP-124。common.md 3.14） | ロックしたときの、パスワード設定用のリンク（用途 LOCK）を作る |
+| common.slack.SlackSender（ZPOP-123。common.md 3.13） | ロックのDM（③）を送る |
 
 ## 3. ほかの機能への影響
 
@@ -141,3 +145,4 @@ F-02：ログアウト。
 | v1.1 | 2026-11-10 | 4章の判断を人が確かめた（No.3・4・6・7 を済）。No.3 は、命名規則を `<テーブルの名前>Mapper` のままにすると決めたので、AuthMapper をテーブルごとの4つの mapper に分けた（2.1） |
 | v1.2 | 2026-11-10 | controller と service を API 1本に1つずつに分けた（AuthController → AuthLoginController・AuthLogoutController・AuthMeController、AuthService → AuthLoginService・AuthMeService と LoginUserRefresherImpl）。テストも API ごとに分けた（2.1。CLAUDE.md 5章の決まりの変更） |
 | v2.0 | 2026-11-15 | パッケージ構成の変更で、api.auth に作り直した（2026-11-15）。クラス名・パッケージ・Mapper のメソッドを新しい形（controller・service・validator・model、dao の Mapper と Example、手で書く Mapper、common の部品）に書き換えた。外から見た動きは変わらない。2.1 のクラスの表を書き直した |
+| v2.1 | 2026-11-15 | ZPOP-124：アカウントロックを作った。A-01 が、パスワードを間違えた回数を数え、5回続けたらロックし、本人にSlackのDM（画面設計 9章の③。パスワード設定用のリンク入り）を送る。パスワード設定用のリンクを作る部品（common.passwordlink）も、このタスクで作った（common.md 3.14）。1章・2章を直した |

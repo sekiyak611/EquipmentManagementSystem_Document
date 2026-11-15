@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="C-03 備品を登録する" tests="20" skipped="0" failures="0" errors="0" timestamp="2026-11-15T08:06:35.012Z" hostname="DESKTOP-32H5PQ0" time="0.385">
+  <properties/>
+  <testcase name="ログインしていない：401" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.006"/>
+  <testcase name="必須だけ：ほかの項目は null。昇降・ピボットは未設定（null）" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.037"/>
+  <testcase name="管理番号がほかの備品と重なる：400「この管理番号はすでに使われています」。削除済みの備品の番号は使い直せる" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.023"/>
+  <testcase name="モデル・シリアルNo が101文字、備考が501文字：それぞれの文" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.006"/>
+  <testcase name="すべての項目：201。data は C-01 の1件と同じ形。管理状態は管理中、最終確認日は今日、version は 0" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.019"/>
+  <testcase name="日付の形でない：400、errors は null" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.006"/>
+  <testcase name="ない種別・削除された種別：400、種別の欄に「種別を選んでください」" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.014"/>
+  <testcase name="文字の項目は前後の空白（全角も）を取り除き、空・空白だけなら null にする" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.014"/>
+  <testcase name="購入日：今日は登録でき、明日は「購入日は今日以前の日付を入力してください」" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.017"/>
+  <testcase name="文字数の上限ちょうどは登録できる" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.015"/>
+  <testcase name="誤りが重なると、まず管理番号・種別（ServiceInDto）を返し、それが直ってから購入日・保証期日（Validator）を返す" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.014"/>
+  <testcase name="EQUIPMENT_CREATE がない（一般社員）：403。登録しない" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.006"/>
+  <testcase name="&quot;管理番号が空&quot;" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.015"/>
+  <testcase name="&quot;管理番号がない&quot;" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.007"/>
+  <testcase name="&quot;管理番号が31文字&quot;" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.009"/>
+  <testcase name="&quot;種別がない&quot;" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.008"/>
+  <testcase name="&quot;メーカーが51文字&quot;" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.007"/>
+  <testcase name="&quot;サイズが21文字&quot;" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.008"/>
+  <testcase name="&quot;解像度が21文字&quot;" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.008"/>
+  <testcase name="保証期日：購入日と同じ日は登録でき、前の日は「保証期日は購入日以降の日付を入力してください」。購入日がなければ確かめない" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest" time="0.02"/>
+  <system-out><![CDATA[2026-11-15T17:06:35.014+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest]: EquipmentManagementEntryItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:06:35.087+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest
+2026-11-15T17:06:35.088+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest]: EquipmentManagementEntryItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:06:35.089+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest
+2026-11-15T17:06:35.123+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.e.i.s.EquipmentManagementEntryItemServiceImpl - 備品を登録しました（id=7, managementNo=C001, categoryId=3）
+2026-11-15T17:06:35.146+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.e.i.s.EquipmentManagementEntryItemServiceImpl - 備品を登録しました（id=10, managementNo=A002, categoryId=1）
+2026-11-15T17:06:35.151+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.e.i.s.EquipmentManagementEntryItemServiceImpl - 備品を登録しました（id=11, managementNo=a001, categoryId=1）
+2026-11-15T17:06:35.176+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.e.i.s.EquipmentManagementEntryItemServiceImpl - 備品を登録しました（id=12, managementNo=E015, categoryId=1）
+2026-11-15T17:06:35.212+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.e.i.s.EquipmentManagementEntryItemServiceImpl - 備品を登録しました（id=13, managementNo=A001, categoryId=1）
+2026-11-15T17:06:35.227+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.e.i.s.EquipmentManagementEntryItemServiceImpl - 備品を登録しました（id=14, managementNo=A001, categoryId=1）
+2026-11-15T17:06:35.247+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.e.i.s.EquipmentManagementEntryItemServiceImpl - 備品を登録しました（id=15, managementNo=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, categoryId=1）
+2026-11-15T17:06:35.384+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.e.i.s.EquipmentManagementEntryItemServiceImpl - 備品を登録しました（id=17, managementNo=A001, categoryId=1）
+2026-11-15T17:06:35.392+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.e.i.s.EquipmentManagementEntryItemServiceImpl - 備品を登録しました（id=18, managementNo=A003, categoryId=1）
+2026-11-15T17:06:35.399+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:06:35.401+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest$Race
+2026-11-15T17:06:35.401+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:06:35.401+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest]: EquipmentManagementEntryItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:06:35.402+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest$Race
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

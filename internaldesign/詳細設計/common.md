@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.19 2026-11-15 |
-| Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品） |
+| 版 | v1.20 2026-11-15 |
+| Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
 ## 1. 概要
@@ -22,7 +22,7 @@
 | common.slack | Slack送信の部品と、テスト用の偽物・送った内容を読み出すAPI | 作成済み（ZPOP-123。3.13） |
 | common.csv | CSVの読み書き | 未作成（使う機能のタスクで章を足す） |
 | common.calendar | 祝日・催促日の計算、「今月確認済み」の判定 | 「今月確認済み」の判定だけ作成済み（2026-11-11。C-01 の前の共通作業。3.11）。祝日・催促日は ZPOP-126 で足す |
-| common.passwordlink | パスワード設定用のリンク | 未作成（A-04 の ZPOP-58 で章を足す） |
+| common.passwordlink | パスワード設定用のリンク | 作成済み（ZPOP-124。3.14。リンクを作るところまで。A-04・A-05・A-06 ほかが使う） |
 | common.web | 組み立てた画面（Client）をサーバーから配る | 作成済み（ZPOP-22）。3.9 |
 | テーブルと最初のデータ | Flyway の SQL（db/migration） | 作成済み（ZPOP-122）。詳細設計 [テーブル.md](テーブル.md) |
 | common.constant | Enum（決まった値だけを持つ型）をまとめる場所 | 作成済み（2026-11-04）。今は HealthState だけ。各機能が足していく（2.3） |
@@ -66,6 +66,8 @@
 | common.error | GlobalExceptionHandler | controller・service で起きたエラーを、返す値の形に変える |
 | common.error | ApiResponseWriter | controller の外（Spring Security の中）で、返す値の形を書き出す |
 | common.web | SpaWebConfig | 組み立てた画面のファイルを配る。画面のアドレス（/loans など）で開かれたときは index.html を返す（3.9） |
+| common.passwordlink | PasswordLinkIssuer・IssuedPasswordLink・PasswordLinkTokens | パスワード設定用のリンクを作る（合言葉を作る・ハッシュで保存する・前のリンクを無効にする・アドレスを作る）（3.14） |
+| common.constant | PasswordLinkPurpose | リンクの用途（RESET・REGISTER・LOCK。データ設計 5.8 の purpose の値） |
 | common.slack | SlackSender・SlackDirectMessage・SlackSendResult | SlackのDMを送る約束（インターフェース）と、1通のDM、送った結果（3.13） |
 | common.slack | SlackApiSender・SlackClientConfig | 本物のSlackに送る中身と、Slackにつなぐ部品（3.13）。`app.test-support.enabled` が false のときだけ動く |
 | common.slack | FakeSlackSender・SentSlackMessage・SentSlackMessagesResponse・SlackTestSupportController | テスト用の偽物と、送った内容を読み出すAPI（3.13）。`app.test-support.enabled` が true のときだけ動く |
@@ -344,6 +346,39 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 - DMの文面（画面設計 9章の①〜⑦）を、どこで作るか：①〜④ は auth・user が、⑤ は reminder が、それぞれ作って渡す。同じ文面を2つの API が使う（①②③ のリンクの付け方など）ときは、そのタスクで、common に置くかを人と決める。
 - 偽物の FakeSlackSender は、いつも SENT を返す。「Slack のユーザーが見つからない」「送れなかった」の場面は、呼ぶ側の単体テストで、SlackSender を Mockito（偽物を作るテストの道具）の偽物（`@MockitoBean`）に差し替えて作る。画面のテストで、その場面が要るときは、そのタスクで偽物に仕掛けを足す。
 
+### 3.14 パスワード設定用のリンクを作る部品（common.passwordlink。ZPOP-124）
+
+写したもと：機能一覧.md v1.1 の6章（3・4・6・10・12）、データ設計.md v1.0 の5.8（password_tokens）、API設計.md v1.1 の6章（リンクの有効期限・アドレス）、画面設計.md v1.1 の2.1・5章・6章・9章
+
+- 役目：パスワード設定用のリンクを作る。合言葉（トークン）を作り、データベースにはハッシュ（元に戻せない形）で保存し、前のリンクを無効にし、リンクのアドレスを返す。**DMは送らない**（DMの文面は、送る機能が作って渡す。3.13）。
+- 使う機能：アカウントロック（A-01。ZPOP-124。用途 LOCK）。あとで、A-04（RESET）、G-03・G-06（REGISTER。G-06 は送り直し）が使う。
+- 合言葉を確かめる側（A-05・A-06）が使うよう、ハッシュの計算（`PasswordLinkTokens#hash`）も、この部品に置く。
+
+| クラス | 役割 |
+|---|---|
+| PasswordLinkIssuer | リンクを作る（`IssuedPasswordLink issue(long userId, PasswordLinkPurpose purpose)`）。呼ぶ側の `@Transactional` の中で動く（自分では付けない） |
+| IssuedPasswordLink | 作ったリンク。linkUrl（DMに入れるアドレス）、purpose、expiresAt（有効期限の日時） |
+| PasswordLinkTokens | 合言葉を作る（`generate()`）・ハッシュにする（`hash(token)`）。static のメソッドだけ |
+| common.constant.PasswordLinkPurpose | リンクの用途。RESET（再設定）・REGISTER（ユーザ登録）・LOCK（ロック）。値の文字は、データ設計 5.8 の purpose と同じ |
+
+**リンクを作る流れ**（PasswordLinkIssuer#issue）
+
+1. 合言葉を作る：推測されにくいランダムな文字列（SecureRandom＝予測しにくい乱数で作った32バイトを、URL に使える文字だけの形（Base64URL。= なし）にしたもの。43文字）。
+2. ハッシュを作る：合言葉を UTF-8 の文字として SHA-256 に通し、16進数の小文字（64文字）にする（データ設計 5.8 の token_hash）。
+3. 前のリンクを無効にする：その人の、まだ使っていない（used_at が空）・まだ無効にしていない（revoked_at が空）リンクの revoked_at に今（Clock）を入れる（PasswordTokenMapper#updateByExampleSelective。`user_id = ? AND used_at IS NULL AND revoked_at IS NULL`）。用途が違っても無効にする（画面設計 5章「同じ人に新しいリンクを送ったとき、それより前のリンク」）。
+4. 新しいリンクを保存する：PasswordTokenMapper#insert（user_id・token_hash・purpose・expires_at（今＋その用途の有効期限）・created_at）。
+5. リンクのアドレスを作る：`<app.base-url>/password-set?token=<合言葉>`（`app.base-url` の終わりに「/」があれば除く。基本設計書 6章・機能一覧 6章の4のとおり、アクセスしてきた側が送ってくるアドレス情報は使わず、設定の値で作る）。合言葉そのものは、データベースにも記録（ログ）にも残さず、返すアドレスにだけ入れる。
+
+**有効期限**（設定。7.1）：RESET は `app.password-link.reset-validity`（30分）、LOCK は `app.password-link.lock-validity`（30分）、REGISTER は `app.password-link.registration-validity`（3日）。
+
+**記録（ログ）**：INFO で「パスワード設定用のリンクを作りました（userId、用途）」だけ。合言葉・アドレス（合言葉を含む）は出さない（API設計 7章）。
+
+**あとのタスクへの申し送り**
+
+- 5分に1回の判定（`app.password-link.request-interval`。A-04）：password_tokens の created_at を使う（データ設計 8章のインデックス）。A-04 で作る。
+- 合言葉を確かめる（A-05・A-06）：`PasswordLinkTokens#hash` で、受け取った合言葉のハッシュを作り、token_hash で探し、used_at・revoked_at が空で、expires_at が今より後ろかを確かめる。「設定する」を押したときに used_at を入れる（画面設計 9章の注意2）。
+- リンクのアドレス（`/password-set?token=…`）は、S-03（ZPOP-105）で、同じアドレスの画面を作る。S-03 の画面から別のサイトへ移ったとき、アドレスが伝わらないよう、Referrer-Policy を no-referrer にする（機能一覧 6章の5）のも S-03 で行う。
+
 ## 4. データベース
 
 common には mapper（データベースを読み書きする部品）はない。データベースへのつなぎ方を、設定ファイルで次のように決めている。
@@ -502,6 +537,8 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 | common.slack.SlackApiSenderTest | 単体（Slack の部品を Mockito の偽物にする） | 送れた：SENT で、見つけたユーザーのIDを宛先に、見出し・本文の入った文を、リンクのプレビューなしで送る／ユーザーが見つからない（users_not_found）：USER_NOT_FOUND で、メッセージは送らない／Slack がほかの error で断った・メッセージの送信が ok でない・通信の失敗：FAILED／トークンが空：FAILED で、Slack を呼ばない／記録（ログ）に、本文・見出し・トークンが出ない |
 | common.slack.FakeSlackSenderTest | 単体（時計を止める） | 送ると SENT が返り、記録に宛先・見出し・本文・送った日時（日本時間）が、送った順で入る／clear で空になる／記録を読んだあとに送っても、読んだ一覧は変わらない |
 | common.slack.SlackTestSupportApiTest | 単体（API） | テストの設定：GET で送った内容が古い順に出る・1通もなければ空／DELETE で空になる／ログインなし・CSRFの合言葉なしで呼べる。本番の設定（`app.test-support.enabled` を false にして起動）：GET・DELETE とも 404 で、SlackSender は SlackApiSender、読み出しの controller はない |
+| common.passwordlink.PasswordLinkTokensTest | 単体 | 合言葉は43文字で、URL に使える文字だけ（英数字・「-」「_」）／毎回違う（1000個で重ならない）／ハッシュは64文字の16進数（小文字）で、同じ合言葉なら同じ値・違えば違う値／既知の値（"abc" の SHA-256）と一致する |
+| common.passwordlink.PasswordLinkIssuerApiTest | 単体（API。データベースを使う） | 用途ごとの有効期限（RESET・LOCK は30分、REGISTER は3日）／保存するのはハッシュで、合言葉そのものは保存されない（アドレスの合言葉のハッシュが token_hash と同じ）／アドレスは `<app.base-url>/password-set?token=…`（base-url の終わりの「/」は除く）／前のリンク（未使用・未無効）が無効になり、使用済みのリンクと、ほかの人のリンクは変わらない／ログに合言葉が出ない |
 | common.calendar.MonthlyConfirmationRuleTest | 単体（時計を止める） | 今月の1日（月の初日・末日・年の変わり目）／今月なら確認済み／未記入・先月・去年の同じ月は未確認／日本時間の月で判定する（UTC ではまだ前の月の時刻） |
 
 テストを書くときの決まり（CLAUDE.md 6章）：
@@ -536,6 +573,10 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 18. **DMの文の見た目（3.13）**：画面設計 9章は「見出し」と「本文」だけを決めていて、見た目の決まりがないので、見出しを太字（`*見出し*`）にし、空行をはさんで本文を続けた。外から見えるか：**はい**（Slack に出る見た目）。
 19. **Slack の待ち時間は、SDK のままにした**：接続・読み・書きとも、SDK の初めの設定（10秒）。A-04 などは、Slack が遅いとき、その分だけ返事が遅くなる。短くしたいときは、呼ぶ機能のタスクで決める。外から見えるか：はい（返事の遅さ）。
 20. **本物の送り先は、DMの宛先を Slack のユーザーIDにした**：`chat.postMessage` に、メールアドレスで見つけたユーザーのIDを宛先として渡すと、アプリとのDMに届く（基本設計書 6章「DMの送り方」）。外から見えるか：いいえ。
+
+21. **パスワード設定用のリンクの合言葉は、SecureRandom の32バイトを Base64URL にした43文字にした**：機能一覧 6章の3「推測されにくいランダムな文字列」を満たす長さ。外から見えるか：はい（DMのリンクの長さ。長くない）。
+22. **リンクのアドレスを `<app.base-url>/password-set?token=<合言葉>` にした（3.14）**：画面設計に S-03 のアドレスがないため。S-02 の `/password-reset` に合わせた。S-03（ZPOP-105）で、同じアドレスの画面を作る。外から見えるか：**はい**（DMのリンク）。
+23. **前のリンクを無効にするとき、用途が違っても無効にする（3.14）**：画面設計 5章は「同じ人に新しいリンクを送ったとき、それより前のリンク」と書いていて、用途を分けていないため。たとえば、ユーザ登録のリンクを持つ人が、再設定を依頼すると、登録のリンクは使えなくなる。外から見えるか：はい。
 
 ## 11. 画面（Client）の共通部品
 
@@ -733,3 +774,4 @@ EquipmentManagementSystem_Client/
 | v1.17 | 2026-11-15 | A-01〜A-03・A-08・C-01・C-03・C-06 を新しい形に作り直したので、2.3（置き場所）を dao と API のパッケージの形に書き直した。3.10 に LoginUserRefresherImpl・LoginUserInfoAssembler（auth から移した）を足し、3.12 に common.equipment を足した |
 | v1.18 | 2026-11-15 | テストの表の種類を「結合（API）」から「単体（API）」に、「結合（アプリを起動）」から「単体（アプリを起動）」にした（テスト方針 v1.5。2026-11-15 に人が決めた。機能をまたいだ結合はシナリオテストで確かめるため）。テストの中身は変えていない。証跡のフォルダ名は作ったときのまま |
 | v1.19 | 2026-11-15 | ZPOP-123：Slack送信の部品（common.slack。3.13）を足した。送った結果を値で返す（SlackSender）、本物（SlackApiSender。Slack Java SDK）、偽物（FakeSlackSender）、送った内容を読み出すAPI（GET・DELETE /api/test-support/slack-messages）。SecurityConfig に test-support のアドレスを足した（3.2）。基本設計書 v1.5 のスコープ（users:read を足した）に合わせた。10章に 14〜20 を足した |
+| v1.20 | 2026-11-15 | ZPOP-124：パスワード設定用のリンクを作る部品（common.passwordlink。3.14）と、Enum の PasswordLinkPurpose を足した（1章・2.1・9章・10章の21〜23）。A-01 のアカウントロック（auth/A-01_ログイン.md 4.1）から使う |
