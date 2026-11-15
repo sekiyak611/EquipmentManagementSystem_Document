@@ -56,7 +56,7 @@ Client のフォルダ（`EquipmentManagementSystem_Client`）と Document の�
 - [ ] 詳細設計とコードが食い違っていない。
 
 **フォルダと部品の使い方**（CLAUDE.md 4.3・5章）
-- [ ] `src/features/<まとまりのフォルダ>/` の中が pages・components・api.ts・types.ts に分かれている。ファイル名に画面ID がない。フォルダが CLAUDE.md 4.3 の features の表のとおり（features を移す途中に作った画面は、置き場所を人に確かめたかを作業メモで見る）。
+- [ ] `src/features/<まとまりのフォルダ>/` の中が pages・components・api.ts・types.ts に分かれている。ファイル名に画面ID がない。フォルダが CLAUDE.md 4.3 の features の表のとおり。
 - [ ] ほかのまとまりのフォルダ（同じ `equipment/` の下のほかのフォルダも）のものを import していない。使うのは自分のまとまりと common だけ。
 - [ ] API は common/api の `apiGet`・`apiPost`・`apiPut`・`apiDelete`・`useApi` で呼んでいる。`fetch` を直接呼んでいない。
 - [ ] 入力欄は MUI と `useState`。使わないと決めたライブラリ（TanStack Query、React Hook Form）や、新しいライブラリを使っていない（package.json が変わっていたら指摘）。

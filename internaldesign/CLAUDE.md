@@ -171,7 +171,7 @@ jp.co.highjunk.equipment
 EquipmentManagementSystem_Client/
 ├─ src/
 │  ├─ main.tsx            入口。MUIのテーマと画面の切り替えを組み立てる
-│  ├─ routes.tsx          URLと画面（S-01〜S-19）の対応表
+│  ├─ routes.tsx          URLと画面（S-01〜S-21）の対応表
 │  ├─ common/             共通部品
 │  │  ├─ api/             APIの呼び出し（CSRFトークンを付ける、エラーの形、401・403のときの移り方）、値の取り込みと保持
 │  │  ├─ auth/            ログイン中の人と権限項目（A-03）。権限によるボタンの出し分け
@@ -183,17 +183,16 @@ EquipmentManagementSystem_Client/
 │     ├─ auth/            S-01〜S-04
 │     ├─ equipment/
 │     │  ├─ mine/         S-05、S-06
-│     │  ├─ management/   S-07〜S-11
+│     │  ├─ management/   S-07〜S-11、S-20、S-21
 │     │  ├─ reminder/     S-12
 │     │  └─ category/     S-13
-│     ├─ user/            S-14、S-15
-│     ├─ role/            S-16、S-17
-│     └─ importer/        S-18（1つの画面のまま置くか、画面を分けるかは未定。フォルダを移すまでに決める）
+│     ├─ user/            S-14、S-15、S-18
+│     └─ role/            S-16、S-17
 └─ tests/                 Playwrightのテスト（features と同じ形のフォルダに分ける）
 ```
 
 - tests/ のフォルダも、features と同じ形に分ける。
-- **移す途中の注意（2026-11-15〜）**：今の features/ と tests/ は、まだ古い形（auth・mine・equipment・loan・confirmation・reminder・category・user・role・importer）のまま。新しいまとまりに移すまでに新しい画面を作るときは、どちらに置くかを人に確かめる。移し終えたら、この行を消す。
+- S-18（一括登録）は、2026-11-15 に、ユーザ（S-18。user）・備品（S-20）・今貸出中の情報（S-21。どちらも equipment/management）の3つの画面に分けた（画面一覧 v1.1、画面設計 v1.5 の21章）。Server の I-01〜I-03 と同じまとまりに置く。
 
 - 各機能の中は、pages/（画面）、components/（その機能だけで使う部品）、api.ts（その機能のAPIの呼び出し）、types.ts（APIで受け渡す値の型）に分ける。
 - 画面からAPIを呼ぶときは、common/api の apiGet・apiPost・apiPut・apiDelete を使う。失敗すると ApiError（status・message・errors）が投げられる（詳細設計 common.md 11.3）。
@@ -302,11 +301,10 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 | テスト（Server） | API のテストは `<頭>ApiTest`（API 1本に1つ）、単体テストは `<テストするクラス>Test`。テストで共通に使う値と道具は、testsupport に、まとまりごとの基底クラス `<まとまりの名前>ApiTestBase`（public abstract）として置き、各 API のテストが継ぐ（API ごとにパッケージが分かれるため。2026-11-15 に決めた） | EquipmentCategorySearchItemApiTest、AuthLoginApiTest、ReminderDateCalculatorTest、testsupport.EquipmentCategoryApiTestBase |
 | 画面（Client） | 画面は `…Page.tsx`、部品は役目を表す名前の `.tsx`（どちらも PascalCase） | CategoryListPage.tsx、CategoryForm.tsx |
 | api.ts の関数 | 読む：`get…`、足す：`create…`、変える：`update…`、消す：`delete…`（camelCase＝最初の単語だけ小文字） | getCategories、createCategory |
-| types.ts の型 | Server の dto と同じ名前 | CategoryResponse |
-| テスト（Client） | `tests/<機能名>/<画面を表す名前>.spec.ts`（小文字と「-」） | tests/category/category-list.spec.ts |
+| types.ts の型 | 中身が分かる名前。受け取る値は `…Request`、返す値は `…Response`（形は Server の RestInDto・RestOutDto と同じにする。名前は Server に合わせない。2026-11-15 に決めた） | CategoryResponse、CategoryCreateRequest |
+| テスト（Client） | `tests/<まとまりのフォルダ>/<画面を表す名前>.spec.ts`（features と同じ形。小文字と「-」） | tests/equipment/category/category-list.spec.ts |
 | 変数・メソッド・関数 | camelCase。定数は大文字と「_」 | lentOn、SUCCESS_DISPLAY_MS |
 
-- 画面（Client）・api.ts・types.ts・テスト（Client）の行は、まだ古い形のまま。画面のフォルダを新しいまとまりに移すとき（4.3）に直す。
 
 ## 6. テスト
 
@@ -409,7 +407,7 @@ npx playwright test
 
 - 新しい API は、作り直した `api.equipment.category`（K-01〜K-04）を手本にして、同じ書き方で作る。詳細設計も、Document の internaldesign/詳細設計/ の、作り直した category の詳細設計を手本にする。
 - Validator・ValidatorDto（業務チェック）は、api.equipment.management.entry.item（C-03 の日付）と api.auth.login（A-01 のパスワード）を手本にする。
-- 画面は、category（S-13。ZPOP-115）を手本にする。
+- 画面は、equipment/category（S-13。ZPOP-115）を手本にする。
 
 **担当**
 

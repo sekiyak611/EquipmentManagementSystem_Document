@@ -37,9 +37,9 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 
 ## 2. テストを書く
 
-手本は、種別管理の画面のテスト（features を移す前は `tests/category/`、移したあとは `tests/equipment/category/`）。
+手本は、種別管理の画面のテスト（`tests/equipment/category/`）。
 
-- [ ] `tests/<まとまりのフォルダ>/`（features と同じ形。例：`tests/equipment/category/`）に置く。features を移す途中は、画面と同じ側（古い形か新しい形か）に置き、迷ったら人に確かめる（CLAUDE.md 4.3）。
+- [ ] `tests/<まとまりのフォルダ>/`（features と同じ形。例：`tests/equipment/category/`）に置く。
 - [ ] スマートフォン優先の画面（S-01〜S-06、S-19）は、スマートフォンと PC の両方で動かす。ほかの画面は PC だけでよい（common.md 11.7）。
 - [ ] 画面の文は、画面設計の文そのもので確かめる（一部だけ一致、で済ませない）。
 - [ ] 待つときは、表示を待つ書き方（`expect(...).toBeVisible()` など）にする。決まった時間だけ待つ書き方（`waitForTimeout`）に頼らない。
