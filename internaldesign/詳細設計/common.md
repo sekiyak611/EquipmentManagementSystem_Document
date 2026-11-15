@@ -2,9 +2,9 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.18 2026-11-15 |
-| Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー） |
-| もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.3 の4・5・9章、externaldesign/画面設計.md 1章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
+| 版 | v1.19 2026-11-15 |
+| Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品） |
+| もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
 ## 1. 概要
 
@@ -19,7 +19,7 @@
 | 設定ファイル | application.yml ほか、secret.example.yml | 作成済み（ZPOP-21） |
 | ログの設定 | logback-spring.xml | 作成済み（ZPOP-21） |
 | テスト用の部品 | TestFlywayConfig、CsrfTestHelper | 作成済み（ZPOP-21） |
-| common.slack | Slack送信の部品 | 未作成（ZPOP-123 で、この資料に章を足す） |
+| common.slack | Slack送信の部品と、テスト用の偽物・送った内容を読み出すAPI | 作成済み（ZPOP-123。3.13） |
 | common.csv | CSVの読み書き | 未作成（使う機能のタスクで章を足す） |
 | common.calendar | 祝日・催促日の計算、「今月確認済み」の判定 | 「今月確認済み」の判定だけ作成済み（2026-11-11。C-01 の前の共通作業。3.11）。祝日・催促日は ZPOP-126 で足す |
 | common.passwordlink | パスワード設定用のリンク | 未作成（A-04 の ZPOP-58 で章を足す） |
@@ -66,11 +66,14 @@
 | common.error | GlobalExceptionHandler | controller・service で起きたエラーを、返す値の形に変える |
 | common.error | ApiResponseWriter | controller の外（Spring Security の中）で、返す値の形を書き出す |
 | common.web | SpaWebConfig | 組み立てた画面のファイルを配る。画面のアドレス（/loans など）で開かれたときは index.html を返す（3.9） |
+| common.slack | SlackSender・SlackDirectMessage・SlackSendResult | SlackのDMを送る約束（インターフェース）と、1通のDM、送った結果（3.13） |
+| common.slack | SlackApiSender・SlackClientConfig | 本物のSlackに送る中身と、Slackにつなぐ部品（3.13）。`app.test-support.enabled` が false のときだけ動く |
+| common.slack | FakeSlackSender・SentSlackMessage・SentSlackMessagesResponse・SlackTestSupportController | テスト用の偽物と、送った内容を読み出すAPI（3.13）。`app.test-support.enabled` が true のときだけ動く |
 | common.constant | HealthState | A-08 の state の値（UP）。health の詳細設計に書く。ほかの Enum も、ここに足す |
 
 | ファイル | 役割 |
 |---|---|
-| build.gradle | 使う部品と版。ソースの文字コードは UTF-8。テストは test プロファイルで、1つずつ順番に動かす。隣の Client で組み立てた画面（dist）があれば取り込む（3.9） |
+| build.gradle | 使う部品と版（Slack Java SDK 1.49.0 を ZPOP-123 で足した。10章の14）。ソースの文字コードは UTF-8。テストは test プロファイルで、1つずつ順番に動かす。隣の Client で組み立てた画面（dist）があれば取り込む（3.9） |
 | settings.gradle | Gradle のプロジェクト名。フォルダ名と同じ EquipmentManagementSystem_Server にする（10章の11） |
 | src/main/resources/application.yml | どの環境でも同じ設定 |
 | src/main/resources/application-dev.yml | 開発（各自のPC）の設定 |
@@ -140,6 +143,7 @@ flowchart TD
 | POST | /api/auth/password-tokens/use | A-06 |
 | GET | /api/health | A-08 |
 
+- `/api/test-support/` で始まるアドレス（3.13。テスト用）は、ログインなしで呼べ、CSRFの合言葉も要らない。`app.test-support.enabled` が false のときは、このアドレスを受け持つ controller がないので、404 になる。
 - ほかの `/api/` で始まるアドレスは、ログインが必要。必要な権限項目は、各APIのメソッドに `@PreAuthorize` で書く（CLAUDE.md 5章）。
 - `/api/` で始まらないアドレス（画面のファイル）は、だれでも受け取れる（ZPOP-22 で配る）。
 - Spring Security が用意するログイン画面・Basic認証・ログアウトは使わない（A-01・A-02 で自分で作った。3.10）。
@@ -289,6 +293,56 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 | EquipmentSummaryAssembler | 備品の行（dao.entity.Equipment）と「備品のID → 借用者のユーザID」から EquipmentSummary を作る。種別の名前と借用者の氏名は、dao の CategoryMapper・UserMapper の selectByExample（andIdIn）でまとめて読む（削除済みも読む）。今月確認済みかは MonthlyConfirmationRule（3.11） |
 
 - C-01・C-06 で使うので common に置く（API どうしは使い合わない。CLAUDE.md 4.1）。各 API は、EquipmentSummary を自分の RestOutDto に写して返す。
+
+### 3.13 Slack送信の部品（common.slack。ZPOP-123）
+
+写したもと：基本設計書.md v1.5 の6章（Slack連携の方式）、画面設計.md v1.1 の9章（SlackのDMの文面）、API設計.md v1.1 の5章・6章（テストでは偽物、ボットトークン、テスト用の切り替え）
+
+- 役目：ユーザに登録したメールアドレスで Slack のユーザーを探し、そのユーザーにアプリからDMを送る。DMの文面（画面設計 9章の①〜⑦）は、送る機能が作って渡す。この部品は文面を持たない。
+- 使う機能：パスワード関係（A-04、A-01 のロック、A-06・A-07、G-03・G-06）と、催促（ZPOP-127）。見張り役（monitor）は Server の部品を使わない（CLAUDE.md 4.2）ので、使わない。
+- **Slack の呼び出しは `@Transactional` の中で行わない**（CLAUDE.md 5章）。書き込みが確定してから呼ぶ。呼ぶ側の決まり。
+
+| クラス | 役割 |
+|---|---|
+| SlackSender | DMを送る約束。`SlackSendResult sendDirectMessage(String email, SlackDirectMessage message)`。**例外を投げない**（失敗は結果の値で返す） |
+| SlackDirectMessage | 1通のDM。title（見出し）と body（本文）を持つ。Slack に送る文は、見出しを太字にして、空行をはさみ、本文を続けた形（`*見出し*` ＋ 空行 ＋ 本文） |
+| SlackSendResult | 送った結果。SENT（送れた）、USER_NOT_FOUND（そのメールアドレスの Slack のユーザーが見つからない）、FAILED（そのほか。トークンが未設定、Slack が断った、通信の失敗） |
+| SlackApiSender | 本物。下の「本物の流れ」のとおり |
+| SlackClientConfig | Slack にそのトークンでつなぐ部品（Slack Java SDK の MethodsClient）を、Bean として1つ用意する |
+| FakeSlackSender | 偽物。Slack には送らず、送った内容を記録（SentSlackMessage）にためる。結果は、いつも SENT。記録を読む（findAll）・空にする（clear）。記録は、送った順で、メモリの中だけに持つ |
+| SentSlackMessage | 記録の1件。email（宛先のメールアドレス）、title、body、sentAt（送った日時。時計 ClockConfig の日本時間） |
+| SentSlackMessagesResponse | 読み出しAPIが返す data。messages（記録の一覧。古い順） |
+| SlackTestSupportController | 送った内容を読み出すAPI（下の表） |
+
+**本物・偽物の切り替え**：`app.test-support.enabled`（API設計 6章「テスト用の切り替え」。テストのプロファイルだけ true）で決める。true のとき FakeSlackSender と SlackTestSupportController だけが Bean になり、false（本番・開発）のとき SlackApiSender と SlackClientConfig だけが Bean になる（`@ConditionalOnProperty`）。
+
+**本物の流れ**（SlackApiSender#sendDirectMessage）
+
+1. ボットトークン（`app.slack.bot-token`）が空なら、Slack を呼ばずに FAILED を返す（記録に「Slackのボットトークンが設定されていません」を warn で残す）。開発のPCで、トークンを入れずに起動したときの動き。
+2. メールアドレスで Slack のユーザーを探す（`users.lookupByEmail`）。Slack の答えの error が `users_not_found` なら USER_NOT_FOUND。ほかの error や、通信の失敗（IOException・SlackApiException）は FAILED。
+3. 見つかったユーザーのIDを宛先にして、メッセージを送る（`chat.postMessage`）。**リンクのプレビューを出さない**ため、`unfurl_links` と `unfurl_media` を false にする（画面設計 9章の注意1）。Slack が ok でなければ FAILED。
+4. 送れたら SENT。
+
+**記録（ログ）**：USER_NOT_FOUND・FAILED のとき、warn で「Slack のDMを送れませんでした」と、結果・Slack の error の名前・宛先のメールアドレスを残す（画面設計 9章の注意3）。**見出し・本文（リンクの合言葉が入るため）・トークンは、記録に出さない**（API設計 7章）。呼ぶ側は、結果を見て、画面設計どおりに分ける（S-02 は同じ文を出す、G-03 は「…送れませんでした」と出す、催促は催促履歴に失敗を残す、など）。
+
+**送った内容を読み出すAPI**（テスト用。`app.test-support.enabled` が true のときだけ動く。API設計の一覧（3章）には載せない）
+
+| 操作 | アドレス | 内容 | 返すもの |
+|---|---|---|---|
+| GET | /api/test-support/slack-messages | 送った内容の一覧を、古い順に返す | 200。data は `{ "messages": [ { "email": "…", "title": "…", "body": "…", "sentAt": "2026-11-15T09:00:00+09:00" } ] }`。1通もなければ messages は空の配列 |
+| DELETE | /api/test-support/slack-messages | 記録を空にする。テストの前に呼ぶ | 200。data は null |
+
+- どちらも、ログインなし・CSRFの合言葉なしで呼べる（SecurityConfig の変更。下の表）。本番・開発では controller がなく 404。本番の設定で動かないことは、テストで確かめる（9章）。
+- 画面（Playwright）のテストは、この API で、パスワード設定用のリンクの合言葉入りの DM を読む（テスト方針 5章）。
+
+| クラス | 変更 |
+|---|---|
+| SecurityConfig（変更） | `/api/test-support/**` を、ログインなしで呼べるアドレス（permitAll）にし、CSRF の確かめの対象から外す（`ignoringRequestMatchers`）。ほかの設定は変えない |
+
+**あとのタスクへの申し送り**
+
+- DMの文面（画面設計 9章の①〜⑦）を、どこで作るか：①〜④ は auth・user が、⑤ は reminder が、それぞれ作って渡す。同じ文面を2つの API が使う（①②③ のリンクの付け方など）ときは、そのタスクで、common に置くかを人と決める。
+- 偽物の FakeSlackSender は、いつも SENT を返す。「Slack のユーザーが見つからない」「送れなかった」の場面は、呼ぶ側の単体テストで、SlackSender を Mockito（偽物を作るテストの道具）の偽物（`@MockitoBean`）に差し替えて作る。画面のテストで、その場面が要るときは、そのタスクで偽物に仕掛けを足す。
 
 ## 4. データベース
 
@@ -445,6 +499,9 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 | common.security.SecurityApiTest | 単体（API） | ログインせずに、ログインが必要なAPIを呼ぶと 401／CSRFの合言葉を付けずにPOSTすると 403／合言葉は XSRF-TOKEN クッキーで渡され、X-XSRF-TOKEN 見出しで送り返すと通る／合言葉が違うと 403／Spring Boot の仮のユーザを作らない／ユーザIDがログに付き、合言葉のクッキーも同じ処理で渡される（2つのフィルターが両方動く） |
 | common.web.SpaWebConfigTest | 単体（API） | 画面のアドレス（/loans、/equipment/12、/login）では、ログインしていなくても index.html を返す／トップ（/）では index.html に回す（Spring Boot の最初のページの仕組み）／ないファイル（/assets/なし.js）は 404／/api/ で始まる存在しないアドレスは、今までどおり 404 の JSON |
 | common.security.UserIdLogFilterTest | 単体 | ユーザIDが処理の間だけログに付き、終わったら消える／ログインしていないときは付けない |
+| common.slack.SlackApiSenderTest | 単体（Slack の部品を Mockito の偽物にする） | 送れた：SENT で、見つけたユーザーのIDを宛先に、見出し・本文の入った文を、リンクのプレビューなしで送る／ユーザーが見つからない（users_not_found）：USER_NOT_FOUND で、メッセージは送らない／Slack がほかの error で断った・メッセージの送信が ok でない・通信の失敗：FAILED／トークンが空：FAILED で、Slack を呼ばない／記録（ログ）に、本文・見出し・トークンが出ない |
+| common.slack.FakeSlackSenderTest | 単体（時計を止める） | 送ると SENT が返り、記録に宛先・見出し・本文・送った日時（日本時間）が、送った順で入る／clear で空になる／記録を読んだあとに送っても、読んだ一覧は変わらない |
+| common.slack.SlackTestSupportApiTest | 単体（API） | テストの設定：GET で送った内容が古い順に出る・1通もなければ空／DELETE で空になる／ログインなし・CSRFの合言葉なしで呼べる。本番の設定（`app.test-support.enabled` を false にして起動）：GET・DELETE とも 404 で、SlackSender は SlackApiSender、読み出しの controller はない |
 | common.calendar.MonthlyConfirmationRuleTest | 単体（時計を止める） | 今月の1日（月の初日・末日・年の変わり目）／今月なら確認済み／未記入・先月・去年の同じ月は未確認／日本時間の月で判定する（UTC ではまだ前の月の時刻） |
 
 テストを書くときの決まり（CLAUDE.md 6章）：
@@ -471,6 +528,14 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 
 12. **画面のアドレスで index.html を返す作り（3.9）**：API設計 2.1 の「画面とAPIを同じアドレスで出す」を実現するため。名前に「.」を含むアドレスは、ファイルがなければ 404 にした。
 13. **組み立てた画面の取り込み方（3.9）**：リポジトリが分かれているため、Server の組み立てのときに隣の Client の dist を取り込む形にした。dist を作る（npm run build）のは人。手順は AWSにアプリを置くタスク（ZPOP-49）の手順書に書く。
+
+14. **Slack Java SDK 1.49.0（com.slack.api:slack-api-client）を build.gradle に足した（ZPOP-123）**：CLAUDE.md 3章で使ってよいと決めてあるライブラリ。版は Maven Central の最新（2026-11-15 時点）。外から見えるか：いいえ。
+15. **送った内容を読み出すAPIの形（3.13）**：API設計にアドレスや返す値がなかったので、`GET・DELETE /api/test-support/slack-messages`、返す値は `{ "messages": [ … ] }` にした（2026-11-15 に人が決めた）。外から見えるか：いいえ（テストのときだけ動く）。
+16. **送れなかったときは、例外でなく結果の値で返す（3.13）**：画面設計 9章・基本設計書 6章は、「送れなかったときは、呼ぶ側ごとに違う扱い（S-02 は同じ文、G-03 は送れなかったと出す、催促は履歴に失敗）」と決めているため、呼ぶ側が結果で分けられるようにした（2026-11-15 に人が決めた）。外から見えるか：いいえ。
+17. **SecurityConfig に `/api/test-support/**` を足した（3.2・3.13）**：読み出しAPIを、ログインなしで、CSRFの合言葉なしで呼べるようにするため。本番・開発では controller がないので、404。外から見えるか：いいえ。
+18. **DMの文の見た目（3.13）**：画面設計 9章は「見出し」と「本文」だけを決めていて、見た目の決まりがないので、見出しを太字（`*見出し*`）にし、空行をはさんで本文を続けた。外から見えるか：**はい**（Slack に出る見た目）。
+19. **Slack の待ち時間は、SDK のままにした**：接続・読み・書きとも、SDK の初めの設定（10秒）。A-04 などは、Slack が遅いとき、その分だけ返事が遅くなる。短くしたいときは、呼ぶ機能のタスクで決める。外から見えるか：はい（返事の遅さ）。
+20. **本物の送り先は、DMの宛先を Slack のユーザーIDにした**：`chat.postMessage` に、メールアドレスで見つけたユーザーのIDを宛先として渡すと、アプリとのDMに届く（基本設計書 6章「DMの送り方」）。外から見えるか：いいえ。
 
 ## 11. 画面（Client）の共通部品
 
@@ -667,3 +732,4 @@ EquipmentManagementSystem_Client/
 | v1.16 | 2026-11-15 | パッケージ構成の変更で、お手本の種別（api.equipment.category）を作り直したときに、common.validation（ServiceInDtoChecker・ServiceCheckOrder・ServiceErrorType と種別のチェック用アノテーション）と common.text（TextInputs）を足した。5章を、RestInDto・ServiceInDto の2段のチェックと、返し方の決まりに書き直した |
 | v1.17 | 2026-11-15 | A-01〜A-03・A-08・C-01・C-03・C-06 を新しい形に作り直したので、2.3（置き場所）を dao と API のパッケージの形に書き直した。3.10 に LoginUserRefresherImpl・LoginUserInfoAssembler（auth から移した）を足し、3.12 に common.equipment を足した |
 | v1.18 | 2026-11-15 | テストの表の種類を「結合（API）」から「単体（API）」に、「結合（アプリを起動）」から「単体（アプリを起動）」にした（テスト方針 v1.5。2026-11-15 に人が決めた。機能をまたいだ結合はシナリオテストで確かめるため）。テストの中身は変えていない。証跡のフォルダ名は作ったときのまま |
+| v1.19 | 2026-11-15 | ZPOP-123：Slack送信の部品（common.slack。3.13）を足した。送った結果を値で返す（SlackSender）、本物（SlackApiSender。Slack Java SDK）、偽物（FakeSlackSender）、送った内容を読み出すAPI（GET・DELETE /api/test-support/slack-messages）。SecurityConfig に test-support のアドレスを足した（3.2）。基本設計書 v1.5 のスコープ（users:read を足した）に合わせた。10章に 14〜20 を足した |

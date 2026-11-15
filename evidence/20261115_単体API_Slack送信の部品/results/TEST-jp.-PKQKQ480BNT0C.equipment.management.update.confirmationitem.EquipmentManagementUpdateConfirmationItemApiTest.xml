@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="C-06 確認した（総務）" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-15T06:59:49.441Z" hostname="DESKTOP-32H5PQ0" time="0.279">
+  <properties/>
+  <testcase name="ログインしていない：401" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.009"/>
+  <testcase name="CSRF の合言葉がない：403" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.01"/>
+  <testcase name="今月すでに確認済みでも誤りにせず、今日にする（version も1増やす）" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.041"/>
+  <testcase name="[1] status = &quot;MISSING&quot;" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.015"/>
+  <testcase name="[2] status = &quot;DISPOSED&quot;" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.016"/>
+  <testcase name="貸出中の備品も確認できる。data に借用者の氏名が入る" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.019"/>
+  <testcase name="ID が数でない：400、errors は null" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.008"/>
+  <testcase name="CONFIRM_ALL がない（一般社員）：403。変えない" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.013"/>
+  <testcase name="ない備品・削除された備品：404「対象が見つかりません。」" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.017"/>
+  <testcase name="保管中の備品：200。最終確認日を今日にし、version を1増やす。data は C-01 の1件と同じ形" classname="jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest" time="0.014"/>
+  <system-out><![CDATA[2026-11-15T15:59:49.442+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest]: EquipmentManagementUpdateConfirmationItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T15:59:49.542+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest
+2026-11-15T15:59:49.544+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest]: EquipmentManagementUpdateConfirmationItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T15:59:49.547+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.update.confirmationitem.EquipmentManagementUpdateConfirmationItemApiTest
+2026-11-15T15:59:49.601+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.u.c.s.EquipmentManagementUpdateConfirmationItemServiceImpl - 備品を確認しました（id=134, managementNo=A001）
+2026-11-15T15:59:49.658+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.u.c.s.EquipmentManagementUpdateConfirmationItemServiceImpl - 備品を確認しました（id=137, managementNo=A001）
+2026-11-15T15:59:49.713+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.u.c.s.EquipmentManagementUpdateConfirmationItemServiceImpl - 備品を確認しました（id=140, managementNo=A001）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
