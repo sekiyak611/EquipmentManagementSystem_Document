@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="K-04 種別を消す" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-15T08:44:32.776Z" hostname="DESKTOP-32H5PQ0" time="0.337">
+  <properties/>
+  <testcase name="ログインしていない：401。CSRF の合言葉がない：403。どちらも消さない" classname="jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest" time="0.015"/>
+  <testcase name="消したあとで変えよう（K-03）としても 404" classname="jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest" time="0.108"/>
+  <testcase name="使っていた備品が全部削除済みなら、消せる" classname="jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest" time="0.013"/>
+  <testcase name="使っている備品がある（管理中・廃棄・不明のどれでも）：400「この種別の備品があるため削除できません」。消さない" classname="jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest" time="0.022"/>
+  <testcase name="パスの ID が数でない：400" classname="jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest" time="0.007"/>
+  <testcase name="消した種別の名前・頭文字は、新しい種別で使える（K-02）" classname="jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest" time="0.025"/>
+  <testcase name="一般社員（CATEGORY_MANAGE がない）：403。消さない" classname="jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest" time="0.009"/>
+  <testcase name="総務・使っている備品がない：200（data は null）。論理削除され（deleted_at・変えた人が入り、version が1増える）、一覧（K-01）に出なくなる" classname="jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest" time="0.031"/>
+  <testcase name="ない種別・削除済みの種別（2回消す）：404「対象が見つかりません。」" classname="jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest" time="0.024"/>
+  <system-out><![CDATA[2026-11-15T17:44:32.777+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest]: EquipmentCategoryDeleteItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:44:32.852+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest
+2026-11-15T17:44:32.853+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest]: EquipmentCategoryDeleteItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:44:32.853+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.EquipmentCategoryApiTestBase]: EquipmentCategoryApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T17:44:32.854+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.category.delete.item.EquipmentCategoryDeleteItemApiTest
+2026-11-15T17:44:32.931+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.c.d.i.s.EquipmentCategoryDeleteItemServiceImpl - 種別を削除しました（id=3, name=マウス）
+2026-11-15T17:44:32.985+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.c.d.i.s.EquipmentCategoryDeleteItemServiceImpl - 種別を削除しました（id=3, name=マウス）
+2026-11-15T17:44:33.029+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.c.d.i.s.EquipmentCategoryDeleteItemServiceImpl - 種別を削除しました（id=3, name=マウス）
+2026-11-15T17:44:33.042+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.c.e.i.s.EquipmentCategoryEntryItemServiceImpl - 種別を追加しました（id=7, name=マウス, initial=C）
+2026-11-15T17:44:33.064+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.c.d.i.s.EquipmentCategoryDeleteItemServiceImpl - 種別を削除しました（id=3, name=マウス）
+2026-11-15T17:44:33.103+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.c.d.i.s.EquipmentCategoryDeleteItemServiceImpl - 種別を削除しました（id=3, name=マウス）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
