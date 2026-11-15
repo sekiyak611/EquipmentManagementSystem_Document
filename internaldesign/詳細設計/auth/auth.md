@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v2.4 2026-11-15 |
-| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01）、ZPOP-124（アカウントロック）、ZPOP-58（A-04）、ZPOP-59（A-05）、ZPOP-60（A-06） |
+| 版 | v2.5 2026-11-15 |
+| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01）、ZPOP-124（アカウントロック）、ZPOP-58（A-04）、ZPOP-59（A-05）、ZPOP-60（A-06）、ZPOP-61（A-07） |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の4章（F-01・F-02）・8章、API設計.md v1.1 の2.2・3.1・4.1〜4.3・6章・7章、画面設計.md v1.1 の1・2章、データ設計.md v1.0 の5.1〜5.4、基本設計書.md v1.1 の5章 |
 
@@ -24,7 +24,8 @@ F-02：ログアウト。
 | パスワード再設定の依頼（A-04） | ZPOP-58 | **作成済み（ZPOP-58）**。依頼されたメールアドレスのユーザに、パスワード設定用のリンクをDM（①）で送る（A-04_パスワード設定リンクの依頼.md）。画面（S-02）は ZPOP-104 |
 | パスワードの合言葉の確認（A-05） | ZPOP-59 | **作成済み（ZPOP-59）**。リンクの合言葉が使えるかを確かめ、対象のメールアドレスと用途を返す（A-05_合言葉の確認.md）。画面（S-03）は ZPOP-105 |
 | パスワードを決める（A-06） | ZPOP-60 | **作成済み（ZPOP-60）**。合言葉を使って新しいパスワードを決める。ロックの解除、すべての端末のログインを切る、DM（④）も行う（A-06_合言葉でパスワードを決める.md）。画面（S-03）は ZPOP-105 |
-| パスワードを変える（A-07、S-02〜S-04） | ZPOP-61、104〜106 | 画面の「パスワードを忘れた方はこちら」は置くが、移る先（S-02）はまだない |
+| パスワードを変える（A-07） | ZPOP-61 | **作成済み（ZPOP-61）**。ログイン中に、現在のパスワードと新しいパスワードで、自分のパスワードを変える。この端末以外のログインを切り、DM（④）で知らせる。現在のパスワードを間違えたら、回数を数える（A-07_自分のパスワード変更.md）。画面（S-04）は ZPOP-106 |
+| 画面（S-02〜S-04） | ZPOP-104〜106 | 画面の「パスワードを忘れた方はこちら」は置くが、移る先（S-02）はまだない |
 
 ### 1.1 API一覧
 
@@ -38,6 +39,7 @@ F-02：ログアウト。
 | A-04 | POST | /api/auth/password-reset-requests | パスワード設定用のリンクを依頼する | なし | S-02 | [A-04_パスワード設定リンクの依頼.md](A-04_パスワード設定リンクの依頼.md) |
 | A-05 | POST | /api/auth/password-tokens/verify | リンクの合言葉が使えるか確かめる | なし | S-03（開いたとき） | [A-05_合言葉の確認.md](A-05_合言葉の確認.md) |
 | A-06 | POST | /api/auth/password-tokens/use | 合言葉を使って新しいパスワードを決める | なし | S-03 | [A-06_合言葉でパスワードを決める.md](A-06_合言葉でパスワードを決める.md) |
+| A-07 | PUT | /api/me/password | 自分のパスワードを変える | ログイン | S-04 | [A-07_自分のパスワード変更.md](A-07_自分のパスワード変更.md) |
 
 ### 1.2 画面一覧
 
@@ -64,6 +66,8 @@ F-02：ログアウト。
 | R-11 | パスワード設定用のリンクは、使用済み・無効（より新しいリンクが作られた）・期限切れ・ない・削除されたユーザのものは使えない。どの理由でも、同じ返し方・同じ文「このリンクは使えません。有効期限が切れたか、すでに使われています。」。リンクを開いただけでは、使用済みにしない | 画面設計 5章・6章・9章の注意2、機能一覧 6章の3 |
 | R-12 | 新しいパスワードを決めたら、リンクを使用済みにし、ロックを解除して失敗の回数を0に戻し、すべての端末のログインを切る。自動ではログインさせない。パスワードが変わったことをDM（④）で知らせる（ユーザ登録後の最初の設定のときは送らない） | 画面設計 6章・2.1、機能一覧 6章の2・8・9 |
 | R-13 | 新しいパスワードは、8文字以上64文字以内、半角の英字・数字・記号・スペースだけ。メールアドレス・システム名・よく使われるパスワードと同じなら使えない | 画面設計 8章 |
+| R-14 | 自分のパスワードを変えるときは、現在のパスワードを確かめる。新しいパスワードは、現在のパスワードと同じにできない。この端末以外のログインを切り、この端末はログインしたままにする。パスワードが変わったことをDM（④）で知らせる | 画面設計 7章、機能一覧 6章の8・9 |
+| R-15 | 現在のパスワードを間違えたら、ログインの失敗と同じく回数を数える。5回続けたらロックし（DM③）、この端末もログアウトさせる | 画面設計 7章・2.1 |
 
 ### 1.4 定期実行
 
@@ -79,7 +83,6 @@ F-02：ログアウト。
 |---|---|---|---|
 | api.auth.login.controller | AuthLoginController・AuthLoginRestInDto | A-01 の入口と、受け取る値（形式のチェック） | A-01 |
 | api.auth.login.service | AuthLoginService（インターフェース）・AuthLoginServiceImpl・AuthLoginServiceInDto | A-01 の業務の処理。メールアドレスでユーザを読み、Validator に渡す。返す値は common.security.LoginUserInfoAssembler で作る | A-01 |
-| api.auth.login.service | AuthLoginFailureRecorder・AuthLoginLockNotifier | パスワードを間違えた回数を数える・ロックする・リンクを作る（`@Transactional`）／ロックしたときのDM（③）を作って送る（ZPOP-124。A-01 の 4.1） | A-01 |
 | api.auth.login.validator | AuthLoginValidator・AuthLoginValidatorDto | パスワードの照らし合わせ・ロック（R-1・R-2・R-7）。読んだユーザが要るので Validator。守れなければ UnauthorizedException | A-01 |
 | api.auth.login.model | AuthLoginRestOutDto | A-01 で返す値（API設計 4.2 の形） | A-01 |
 | api.auth.passwordresetrequests.controller | AuthPasswordResetRequestsController・AuthPasswordResetRequestsRestInDto | A-04 の入口と、受け取る値（形式のチェック）。いつも `ApiResponse.accepted()`（202）を返す | A-04 |
@@ -92,6 +95,11 @@ F-02：ログアウト。
 | api.auth.passwordtokens.use.service | AuthPasswordTokensUseService（インターフェース）・AuthPasswordTokensUseServiceImpl・AuthPasswordTokensUseServiceInDto | A-06 の業務の処理。パスワードを決める処理を呼び、確定したあとにDM（④）を送る（`@Transactional` なし） | A-06 |
 | api.auth.passwordtokens.use.service | AuthPasswordTokensUsePasswordSetter | リンクの確かめ・パスワードの確かめ・リンクを使用済みにする・パスワードを変える（`@Transactional`） | A-06 |
 | api.auth.passwordtokens.use.validator | AuthPasswordTokensUseValidator・AuthPasswordTokensUseValidatorDto | パスワードが、メールアドレス・システム名・よく使われるパスワードと同じでないか（読んだユーザのメールアドレスが要るので Validator。守れなければ FieldErrorException） | A-06 |
+| api.auth.update.password.controller | AuthUpdatePasswordController・AuthUpdatePasswordRestInDto | A-07 の入口と、受け取る値（現在のパスワード・新しいパスワード・確認。形式のチェック）。成功したら、この端末のログインを新しくする（LoginSession#start）。ロックしたときは、この端末をログアウトさせる（LoginSession#end） | A-07 |
+| api.auth.update.password.service | AuthUpdatePasswordService（インターフェース）・AuthUpdatePasswordServiceImpl・AuthUpdatePasswordServiceInDto・AuthUpdatePasswordWrongCurrentException・AuthUpdatePasswordAccountLockedException | A-07 の業務の処理。ユーザを読み、Validator で確かめ、間違いなら回数を数え、よければパスワードを変えて、DM（④）を送る（`@Transactional` なし）。例外は、現在のパスワードの誤り（ロックしたときは別の例外。Controller がログアウトに使う） | A-07 |
+| api.auth.update.password.validator | AuthUpdatePasswordValidator・AuthUpdatePasswordValidatorDto | 現在のパスワードが合うか・新しいパスワードが現在と同じでないか・使えないものでないか（読んだユーザのハッシュが要るので Validator） | A-07 |
+| common.security | LoginFailureRecorder・AccountLockNotifier | パスワードを間違えた回数を数える・ロックする・0に戻す／ロックのDM（③）。もとは api.auth.login.service の AuthLoginFailureRecorder・AuthLoginLockNotifier。A-01・A-07 で使うので common に移した（ZPOP-61。common.md 3.16） | A-01・A-07 |
+| dao.mapper.custom | UserCustomMapper#changePassword | 自分のパスワードを変える（ハッシュ・session_valid_after・失敗の回数。ロックは解除しない。ZPOP-61） | A-07 |
 | common.passwordlink | PasswordChangedNotifier | パスワードが変わったことのDM（④）を作って送る（A-06・A-07 で使うので common。3.15） | A-06・A-07 |
 | common.security・common.validation | PasswordBlocklist、NewPasswordFormat・PasswordConfirmed ほか | パスワードの決まり（common.md 3.15。A-06・A-07 で使うので common） | A-06・A-07 |
 | dao.mapper.custom | UserCustomMapper#updatePassword | パスワードを変え、ロックを解き、失敗の回数を0に戻し、session_valid_after を入れる（locked_at を NULL にするので、Example では書けない。ZPOP-60） | A-06 |
@@ -109,6 +117,7 @@ F-02：ログアウト。
 | （テスト）api.auth.passwordresetrequests | AuthPasswordResetRequestsApiTest・AuthPasswordResetRequestsSlackFailureApiTest・AuthPasswordResetRequestsConcurrencyTest | A-04 のテスト（API 1本に1つ。送れなかったとき・同時に依頼したときは別のクラス） | A-04 |
 | （テスト）api.auth.passwordtokens.verify・common.passwordlink | AuthPasswordTokensVerifyApiTest・PasswordLinkVerifierApiTest | A-05 のテスト（API 1本に1つ）と、確かめる部品のテスト | A-05 |
 | （テスト）api.auth.passwordtokens.use・common | AuthPasswordTokensUseApiTest・AuthPasswordTokensUseSlackFailureApiTest・AuthPasswordTokensUseConcurrencyTest・PasswordBlocklistTest・NewPasswordFormatCheckTest・PasswordChangedNotifierTest | A-06 のテストと、パスワードの決まりの部品のテスト | A-06 |
+| （テスト）api.auth.update.password | AuthUpdatePasswordApiTest・AuthUpdatePasswordSlackFailureApiTest | A-07 のテスト（API 1本に1つ。DMが送れなかったときは別のクラス） | A-07 |
 | （テスト）common.security | LoginUserRefresherApiTest | APIを呼ぶたびの読み直しのテスト | 全API |
 | （テスト）testsupport | AuthApiTestBase | 上のテストで共通に使う値と道具（開発用のユーザ、ログインしてセッションを受け取る、など） | |
 
@@ -179,3 +188,4 @@ F-02：ログアウト。
 | v2.2 | 2026-11-15 | ZPOP-58：A-04（パスワード設定用のリンクの依頼）を足した（1章・1.1・1.3 の R-9・R-10・2.1・2.4）。詳細は A-04_パスワード設定リンクの依頼.md |
 | v2.3 | 2026-11-15 | ZPOP-59：A-05（合言葉の確認）を足した（1章・1.1・1.3 の R-11・2.1）。詳細は A-05_合言葉の確認.md |
 | v2.4 | 2026-11-15 | ZPOP-60：A-06（合言葉でパスワードを決める）を足した（1章・1.1・1.3 の R-12・R-13・2.1）。詳細は A-06_合言葉でパスワードを決める.md |
+| v2.5 | 2026-11-15 | ZPOP-61：A-07（自分のパスワード変更）を足した（1章・1.1・1.3 の R-14・R-15・2.1）。失敗を数えるクラスとロックのDMを common.security に移した（AuthLoginFailureRecorder → LoginFailureRecorder、AuthLoginLockNotifier → AccountLockNotifier）。詳細は A-07_自分のパスワード変更.md |

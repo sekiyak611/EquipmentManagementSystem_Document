@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.23 2026-11-15 |
+| 版 | v1.24 2026-11-15 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -70,6 +70,7 @@
 | common.passwordlink | PasswordLinkIssuer・IssuedPasswordLink・PasswordLinkTokens | パスワード設定用のリンクを作る（合言葉を作る・ハッシュで保存する・前のリンクを無効にする・アドレスを作る）（3.14） |
 | common.passwordlink | PasswordChangedNotifier | パスワードが変わったことを本人にDM（④）で知らせる（ZPOP-60。A-06・A-07 が使う。3.15） |
 | common.security | PasswordBlocklist | パスワードが、メールアドレス・システム名・よく使われるパスワード（SecLists の10k）と同じかを調べる（3.15） |
+| common.security | LoginFailureRecorder・AccountLockNotifier | パスワードを間違えた回数を数える・ロックする・0に戻す／ロックのDM（③）を送る（A-01・A-07 が使う。ZPOP-61。3.16） |
 | common.validation | NewPasswordFormat・NewPasswordFormatCheck、PasswordConfirmed・PasswordConfirmedCheck・PasswordConfirmable | 新しいパスワードの形式のチェック（画面設計 8章）と、確認欄との一致のチェック。RestInDto に付ける（3.15） |
 | common.constant | PasswordLinkPurpose | リンクの用途（RESET・REGISTER・LOCK。データ設計 5.8 の purpose の値） |
 | common.slack | SlackSender・SlackDirectMessage・SlackSendResult | SlackのDMを送る約束（インターフェース）と、1通のDM、送った結果（3.13） |
@@ -412,6 +413,19 @@ A-06（パスワードを決める）と A-07（パスワードを変える）�
 守れないときの返し方：形式のチェックは 400（errors に入力欄ごとの文）。PasswordBlocklist で断られたときは、使う側の Validator が FieldErrorException（password に「このパスワードはよく使われているため、使えません。別のパスワードにしてください」）を投げる。
 
 **パスワードが変わったことのDM（④）**：common.passwordlink.PasswordChangedNotifier（`notifyChanged(String email, long userId, LocalDateTime changedAt)`）。見出しは「【備品管理】パスワードを変更しました」、本文は変わった日時と、「ご自分で変更した覚えがない場合は、すぐにパスワードを再設定し、総務に連絡してください」。パスワードは書かない。書き込みが確定したあとに呼ぶ。送れなかったときは WARN で残すだけ。A-06 では、用途が REGISTER のとき（最初の設定）は呼ばない。
+
+### 3.16 パスワードの失敗を数える・ロックする部品（common.security。ZPOP-61）
+
+写したもと：画面設計.md v1.1 の2.1・7章・9章の③、機能一覧.md v1.1 の6章の12
+
+A-01（ログイン）と A-07（自分のパスワード変更。現在のパスワードを間違えたとき）が、同じ数え方・同じロックのDMを使うので、common.security に置く。もとは api.auth.login.service の AuthLoginFailureRecorder・AuthLoginLockNotifier（ZPOP-124）。名前だけ変えた（動きは変えない）。
+
+| クラス | 役割 |
+|---|---|
+| LoginFailureRecorder | `Optional<IssuedPasswordLink> recordPasswordFailure(long userId)`（`@Transactional`。失敗の回数を1増やし、しきい値（`app.lock-threshold`）以上でロックして、LOCK のリンクを作る。いまロックしたときだけ、リンクを返す）と、`void resetFailures(long userId)`（`@Transactional`。回数を0に戻す）。詳しい流れは auth/A-01_ログイン.md の4.1 |
+| AccountLockNotifier | `void notifyLocked(User user, IssuedPasswordLink link)`。ロックのDM（③）を送る（確定したあとに呼ぶ）。送れなかったときは WARN で残すだけ |
+
+A-01 は、ユーザがいて・パスワードがあり・ロックされていないときだけ数える。A-07 は、現在のパスワードを間違えたときに数える（ロック中は、SQL の条件（`locked_at IS NULL`）で数えない）。
 
 ## 4. データベース
 
@@ -812,3 +826,4 @@ EquipmentManagementSystem_Client/
 | v1.21 | 2026-11-15 | ZPOP-58：3.14 の申し送り「5分に1回の判定」を、A-04 で作成済みに直した（判定は用途 RESET のリンクだけを数える）。 |
 | v1.22 | 2026-11-15 | ZPOP-59：3.14 に、合言葉を確かめる部品（PasswordLinkVerifier・VerifiedPasswordLink）を足した。A-05・A-06 が使う。 |
 | v1.23 | 2026-11-15 | ZPOP-60：3.15「パスワードの決まりの部品」を足した（NewPasswordFormat・PasswordConfirmed・PasswordBlocklist・よく使われるパスワードの一覧・PasswordChangedNotifier）。3.10 の申し送り（session_valid_after と loggedInAt を秒にそろえて比べる）を、決めた形に直した。 |
+| v1.24 | 2026-11-15 | ZPOP-61：3.16「パスワードの失敗を数える・ロックする部品」を足した。AuthLoginFailureRecorder・AuthLoginLockNotifier を common.security に移し、LoginFailureRecorder・AccountLockNotifier に名前を変えた。 |
