@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="A-01 ログイン：ロックのDMが送れなかったとき" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-15T12:06:24.653Z" hostname="DESKTOP-32H5PQ0" time="3.491">
+  <properties/>
+  <testcase name="そのほかの失敗（FAILED）：ロックはそのまま。401・同じ文" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockSlackFailureApiTest" time="0.397"/>
+  <testcase name="Slack のユーザーが見つからない（USER_NOT_FOUND）：ロックはそのまま。401・同じ文" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockSlackFailureApiTest" time="0.304"/>
+  <system-out><![CDATA[2026-11-15T21:06:24.654+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.login.AuthLoginLockSlackFailureApiTest]: AuthLoginLockSlackFailureApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T21:06:24.657+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.login.AuthLoginLockSlackFailureApiTest
+2026-11-15T21:06:24.657+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.login.AuthLoginLockSlackFailureApiTest]: AuthLoginLockSlackFailureApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T21:06:24.657+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T21:06:24.658+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.login.AuthLoginLockSlackFailureApiTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.2)
+
+2026-11-15T21:06:24.678+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.AuthLoginLockSlackFailureApiTest - Starting AuthLoginLockSlackFailureApiTest using Java 21.0.1 with PID 11296 (started by kaito in F:\development\workspace\EquipmentManagementSystem_Server)
+2026-11-15T21:06:24.678+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.AuthLoginLockSlackFailureApiTest - The following 1 profile is active: "test"
+2026-11-15T21:06:25.323+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
+2026-11-15T21:06:25.375+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.pool.HikariPool - HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@45957b8f
+2026-11-15T21:06:25.376+09:00 INFO  userId=- [Test worker] com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
+2026-11-15T21:06:25.379+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-15T21:06:25.403+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped pre-schema database level objects (execution time 00:00.000s)
+2026-11-15T21:06:25.866+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.461s)
+2026-11-15T21:06:25.871+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully cleaned schema `equipment_test` (execution time 00:00.004s)
+2026-11-15T21:06:25.872+09:00 INFO  userId=- [Test worker] o.f.c.i.command.clean.CleanExecutor - Successfully dropped post-schema database level objects (execution time 00:00.000s)
+2026-11-15T21:06:25.874+09:00 INFO  userId=- [Test worker] org.flywaydb.core.FlywayExecutor - Database: jdbc:mysql://localhost:3306/equipment_test?connectionTimeZone=%2B09:00&forceConnectionTimeZoneToSession=true&characterEncoding=UTF-8 (MySQL 8.4)
+2026-11-15T21:06:25.894+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Schema history table `equipment_test`.`flyway_schema_history` does not exist yet
+2026-11-15T21:06:25.895+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbValidate - Successfully validated 3 migrations (execution time 00:00.007s)
+2026-11-15T21:06:25.902+09:00 INFO  userId=- [Test worker] o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table `equipment_test`.`flyway_schema_history` ...
+2026-11-15T21:06:25.971+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Current version of schema `equipment_test`: << Empty Schema >>
+2026-11-15T21:06:25.983+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "1 - create tables"
+2026-11-15T21:06:26.612+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` to version "2 - insert initial data"
+2026-11-15T21:06:26.635+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Migrating schema `equipment_test` with repeatable migration "dev users"
+2026-11-15T21:06:26.652+09:00 INFO  userId=- [Test worker] o.f.core.internal.command.DbMigrate - Successfully applied 3 migrations to schema `equipment_test`, now at version v2 (execution time 00:00.614s)
+2026-11-15T21:06:27.231+09:00 INFO  userId=- [Test worker] o.s.b.w.a.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-11-15T21:06:27.304+09:00 INFO  userId=- [Test worker] o.s.b.t.m.w.SpringBootMockServletContext - Initializing Spring TestDispatcherServlet ''
+2026-11-15T21:06:27.305+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Initializing Servlet ''
+2026-11-15T21:06:27.308+09:00 INFO  userId=- [Test worker] o.s.t.w.s.TestDispatcherServlet - Completed initialization in 3 ms
+2026-11-15T21:06:27.431+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.AuthLoginLockSlackFailureApiTest - Started AuthLoginLockSlackFailureApiTest in 2.771 seconds (process running for 18.503)
+2026-11-15T21:06:27.564+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:27.625+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:27.684+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:27.743+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:27.801+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:27.805+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-15T21:06:27.807+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+2026-11-15T21:06:27.816+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginLockNotifier - ロックのDMを送れませんでした（userId=3、結果=FAILED）
+2026-11-15T21:06:27.898+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:27.956+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:28.014+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:28.071+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:28.131+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:28.135+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-15T21:06:28.136+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+2026-11-15T21:06:28.137+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginLockNotifier - ロックのDMを送れませんでした（userId=3、結果=USER_NOT_FOUND）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.22 2026-11-15 |
+| 版 | v1.23 2026-11-15 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -23,6 +23,7 @@
 | common.csv | CSVの読み書き | 未作成（使う機能のタスクで章を足す） |
 | common.calendar | 祝日・催促日の計算、「今月確認済み」の判定 | 「今月確認済み」の判定だけ作成済み（2026-11-11。C-01 の前の共通作業。3.11）。祝日・催促日は ZPOP-126 で足す |
 | common.passwordlink | パスワード設定用のリンク | 作成済み（ZPOP-124。3.14。リンクを作るところまで。A-04・A-05・A-06 ほかが使う） |
+| common.security（パスワードの決まり） | よく使われるパスワードの照らし合わせ（PasswordBlocklist）と、形式のチェック用の印（common.validation の NewPasswordFormat・PasswordConfirmed） | 作成済み（ZPOP-60。3.15。A-06・A-07 が使う） |
 | common.web | 組み立てた画面（Client）をサーバーから配る | 作成済み（ZPOP-22）。3.9 |
 | テーブルと最初のデータ | Flyway の SQL（db/migration） | 作成済み（ZPOP-122）。詳細設計 [テーブル.md](テーブル.md) |
 | common.constant | Enum（決まった値だけを持つ型）をまとめる場所 | 作成済み（2026-11-04）。今は HealthState だけ。各機能が足していく（2.3） |
@@ -67,6 +68,9 @@
 | common.error | ApiResponseWriter | controller の外（Spring Security の中）で、返す値の形を書き出す |
 | common.web | SpaWebConfig | 組み立てた画面のファイルを配る。画面のアドレス（/loans など）で開かれたときは index.html を返す（3.9） |
 | common.passwordlink | PasswordLinkIssuer・IssuedPasswordLink・PasswordLinkTokens | パスワード設定用のリンクを作る（合言葉を作る・ハッシュで保存する・前のリンクを無効にする・アドレスを作る）（3.14） |
+| common.passwordlink | PasswordChangedNotifier | パスワードが変わったことを本人にDM（④）で知らせる（ZPOP-60。A-06・A-07 が使う。3.15） |
+| common.security | PasswordBlocklist | パスワードが、メールアドレス・システム名・よく使われるパスワード（SecLists の10k）と同じかを調べる（3.15） |
+| common.validation | NewPasswordFormat・NewPasswordFormatCheck、PasswordConfirmed・PasswordConfirmedCheck・PasswordConfirmable | 新しいパスワードの形式のチェック（画面設計 8章）と、確認欄との一致のチェック。RestInDto に付ける（3.15） |
 | common.constant | PasswordLinkPurpose | リンクの用途（RESET・REGISTER・LOCK。データ設計 5.8 の purpose の値） |
 | common.slack | SlackSender・SlackDirectMessage・SlackSendResult | SlackのDMを送る約束（インターフェース）と、1通のDM、送った結果（3.13） |
 | common.slack | SlackApiSender・SlackClientConfig | 本物のSlackに送る中身と、Slackにつなぐ部品（3.13）。`app.test-support.enabled` が false のときだけ動く |
@@ -270,7 +274,7 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 **あとのタスクへの申し送り**
 
 - ログインしたままにする（ZPOP-125）：Spring Security の RememberMe（ログインしたままにする仕組み）は、LoginRefreshFilter より後ろでログイン状態を作り、持ち主も LoginUser にならない。そのままでは権限項目の読み直しが効かないので、ZPOP-125 で、RememberMe で作ったログイン状態を LoginUser に置き換え、読み直しの前に来るようにする。
-- パスワードの設定・変更（ZPOP-60・61）：session_valid_after は DATETIME（秒まで）、LoginUser の loggedInAt はもっと細かい。同じ1秒の中でログインとパスワードの変更が起きたときの扱い（秒にそろえて比べるか）を、そのタスクで決める。
+- パスワードの設定・変更（ZPOP-60・61）：session_valid_after は DATETIME（秒まで）、LoginUser の loggedInAt はもっと細かい。**ZPOP-60 で決めた：LoginUserRefresherImpl が、loggedInAt を秒までにそろえて（切り捨て）比べる。session_valid_after には、今を秒までにそろえて入れる**（A-06 の12章 No.1。同じ1秒の中のログインは切らない）。A-07 も同じ。
 
 ### 3.11 「今月確認済み」の判定（common.calendar.MonthlyConfirmationRule）
 
@@ -390,6 +394,24 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 - 5分に1回の判定（`app.password-link.request-interval`。A-04）：password_tokens の created_at を使う（データ設計 8章のインデックス）。**A-04 で作成済み（ZPOP-58）**。判定は、用途が RESET のリンクだけを数える（この部品ではなく、A-04 の AuthPasswordResetRequestsLinkIssuer が行う）。
 - 合言葉を確かめる（A-05・A-06）：**確かめる部分は PasswordLinkVerifier で作成済み（ZPOP-59）**。「設定する」を押したときに used_at を入れる（画面設計 9章の注意2）。
 - リンクのアドレス（`/password-set?token=…`）は、S-03（ZPOP-105）で、同じアドレスの画面を作る。S-03 の画面から別のサイトへ移ったとき、アドレスが伝わらないよう、Referrer-Policy を no-referrer にする（機能一覧 6章の5）のも S-03 で行う。
+
+### 3.15 パスワードの決まりの部品（common.security・common.validation。ZPOP-60）
+
+写したもと：画面設計.md v1.1 の8章（パスワードの決まり）・9章の④、機能一覧.md v1.1 の6章の7・9
+
+A-06（パスワードを決める）と A-07（パスワードを変える）が同じ決まりを使うので、common に置く（API のパッケージどうしは使い合わないため）。
+
+| クラス | 置き場所 | 役割 |
+|---|---|---|
+| NewPasswordFormat・NewPasswordFormatCheck | common.validation | 新しいパスワードの形式のチェック（RestInDto の password に付ける）。1つの欄に1つだけメッセージを出す。順番は、空（「新しいパスワードを入力してください」）→「パスワードに使えるのは、半角の英字・数字・記号・スペースです」→「パスワードは8文字以上で入力してください」→「パスワードは64文字以内で入力してください」。半角は 0x20〜0x7E。前後の空白は取らない |
+| PasswordConfirmed・PasswordConfirmedCheck・PasswordConfirmable | common.validation | 確認欄との一致のチェック（クラスに付ける）。違うとき（空のときも）、passwordConfirm の欄に「確認用のパスワードが一致しません」。RestInDto が PasswordConfirmable（getPassword・getPasswordConfirm）を実装する |
+| PasswordBlocklist | common.security | `boolean isBlocked(String password, String email)`。大文字・小文字を区別せず、メールアドレス全体・システム名（equipment・equipmentmanagement・equipmentmanagementsystem）・よく使われるパスワードの一覧と同じなら true。一覧は起動時に1回だけ読み込む。読み込めなければ起動を止める |
+| password/10k-most-common.txt | src/main/resources | よく使われるパスワードの一覧。SecLists（MIT）の `Passwords/Common-Credentials/10k-most-common.txt`（10,000件、73,026バイト。2026-11-15 に、人の許可を得てダウンロード）。外部のサービスには問い合わせない |
+| password/10k-most-common.LICENSE.txt | src/main/resources | SecLists の MIT ライセンスの文（著作権の表示。ファイルに付けることが条件のため） |
+
+守れないときの返し方：形式のチェックは 400（errors に入力欄ごとの文）。PasswordBlocklist で断られたときは、使う側の Validator が FieldErrorException（password に「このパスワードはよく使われているため、使えません。別のパスワードにしてください」）を投げる。
+
+**パスワードが変わったことのDM（④）**：common.passwordlink.PasswordChangedNotifier（`notifyChanged(String email, long userId, LocalDateTime changedAt)`）。見出しは「【備品管理】パスワードを変更しました」、本文は変わった日時と、「ご自分で変更した覚えがない場合は、すぐにパスワードを再設定し、総務に連絡してください」。パスワードは書かない。書き込みが確定したあとに呼ぶ。送れなかったときは WARN で残すだけ。A-06 では、用途が REGISTER のとき（最初の設定）は呼ばない。
 
 ## 4. データベース
 
@@ -789,3 +811,4 @@ EquipmentManagementSystem_Client/
 | v1.20 | 2026-11-15 | ZPOP-124：パスワード設定用のリンクを作る部品（common.passwordlink。3.14）と、Enum の PasswordLinkPurpose を足した（1章・2.1・9章・10章の21〜23）。A-01 のアカウントロック（auth/A-01_ログイン.md 4.1）から使う |
 | v1.21 | 2026-11-15 | ZPOP-58：3.14 の申し送り「5分に1回の判定」を、A-04 で作成済みに直した（判定は用途 RESET のリンクだけを数える）。 |
 | v1.22 | 2026-11-15 | ZPOP-59：3.14 に、合言葉を確かめる部品（PasswordLinkVerifier・VerifiedPasswordLink）を足した。A-05・A-06 が使う。 |
+| v1.23 | 2026-11-15 | ZPOP-60：3.15「パスワードの決まりの部品」を足した（NewPasswordFormat・PasswordConfirmed・PasswordBlocklist・よく使われるパスワードの一覧・PasswordChangedNotifier）。3.10 の申し送り（session_valid_after と loggedInAt を秒にそろえて比べる）を、決めた形に直した。 |

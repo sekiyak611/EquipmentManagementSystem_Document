@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="A-01 ログイン：失敗の回数・ロックが確定して残る" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-15T12:06:20.459Z" hostname="DESKTOP-32H5PQ0" time="0.339">
+  <properties/>
+  <testcase name="401 を返したあとも、失敗の回数は残る。5回目でロックも、リンクも、DMも確定して残る" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginFailureCommitTest" time="0.334"/>
+  <system-out><![CDATA[2026-11-15T21:06:20.461+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.login.AuthLoginFailureCommitTest]: AuthLoginFailureCommitTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T21:06:20.462+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.login.AuthLoginFailureCommitTest
+2026-11-15T21:06:20.462+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.login.AuthLoginFailureCommitTest]: AuthLoginFailureCommitTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T21:06:20.463+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.login.AuthLoginFailureCommitTest
+2026-11-15T21:06:20.518+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:20.580+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:20.643+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:20.703+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:20.763+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-15T21:06:20.767+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-15T21:06:20.769+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
