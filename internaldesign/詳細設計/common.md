@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.20 2026-11-15 |
+| 版 | v1.21 2026-11-15 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -375,7 +375,7 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 
 **あとのタスクへの申し送り**
 
-- 5分に1回の判定（`app.password-link.request-interval`。A-04）：password_tokens の created_at を使う（データ設計 8章のインデックス）。A-04 で作る。
+- 5分に1回の判定（`app.password-link.request-interval`。A-04）：password_tokens の created_at を使う（データ設計 8章のインデックス）。**A-04 で作成済み（ZPOP-58）**。判定は、用途が RESET のリンクだけを数える（この部品ではなく、A-04 の AuthPasswordResetRequestsLinkIssuer が行う）。
 - 合言葉を確かめる（A-05・A-06）：`PasswordLinkTokens#hash` で、受け取った合言葉のハッシュを作り、token_hash で探し、used_at・revoked_at が空で、expires_at が今より後ろかを確かめる。「設定する」を押したときに used_at を入れる（画面設計 9章の注意2）。
 - リンクのアドレス（`/password-set?token=…`）は、S-03（ZPOP-105）で、同じアドレスの画面を作る。S-03 の画面から別のサイトへ移ったとき、アドレスが伝わらないよう、Referrer-Policy を no-referrer にする（機能一覧 6章の5）のも S-03 で行う。
 
@@ -775,3 +775,4 @@ EquipmentManagementSystem_Client/
 | v1.18 | 2026-11-15 | テストの表の種類を「結合（API）」から「単体（API）」に、「結合（アプリを起動）」から「単体（アプリを起動）」にした（テスト方針 v1.5。2026-11-15 に人が決めた。機能をまたいだ結合はシナリオテストで確かめるため）。テストの中身は変えていない。証跡のフォルダ名は作ったときのまま |
 | v1.19 | 2026-11-15 | ZPOP-123：Slack送信の部品（common.slack。3.13）を足した。送った結果を値で返す（SlackSender）、本物（SlackApiSender。Slack Java SDK）、偽物（FakeSlackSender）、送った内容を読み出すAPI（GET・DELETE /api/test-support/slack-messages）。SecurityConfig に test-support のアドレスを足した（3.2）。基本設計書 v1.5 のスコープ（users:read を足した）に合わせた。10章に 14〜20 を足した |
 | v1.20 | 2026-11-15 | ZPOP-124：パスワード設定用のリンクを作る部品（common.passwordlink。3.14）と、Enum の PasswordLinkPurpose を足した（1章・2.1・9章・10章の21〜23）。A-01 のアカウントロック（auth/A-01_ログイン.md 4.1）から使う |
+| v1.21 | 2026-11-15 | ZPOP-58：3.14 の申し送り「5分に1回の判定」を、A-04 で作成済みに直した（判定は用途 RESET のリンクだけを数える）。 |

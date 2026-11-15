@@ -2,10 +2,10 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v2.1 2026-11-15 |
-| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01）、ZPOP-124（アカウントロック） |
+| 版 | v2.2 2026-11-15 |
+| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01）、ZPOP-124（アカウントロック）、ZPOP-58（A-04） |
 | 状態 | 作成中 |
-| もとにした設計書 | 機能一覧.md v1.0 の4章（F-01・F-02）・8章、API設計.md v1.1 の2.2・3.1・4.1・4.2・7章、画面設計.md v1.1 の1・2章、データ設計.md v1.0 の5.1〜5.4、基本設計書.md v1.1 の5章 |
+| もとにした設計書 | 機能一覧.md v1.0 の4章（F-01・F-02）・8章、API設計.md v1.1 の2.2・3.1・4.1〜4.3・6章・7章、画面設計.md v1.1 の1・2章、データ設計.md v1.0 の5.1〜5.4、基本設計書.md v1.1 の5章 |
 
 ## 1. 概要
 
@@ -21,7 +21,8 @@ F-02：ログアウト。
 |---|---|---|
 | ログインしたままにする（60日間） | ZPOP-125 | rememberMe は受け取るが使わない。画面のチェックも送るだけ |
 | アカウントロック（失敗の回数を数える、ロックする、DM） | ZPOP-124 | **作成済み（ZPOP-124）**。A-01 が、パスワードを間違えた回数を数え、5回続けたらロックして DM（③）を送る（A-01 の 4.1）。ロックの解除（パスワードの再設定）は A-06 |
-| パスワード設定・再設定・変更（A-04〜A-07、S-02〜S-04） | ZPOP-58〜61、104〜106 | 画面の「パスワードを忘れた方はこちら」は置くが、移る先（S-02）はまだない |
+| パスワード再設定の依頼（A-04） | ZPOP-58 | **作成済み（ZPOP-58）**。依頼されたメールアドレスのユーザに、パスワード設定用のリンクをDM（①）で送る（A-04_パスワード設定リンクの依頼.md）。画面（S-02）は ZPOP-104 |
+| パスワードを決める・変える（A-05〜A-07、S-02〜S-04） | ZPOP-59〜61、104〜106 | 画面の「パスワードを忘れた方はこちら」は置くが、移る先（S-02）はまだない |
 
 ### 1.1 API一覧
 
@@ -32,6 +33,7 @@ F-02：ログアウト。
 | A-01 | POST | /api/auth/login | ログインする | なし | S-01 | [A-01_ログイン.md](A-01_ログイン.md) |
 | A-02 | POST | /api/auth/logout | ログアウトする | ログイン | 共通ヘッダー | [A-02_ログアウト.md](A-02_ログアウト.md) |
 | A-03 | GET | /api/auth/me | ログインしている人の情報と権限項目を返す | ログイン | 全画面（メニューやボタンの出し分けに使う） | [A-03_ログイン中の人の情報.md](A-03_ログイン中の人の情報.md) |
+| A-04 | POST | /api/auth/password-reset-requests | パスワード設定用のリンクを依頼する | なし | S-02 | [A-04_パスワード設定リンクの依頼.md](A-04_パスワード設定リンクの依頼.md) |
 
 ### 1.2 画面一覧
 
@@ -53,6 +55,8 @@ F-02：ログアウト。
 | R-6 | メールアドレスは小文字にそろえて扱う（「Yamada@…」と「yamada@…」は同じ人） | データ設計 8章の決めたこと1 |
 | R-7 | パスワードは bcrypt（元に戻せない形に変換する計算方法）で保存されたものと照らし合わせる | 基本設計書 5章 |
 | R-8 | ログインの成功・失敗、ログアウトをログに残す。パスワードは残さない | API設計 7章 |
+| R-9 | パスワード設定用のリンクの依頼は、登録の有無・5分以内かどうか・DMを送れたかにかかわらず、いつも同じ返し方（202）にする | 機能一覧 6章の1、API設計 4.3 |
+| R-10 | 同じメールアドレスへの依頼は5分に1回まで（5分以内ならリンクもDMも出さない）。依頼しただけでは、パスワードは変えない | 機能一覧 6章の2・6 |
 
 ### 1.4 定期実行
 
@@ -71,6 +75,9 @@ F-02：ログアウト。
 | api.auth.login.service | AuthLoginFailureRecorder・AuthLoginLockNotifier | パスワードを間違えた回数を数える・ロックする・リンクを作る（`@Transactional`）／ロックしたときのDM（③）を作って送る（ZPOP-124。A-01 の 4.1） | A-01 |
 | api.auth.login.validator | AuthLoginValidator・AuthLoginValidatorDto | パスワードの照らし合わせ・ロック（R-1・R-2・R-7）。読んだユーザが要るので Validator。守れなければ UnauthorizedException | A-01 |
 | api.auth.login.model | AuthLoginRestOutDto | A-01 で返す値（API設計 4.2 の形） | A-01 |
+| api.auth.passwordresetrequests.controller | AuthPasswordResetRequestsController・AuthPasswordResetRequestsRestInDto | A-04 の入口と、受け取る値（形式のチェック）。いつも `ApiResponse.accepted()`（202）を返す | A-04 |
+| api.auth.passwordresetrequests.service | AuthPasswordResetRequestsService（インターフェース）・AuthPasswordResetRequestsServiceImpl・AuthPasswordResetRequestsServiceInDto | A-04 の業務の処理。ユーザを探し、リンクを作る処理を呼び、確定したあとにDMを送る（`@Transactional` は付けない） | A-04 |
+| api.auth.passwordresetrequests.service | AuthPasswordResetRequestsLinkIssuer・AuthPasswordResetRequestsNotifier | 5分以内かを確かめてリンクを作る（`@Transactional`）／ DM（①）を作って送る | A-04 |
 | api.auth.logout.controller | AuthLogoutController | A-02 の入口。Service はなく、LoginSession を直接呼ぶ（CLAUDE.md 5章の例外）。受け取る値・返す値もない | A-02 |
 | api.auth.me.controller | AuthMeController | A-03 の入口 | A-03 |
 | api.auth.me.service | AuthMeService（インターフェース）・AuthMeServiceImpl・AuthMeServiceInDto | A-03 の業務の処理。返す値は common.security.LoginUserInfoAssembler で作る | A-03 |
@@ -78,8 +85,10 @@ F-02：ログアウト。
 | common.security | LoginUserInfoAssembler・LoginUserInfo | ユーザの行から、ログインしている人の情報と権限項目を作る（A-01・A-03 で使うので common。2026-11-15 に決めた） | A-01・A-03 |
 | common.security | LoginUserRefresherImpl | LoginUserRefresher の中身。APIを呼ぶたびの権限項目の読み直し（R-3・R-4）。API でない処理なので common（2026-11-15 に auth から移した） | 全API |
 | dao.mapper.custom | UserCustomMapper#incrementFailedLoginCount | 失敗の回数を1増やす（`+ 1`。Example では書けない。ZPOP-124） | A-01 |
+| dao.mapper.custom | UserCustomMapper#selectIdForUpdate | ユーザの行をロックして読む（`FOR UPDATE`。Example では書けない。ZPOP-58） | A-04 |
 | dao.mapper・dao.entity | UserMapper・RoleMapper・RolePermissionMapper・PermissionMapper・PasswordTokenMapper と、テーブルの形・Example | users・roles・role_permissions・permissions を読む（MyBatis Generator が作ったもの） | A-01・A-03、全API |
 | （テスト）api.auth.login・api.auth.logout・api.auth.me | AuthLoginApiTest・AuthLogoutApiTest・AuthMeApiTest | A-01・A-02・A-03 のテスト（API 1本に1つ） | A-01〜A-03 |
+| （テスト）api.auth.passwordresetrequests | AuthPasswordResetRequestsApiTest・AuthPasswordResetRequestsSlackFailureApiTest・AuthPasswordResetRequestsConcurrencyTest | A-04 のテスト（API 1本に1つ。送れなかったとき・同時に依頼したときは別のクラス） | A-04 |
 | （テスト）common.security | LoginUserRefresherApiTest | APIを呼ぶたびの読み直しのテスト | 全API |
 | （テスト）testsupport | AuthApiTestBase | 上のテストで共通に使う値と道具（開発用のユーザ、ログインしてセッションを受け取る、など） | |
 
@@ -114,6 +123,7 @@ F-02：ログアウト。
 | common.error.ApiResponse | 成功の返す値を ok で包む |
 | common.passwordlink.PasswordLinkIssuer・IssuedPasswordLink（ZPOP-124。common.md 3.14） | ロックしたときの、パスワード設定用のリンク（用途 LOCK）を作る |
 | common.slack.SlackSender（ZPOP-123。common.md 3.13） | ロックのDM（③）を送る |
+| common.passwordlink.PasswordLinkIssuer（ZPOP-58。用途 RESET） | A-04 で、再設定のリンクを作る（有効期限30分） |
 
 ## 3. ほかの機能への影響
 
@@ -146,3 +156,4 @@ F-02：ログアウト。
 | v1.2 | 2026-11-10 | controller と service を API 1本に1つずつに分けた（AuthController → AuthLoginController・AuthLogoutController・AuthMeController、AuthService → AuthLoginService・AuthMeService と LoginUserRefresherImpl）。テストも API ごとに分けた（2.1。CLAUDE.md 5章の決まりの変更） |
 | v2.0 | 2026-11-15 | パッケージ構成の変更で、api.auth に作り直した（2026-11-15）。クラス名・パッケージ・Mapper のメソッドを新しい形（controller・service・validator・model、dao の Mapper と Example、手で書く Mapper、common の部品）に書き換えた。外から見た動きは変わらない。2.1 のクラスの表を書き直した |
 | v2.1 | 2026-11-15 | ZPOP-124：アカウントロックを作った。A-01 が、パスワードを間違えた回数を数え、5回続けたらロックし、本人にSlackのDM（画面設計 9章の③。パスワード設定用のリンク入り）を送る。パスワード設定用のリンクを作る部品（common.passwordlink）も、このタスクで作った（common.md 3.14）。1章・2章を直した |
+| v2.2 | 2026-11-15 | ZPOP-58：A-04（パスワード設定用のリンクの依頼）を足した（1章・1.1・1.3 の R-9・R-10・2.1・2.4）。詳細は A-04_パスワード設定リンクの依頼.md |
