@@ -1,6 +1,6 @@
 ---
 name: frontend-test
-description: 備品管理システムの画面（EquipmentManagementSystem_Client）の結合テスト（Playwright）を、画面設計とテスト方針から書き、Server・Client のテストを全部動かして成功させるときの手順。frontend-impl のあとに人が呼ぶ。
+description: 備品管理システムの画面（EquipmentManagementSystem_Client）の単体テスト（Playwright。テスト方針 5章）を、画面設計とテスト方針から書き、Server・Client のテストを全部動かして成功させるときの手順。frontend-impl のあとに人が呼ぶ。
 when_to_use: 「ZPOP-33 の画面のテストを書いて」「Playwright のテストを動かして」「画面のテストが失敗するので見て」のように、Client のテストを書く・直す・動かす依頼のとき。
 argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-33）]"
 ---

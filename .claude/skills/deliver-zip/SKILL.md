@@ -100,8 +100,8 @@ Server・Client のどちらを変えても、両方動かす（CLAUDE.md 6章�
 
 | テスト | フォルダ名の例 | 写すもの |
 |---|---|---|
-| 単体・結合（API） | `20261210_単体結合API_種別管理` | Server の `build/reports/tests/test/` の中身 → `report/`、`build/test-results/test/` の中身 → `results/` |
-| 結合（画面） | `20261210_結合画面_種別管理` | Client の `playwright-report/` の中身 → `report/`、`test-results/` の中の各テストの最後の画面 → `screenshots/`（ファイル名はテストのフォルダ名） |
+| 単体（部品・API） | `20261210_単体API_種別管理` | Server の `build/reports/tests/test/` の中身 → `report/`、`build/test-results/test/` の中身 → `results/` |
+| 単体（画面） | `20261210_単体画面_種別管理` | Client の `playwright-report/` の中身 → `report/`、`test-results/` の中の各テストの最後の画面 → `screenshots/`（ファイル名はテストのフォルダ名） |
 
 それぞれのフォルダに `テスト結果.md` を書く。
 
