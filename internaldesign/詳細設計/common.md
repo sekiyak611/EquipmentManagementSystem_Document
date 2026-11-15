@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.24 2026-11-15 |
+| 版 | v1.25 2026-11-15 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -69,6 +69,7 @@
 | common.web | SpaWebConfig | 組み立てた画面のファイルを配る。画面のアドレス（/loans など）で開かれたときは index.html を返す（3.9） |
 | common.passwordlink | PasswordLinkIssuer・IssuedPasswordLink・PasswordLinkTokens | パスワード設定用のリンクを作る（合言葉を作る・ハッシュで保存する・前のリンクを無効にする・アドレスを作る）（3.14） |
 | common.passwordlink | PasswordChangedNotifier | パスワードが変わったことを本人にDM（④）で知らせる（ZPOP-60。A-06・A-07 が使う。3.15） |
+| common.passwordlink | PasswordLinkTestSupportController・PasswordLinkTestSupportService・PasswordLinkTestSupportRequest・PasswordLinkTestSupportIssued | テスト用：パスワード設定用のリンクを、用途を指定して作る・全部消す API（`POST`・`DELETE /api/test-support/password-links`）。`app.test-support.enabled` が true のときだけ動く（ZPOP-104。3.14） |
 | common.security | PasswordBlocklist | パスワードが、メールアドレス・システム名・よく使われるパスワード（SecLists の10k）と同じかを調べる（3.15） |
 | common.security | LoginFailureRecorder・AccountLockNotifier | パスワードを間違えた回数を数える・ロックする・0に戻す／ロックのDM（③）を送る（A-01・A-07 が使う。ZPOP-61。3.16） |
 | common.validation | NewPasswordFormat・NewPasswordFormatCheck、PasswordConfirmed・PasswordConfirmedCheck・PasswordConfirmable | 新しいパスワードの形式のチェック（画面設計 8章）と、確認欄との一致のチェック。RestInDto に付ける（3.15） |
@@ -388,6 +389,8 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 
 読むだけで、自分では `@Transactional` を付けない。A-06 は、自分の `@Transactional` の中で呼び、続けて used_at を入れる（そのとき `used_at IS NULL` の行だけを書き換えて、同時に2回使われるのを防ぐ。A-06 の設計で決める）。
 
+**テスト用の API**（ZPOP-104。画面のテスト（Playwright）が使う）：`POST /api/test-support/password-links`（本文 `{ "email", "purpose" }`）が、そのメールアドレスのユーザに、指定した用途（RESET・REGISTER・LOCK）のリンクを作り、`{ token, purpose, expiresAt }` を返す（前のリンクは無効になる。ユーザがいない・削除されていれば 404、用途が知らない値・ないときは 400）。`DELETE /api/test-support/password-links` が、リンクを全部消す。どちらも、5分に1回の決まり（A-04）に当たらず、DM を経由しないので、画面のテストが S-03 を開くための合言葉を、いつでも用意できる。Slack の読み出し API（3.13）と同じく、`app.test-support.enabled` が true のときだけ動き、本番・開発では Bean も controller もなく 404 になる。ログインなし・CSRFの合言葉なしで呼べる（SecurityConfig の `/api/test-support/**`）。
+
 **記録（ログ）**：INFO で「パスワード設定用のリンクを作りました（userId、用途）」だけ。合言葉・アドレス（合言葉を含む）は出さない（API設計 7章）。
 
 **あとのタスクへの申し送り**
@@ -587,6 +590,7 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 | common.slack.SlackTestSupportApiTest | 単体（API） | テストの設定：GET で送った内容が古い順に出る・1通もなければ空／DELETE で空になる／ログインなし・CSRFの合言葉なしで呼べる。本番の設定（`app.test-support.enabled` を false にして起動）：GET・DELETE とも 404 で、SlackSender は SlackApiSender、読み出しの controller はない |
 | common.passwordlink.PasswordLinkTokensTest | 単体 | 合言葉は43文字で、URL に使える文字だけ（英数字・「-」「_」）／毎回違う（1000個で重ならない）／ハッシュは64文字の16進数（小文字）で、同じ合言葉なら同じ値・違えば違う値／既知の値（"abc" の SHA-256）と一致する |
 | common.passwordlink.PasswordLinkIssuerApiTest | 単体（API。データベースを使う） | 用途ごとの有効期限（RESET・LOCK は30分、REGISTER は3日）／保存するのはハッシュで、合言葉そのものは保存されない（アドレスの合言葉のハッシュが token_hash と同じ）／アドレスは `<app.base-url>/password-set?token=…`（base-url の終わりの「/」は除く）／前のリンク（未使用・未無効）が無効になり、使用済みのリンクと、ほかの人のリンクは変わらない／ログに合言葉が出ない |
+| common.passwordlink.PasswordLinkTestSupportApiTest | 単体（API。データベースを使う） | テスト用のリンクを作る・消す API：テストの設定では、用途ごとに作れる・合言葉で A-05 が通る・5分に1回の決まりに当たらない・ユーザがいなければ 404・用途が誤りなら 400・DELETE で全部消える。本番の設定では Bean がなく、POST・DELETE とも 404 |
 | common.calendar.MonthlyConfirmationRuleTest | 単体（時計を止める） | 今月の1日（月の初日・末日・年の変わり目）／今月なら確認済み／未記入・先月・去年の同じ月は未確認／日本時間の月で判定する（UTC ではまだ前の月の時刻） |
 
 テストを書くときの決まり（CLAUDE.md 6章）：
@@ -827,3 +831,4 @@ EquipmentManagementSystem_Client/
 | v1.22 | 2026-11-15 | ZPOP-59：3.14 に、合言葉を確かめる部品（PasswordLinkVerifier・VerifiedPasswordLink）を足した。A-05・A-06 が使う。 |
 | v1.23 | 2026-11-15 | ZPOP-60：3.15「パスワードの決まりの部品」を足した（NewPasswordFormat・PasswordConfirmed・PasswordBlocklist・よく使われるパスワードの一覧・PasswordChangedNotifier）。3.10 の申し送り（session_valid_after と loggedInAt を秒にそろえて比べる）を、決めた形に直した。 |
 | v1.24 | 2026-11-15 | ZPOP-61：3.16「パスワードの失敗を数える・ロックする部品」を足した。AuthLoginFailureRecorder・AuthLoginLockNotifier を common.security に移し、LoginFailureRecorder・AccountLockNotifier に名前を変えた。 |
+| v1.25 | 2026-11-15 | ZPOP-104：3.14 に、テスト用のリンクを作る・消す API（PasswordLinkTestSupportController ほか）を足した（画面のテストが使う）。 |
