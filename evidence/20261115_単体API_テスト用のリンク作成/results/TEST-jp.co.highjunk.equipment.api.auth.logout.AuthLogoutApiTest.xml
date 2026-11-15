@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="A-02 ログアウト" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-15T13:26:09.733Z" hostname="DESKTOP-32H5PQ0" time="0.242">
+  <properties/>
+  <testcase name="CSRF の合言葉がなければ 403。ログアウトしない" classname="jp.co.highjunk.equipment.api.auth.logout.AuthLogoutApiTest" time="0.074"/>
+  <testcase name="ログインしていなければ 401" classname="jp.co.highjunk.equipment.api.auth.logout.AuthLogoutApiTest" time="0.006"/>
+  <testcase name="ログアウトすると 200（data は null）。そのあとは 401" classname="jp.co.highjunk.equipment.api.auth.logout.AuthLogoutApiTest" time="0.075"/>
+  <system-out><![CDATA[2026-11-15T22:26:09.736+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.logout.AuthLogoutApiTest]: AuthLogoutApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:26:09.812+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.logout.AuthLogoutApiTest
+2026-11-15T22:26:09.813+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.logout.AuthLogoutApiTest]: AuthLogoutApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:26:09.813+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:26:09.815+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.logout.AuthLogoutApiTest
+2026-11-15T22:26:09.877+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+2026-11-15T22:26:09.956+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+2026-11-15T22:26:09.971+09:00 INFO  userId=2 [Test worker] j.c.h.e.common.security.LoginSession - ログアウトしました
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
