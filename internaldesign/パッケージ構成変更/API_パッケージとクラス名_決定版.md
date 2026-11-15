@@ -96,5 +96,5 @@ jp.co.highjunk.equipment
 |---|---|---|
 | 1 | 返す値のクラス名 | `<頭>RestOutDto`（例：`EquipmentManagementSearchItemRestOutDto`）。あとで変わるかもしれない |
 | 2 | MyBatis Generator で作れない SQL | 手で書く Mapper を `jp.co.highjunk.equipment.dao.mapper.custom` に置く（XML は `src/main/resources/jp/co/highjunk/equipment/dao/mapper/custom/`）。自動で作り直しても消えない |
-| 3 | S-18（一括登録）の画面の置き場所 | **未定**。1つの画面のまま `features/importer/` に置く案と、画面を分ける案がある。画面を分けるなら、画面一覧・画面設計 21章の変更が要る |
+| 3 | S-18（一括登録）の画面の置き場所 | **決まった（2026-11-15）**。3つの画面に分ける：S-18 ユーザ（`features/user/`）、S-20 備品・S-21 今貸出中の情報（どちらも `features/equipment/management/`）。画面一覧 v1.1・画面設計 v1.5 の21章を直した |
 | 4 | ServiceInDto のチェックを動かす場所 | ServiceImpl の `@Transactional` の中で、Bean Validation で確かめる |

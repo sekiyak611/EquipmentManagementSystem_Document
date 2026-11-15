@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v2.0 2026-11-15 |
+| 版 | v2.1 2026-11-15 |
 | Jira | ZPOP-83（K-01）、ZPOP-84（K-02）、ZPOP-85（K-03）、ZPOP-86（K-04）、ZPOP-115（S-13） |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の4章（F-21）、API設計.md v1.2 の2.4・2.5・2.7・3.6・7章、画面設計.md v1.3 の1.2・16章、画面一覧.md v1.0 の2章・4章・7章、データ設計.md v1.0 の2章・5.3・5.5・5.6 |
@@ -110,7 +110,7 @@ API ごとのパッケージ（api.equipment.category の下。その中を cont
 
 ### 2.2 Client
 
-src/features/category/ の下。名前の付け方は CLAUDE.md 5章の命名規則。
+src/features/equipment/category/ の下。名前の付け方は CLAUDE.md 5章の命名規則。
 
 | ファイル | 役割 | 画面 |
 |---|---|---|
@@ -118,8 +118,8 @@ src/features/category/ の下。名前の付け方は CLAUDE.md 5章の命名規
 | components/CategoryTable.tsx | 種別の一覧の表 | S-13 |
 | components/CategoryFormDialog.tsx | 追加・変更のダイアログ。入力チェックと K-02・K-03 の呼び出し | S-13 |
 | api.ts | getCategories（K-01）・createCategory（K-02）・updateCategory（K-03）・deleteCategory（K-04） | S-13 |
-| types.ts | CategoryResponse・CategoryCreateRequest・CategoryUpdateRequest（Server の dto と同じ名前と形） | S-13 |
-| （テスト）tests/category/category-list.spec.ts | S-13 の画面のテスト（Playwright） | S-13 |
+| types.ts | CategoryResponse・CategoryCreateRequest・CategoryUpdateRequest（形は Server と同じ。名前は中身が分かる名前。CLAUDE.md 5章） | S-13 |
+| （テスト）tests/equipment/category/category-list.spec.ts | S-13 の画面のテスト（Playwright） | S-13 |
 | （共有）src/routes.tsx | /categories の1行を足す（CLAUDE.md 9章） | S-13 |
 | （共有）src/common/components/menuItems.ts | メニューに「種別管理」の1行を足す（CLAUDE.md 9章、common.md 11.4） | S-13 |
 
@@ -165,3 +165,4 @@ src/features/category/ の下。名前の付け方は CLAUDE.md 5章の命名規
 | v1.4 | 2026-11-11 | S-13（ZPOP-115）の分を足した（1.2・2.2・3章の No.3）。画面設計の版を v1.3 にした |
 | v1.5 | 2026-11-11 | 3章の No.2 の API の ID を直した（備品の登録は C-03、変更は C-04）。C-03 で作ったことを書いた |
 | v2.0 | 2026-11-15 | パッケージ構成の変更で、api.equipment.category に作り直した（以後のお手本）。置き場所を equipment/category/ にし、1.1・2.1・2.4・3・4章を新しいクラスに合わせた。画面（S-13）と 2.2 の Client のファイルは、features を移すときに直す |
+| v2.1 | 2026-11-15 | 2.2 の Client のファイルの場所を、features/equipment/category/・tests/equipment/category/ に直した |

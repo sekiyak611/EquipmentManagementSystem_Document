@@ -48,14 +48,14 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<まとま
 
 **置き場所**（CLAUDE.md 4.3）
 
-**置き場所の注意（features を移す途中。CLAUDE.md 4.3）**：今の `src/features/` と `tests/` は、まだ古い形（機能ごと。例：`features/category/`）のまま。新しいまとまり（例：`features/equipment/category/`）に移し終えるまでに、新しい画面を作るときは、どちらに置くかを人に確かめる。下の表の `<まとまりのフォルダ>` は、新しい形のフォルダ（CLAUDE.md 4.3 の features の表）。
+下の表の `<まとまりのフォルダ>` は、CLAUDE.md 4.3 の features の表のフォルダ（例：`equipment/category`）。
 
 | 作るもの | 置き場所 |
 |---|---|
 | 画面 | `src/features/<まとまりのフォルダ>/pages/` |
 | そのまとまりだけで使う部品 | `src/features/<まとまりのフォルダ>/components/` |
 | API の呼び出し | `src/features/<まとまりのフォルダ>/api.ts`（common/api の `apiGet`・`apiPost`・`apiPut`・`apiDelete` を使う） |
-| API で受け渡す値の型 | `src/features/<まとまりのフォルダ>/types.ts`（型の名前の付け方は、CLAUDE.md 5章の命名規則。Client の行は features を移すときに直すので、それまでは今の名前の付け方） |
+| API で受け渡す値の型 | `src/features/<まとまりのフォルダ>/types.ts`（型の名前の付け方は、CLAUDE.md 5章の命名規則） |
 | URL と画面の対応 | `src/routes.tsx` に1行足すだけ（CLAUDE.md 9章） |
 | 共通ヘッダーのメニュー | 1行足すだけ（CLAUDE.md 9章） |
 | 2つ以上の機能で使う部品、common の変更 | 作らない・変えない。必要になったら止めて人に相談する（CLAUDE.md 9章） |
