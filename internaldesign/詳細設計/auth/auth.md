@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v2.8 2026-11-16 |
-| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01）、ZPOP-124（アカウントロック）、ZPOP-58（A-04）、ZPOP-59（A-05）、ZPOP-60（A-06）、ZPOP-61（A-07）、ZPOP-104（S-02）、ZPOP-105（S-03）、ZPOP-106（S-04） |
+| 版 | v2.9 2026-11-16 |
+| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01）、ZPOP-124（アカウントロック）、ZPOP-58（A-04）、ZPOP-59（A-05）、ZPOP-60（A-06）、ZPOP-61（A-07）、ZPOP-104（S-02）、ZPOP-105（S-03）、ZPOP-106（S-04）、ZPOP-125（ログインしたままにする） |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の4章（F-01・F-02）・8章、API設計.md v1.1 の2.2・3.1・4.1〜4.3・6章・7章、画面設計.md v1.1 の1・2章、データ設計.md v1.0 の5.1〜5.4、基本設計書.md v1.1 の5章 |
 
@@ -19,7 +19,7 @@ F-02：ログアウト。
 
 | 作らないもの | タスク | 今回の動き |
 |---|---|---|
-| ログインしたままにする（60日間） | ZPOP-125 | rememberMe は受け取るが使わない。画面のチェックも送るだけ |
+| ログインしたままにする（60日間） | ZPOP-125 | **作成済み（ZPOP-125）**。rememberMe が true なら、60日間のクッキー `remember-me` を渡し、セッションが切れても、次の操作で自動でログインし直す（common.md 3.17）。ログアウトで、この端末の分だけ解除。パスワードを変えた・再設定したときは、その人の分をすべて解除する |
 | アカウントロック（失敗の回数を数える、ロックする、DM） | ZPOP-124 | **作成済み（ZPOP-124）**。A-01 が、パスワードを間違えた回数を数え、5回続けたらロックして DM（③）を送る（A-01 の 4.1）。ロックの解除（パスワードの再設定）は A-06 |
 | パスワード再設定の依頼（A-04） | ZPOP-58 | **作成済み（ZPOP-58）**。依頼されたメールアドレスのユーザに、パスワード設定用のリンクをDM（①）で送る（A-04_パスワード設定リンクの依頼.md）。画面（S-02）は ZPOP-104 |
 | パスワードの合言葉の確認（A-05） | ZPOP-59 | **作成済み（ZPOP-59）**。リンクの合言葉が使えるかを確かめ、対象のメールアドレスと用途を返す（A-05_合言葉の確認.md）。画面（S-03）は ZPOP-105 |
@@ -104,6 +104,7 @@ F-02：ログアウト。
 | api.auth.update.password.service | AuthUpdatePasswordService（インターフェース）・AuthUpdatePasswordServiceImpl・AuthUpdatePasswordServiceInDto・AuthUpdatePasswordWrongCurrentException・AuthUpdatePasswordAccountLockedException | A-07 の業務の処理。ユーザを読み、Validator で確かめ、間違いなら回数を数え、よければパスワードを変えて、DM（④）を送る（`@Transactional` なし）。例外は、現在のパスワードの誤り（ロックしたときは別の例外。Controller がログアウトに使う） | A-07 |
 | api.auth.update.password.validator | AuthUpdatePasswordValidator・AuthUpdatePasswordValidatorDto | 現在のパスワードが合うか・新しいパスワードが現在と同じでないか・使えないものでないか（読んだユーザのハッシュが要るので Validator） | A-07 |
 | common.security | LoginFailureRecorder・AccountLockNotifier | パスワードを間違えた回数を数える・ロックする・0に戻す／ロックのDM（③）。もとは api.auth.login.service の AuthLoginFailureRecorder・AuthLoginLockNotifier。A-01・A-07 で使うので common に移した（ZPOP-61。common.md 3.16） | A-01・A-07 |
+| common.security | RememberMeTokenRepository・RememberMeUserDetailsService・LoginRememberMe・RememberMeLoginFilter | 「ログインしたままにする」（common.md 3.17。A-01・A-02・A-06・A-07 で使うので common） | A-01・A-02・A-06・A-07 |
 | dao.mapper.custom | UserCustomMapper#changePassword | 自分のパスワードを変える（ハッシュ・session_valid_after・失敗の回数。ロックは解除しない。ZPOP-61） | A-07 |
 | common.passwordlink | PasswordChangedNotifier | パスワードが変わったことのDM（④）を作って送る（A-06・A-07 で使うので common。3.15） | A-06・A-07 |
 | common.security・common.validation | PasswordBlocklist、NewPasswordFormat・PasswordConfirmed ほか | パスワードの決まり（common.md 3.15。A-06・A-07 で使うので common） | A-06・A-07 |
@@ -123,6 +124,7 @@ F-02：ログアウト。
 | （テスト）api.auth.passwordtokens.verify・common.passwordlink | AuthPasswordTokensVerifyApiTest・PasswordLinkVerifierApiTest | A-05 のテスト（API 1本に1つ）と、確かめる部品のテスト | A-05 |
 | （テスト）api.auth.passwordtokens.use・common | AuthPasswordTokensUseApiTest・AuthPasswordTokensUseSlackFailureApiTest・AuthPasswordTokensUseConcurrencyTest・PasswordBlocklistTest・NewPasswordFormatCheckTest・PasswordChangedNotifierTest | A-06 のテストと、パスワードの決まりの部品のテスト | A-06 |
 | （テスト）api.auth.update.password | AuthUpdatePasswordApiTest・AuthUpdatePasswordSlackFailureApiTest | A-07 のテスト（API 1本に1つ。DMが送れなかったときは別のクラス） | A-07 |
+| （テスト）common.security | RememberMeApiTest・RememberMeConcurrencyTest・RememberMeTokenRepositoryApiTest | 「ログインしたままにする」のテスト（ログイン・自動ログイン・盗まれたとき・猶予・同時の自動ログイン・期限・ログアウト・パスワードの変更） | A-01・A-02・A-06・A-07 |
 | （テスト）common.security | LoginUserRefresherApiTest | APIを呼ぶたびの読み直しのテスト | 全API |
 | （テスト）testsupport | AuthApiTestBase | 上のテストで共通に使う値と道具（開発用のユーザ、ログインしてセッションを受け取る、など） | |
 
@@ -145,6 +147,7 @@ F-02：ログアウト。
 | tests/auth/password-reset.spec.ts | 画面のテスト | S-02 |
 | tests/auth/password-set.spec.ts | 画面のテスト | S-03 |
 | tests/auth/password-change.spec.ts | 画面のテスト | S-04 |
+| tests/auth/remember-me.spec.ts | 画面のテスト（ログインしたままにする。S-01 の画面は変えていない） | S-01 |
 | src/common/components/Header.tsx（変更） | 氏名を押したときの中に、「パスワード変更」（/password-change）を足した（「ログアウト」の上。common.md 11.4） | S-04 |
 | tests/support/passwordLink.ts | 画面のテストで、パスワード設定用のリンクを作る・消す部品（Server のテスト用 API を呼ぶ。common.md 3.14。S-03・S-04 のテストでも使う） | S-02 ほか |
 | tests/support/slack.ts | 画面のテストで、送ったDM（Server の偽物の Slack が記録したもの）を読み出す・空にする部品 | S-02 ほか |
@@ -207,3 +210,4 @@ F-02：ログアウト。
 | v2.6 | 2026-11-15 | ZPOP-104：画面 S-02（パスワード再設定の依頼）を足した（1章・1.2・2.2）。詳細は S-02_パスワード再設定の依頼.md |
 | v2.7 | 2026-11-16 | ZPOP-105：画面 S-03（パスワード設定）を足した（1章・1.2・2.2）。詳細は S-03_パスワード設定.md |
 | v2.8 | 2026-11-16 | ZPOP-106：画面 S-04（パスワード変更）を足した（1章・1.2・2.2）。詳細は S-04_パスワード変更.md |
+| v2.9 | 2026-11-16 | ZPOP-125：「ログインしたままにする」を足した（1章。common.md 3.17）。A-01・A-02・A-06・A-07・S-01 の詳細設計の該当の所を直した。 |

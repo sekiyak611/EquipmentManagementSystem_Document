@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="RememberMeTokenRepository" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-16T13:10:25.155Z" hostname="DESKTOP-32H5PQ0" time="0.042">
+  <properties/>
+  <testcase name="removeUserTokens：その人の行がすべて消える（ほかの人の行は残る）" classname="jp.co.highjunk.equipment.common.security.RememberMeTokenRepositoryApiTest" time="0.008"/>
+  <testcase name="removeSeries：その番号の行だけが消える（同じ人の、ほかの端末の行は残る）" classname="jp.co.highjunk.equipment.common.security.RememberMeTokenRepositoryApiTest" time="0.006"/>
+  <testcase name="合言葉と最後に使った日時を新しくできる。ほかの列（ユーザ名）は変わらない" classname="jp.co.highjunk.equipment.common.security.RememberMeTokenRepositoryApiTest" time="0.006"/>
+  <testcase name="ない番号を消しても、何も起きない" classname="jp.co.highjunk.equipment.common.security.RememberMeTokenRepositoryApiTest" time="0.002"/>
+  <testcase name="作った行を、番号で読める（ユーザ名・合言葉・最後に使った日時）。ない番号は null" classname="jp.co.highjunk.equipment.common.security.RememberMeTokenRepositoryApiTest" time="0.013"/>
+  <system-out><![CDATA[2026-11-16T22:10:25.155+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.security.RememberMeTokenRepositoryApiTest]: RememberMeTokenRepositoryApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:10:25.157+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.security.RememberMeTokenRepositoryApiTest
+2026-11-16T22:10:25.158+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.security.RememberMeTokenRepositoryApiTest]: RememberMeTokenRepositoryApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:10:25.158+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:10:25.159+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.security.RememberMeTokenRepositoryApiTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
