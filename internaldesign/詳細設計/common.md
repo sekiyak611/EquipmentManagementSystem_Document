@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.25 2026-11-15 |
+| 版 | v1.26 2026-11-16 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -706,7 +706,7 @@ EquipmentManagementSystem_Client/
 ### 11.4 全画面の枠・ヘッダー・テーマ
 
 - **AppLayout**：上から、ヘッダー、メッセージの帯、各画面の中身（React Router の Outlet）の順に並べる。
-- **Header**：システム名「備品管理」を出し、押すとトップ（`/`）に戻る（画面設計 1.1）。ログインしているときは、メニューと、右に氏名を出す。氏名を押すと「ログアウト」を出す（11.9）。「パスワード変更」は S-04（ZPOP-106）で、氏名を押したときの中に足す。
+- **Header**：システム名「備品管理」を出し、押すとトップ（`/`）に戻る（画面設計 1.1）。ログインしているときは、メニューと、右に氏名を出す。氏名を押すと「パスワード変更」（S-04。/password-change に移る。ZPOP-106）と「ログアウト」を出す（11.9）。
 - **メニュー**（画面設計 1.1、画面一覧 4章）：
   - 出す画面は `common/components/menuItems.ts` の `MENU_ITEMS` に書く。1行に、名前（画面一覧 2章の画面の名前）、アドレス、開ける権限項目のコード（誰でも開ける画面は null）を書く。画面を作ったら、ここに1行足す（CLAUDE.md 9章）。並びは、画面一覧 4章の「メニューから開く画面」の順。
   - その人が持っている権限項目の画面だけを出す（`hasPermission`。11.9）。表示を隠すだけで、確かめはサーバーが行う。
@@ -832,3 +832,4 @@ EquipmentManagementSystem_Client/
 | v1.23 | 2026-11-15 | ZPOP-60：3.15「パスワードの決まりの部品」を足した（NewPasswordFormat・PasswordConfirmed・PasswordBlocklist・よく使われるパスワードの一覧・PasswordChangedNotifier）。3.10 の申し送り（session_valid_after と loggedInAt を秒にそろえて比べる）を、決めた形に直した。 |
 | v1.24 | 2026-11-15 | ZPOP-61：3.16「パスワードの失敗を数える・ロックする部品」を足した。AuthLoginFailureRecorder・AuthLoginLockNotifier を common.security に移し、LoginFailureRecorder・AccountLockNotifier に名前を変えた。 |
 | v1.25 | 2026-11-15 | ZPOP-104：3.14 に、テスト用のリンクを作る・消す API（PasswordLinkTestSupportController ほか）を足した（画面のテストが使う）。 |
+| v1.26 | 2026-11-16 | ZPOP-106：11.4 の Header に、氏名を押したときの「パスワード変更」（S-04）を足した。 |
