@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="HolidayCalendar・ReminderCalendar（データベースを使う）" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-16T13:50:44.080Z" hostname="DESKTOP-32H5PQ0" time="0.088">
+  <properties/>
+  <testcase name="催促を送ってよい日か：実際の祝日で（2026-11：23日は祝日、25日が催促日）" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.004"/>
+  <testcase name="その日かそれより前の平日：ゴールデンウィークの続き（2026-05-06 は振替休日）は 5/1（金）まで戻る" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.003"/>
+  <testcase name="今月の催促日は、時計から決まる（組み立てた Bean の時計は日本時間）" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.004"/>
+  <testcase name="平日の判定：土曜・日曜・祝日は false、ふつうの平日は true" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.002"/>
+  <testcase name="催促の日時（設定は毎朝9:00）：催促日の9:00（日本時間）" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.001"/>
+  <testcase name="その日かそれより前の平日：平日はその日、土日はさかのぼる、祝日の月曜は前の金曜" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.001"/>
+  <testcase name="25日が祝日のとき（祝日を足して確かめる）：前の平日。その日も祝日なら、さらに前の平日（実際の祝日 11/23 も越える）" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.008"/>
+  <testcase name="祝日の判定：2026年の祝日は true、祝日でない日は false。最初・最後の日も" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.003"/>
+  <testcase name="収録の最後の日より後は、祝日にない（平日として扱う）" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.002"/>
+  <testcase name="催促日（実際の祝日）：2026年は、土日の月（1・4・7・10月）が前の金曜、ほかは25日" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.003"/>
+  <testcase name="V3 で、内閣府の CSV の全件（1,067件。1955-01-01〜2027-11-23）が入っている" classname="jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest" time="0.003"/>
+  <system-out><![CDATA[2026-11-16T22:50:44.081+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest]: HolidayCalendarApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:50:44.128+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest
+2026-11-16T22:50:44.128+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest]: HolidayCalendarApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:50:44.129+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.calendar.HolidayCalendarApiTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

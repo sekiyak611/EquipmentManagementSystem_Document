@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.29 2026-11-16 |
+| 版 | v1.30 2026-11-16 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -56,6 +56,7 @@
 | common.error | UnauthorizedException | 401 と文を返す（6章。ZPOP-55） |
 | common.calendar | MonthlyConfirmationRule | 「今月確認済み」の判定（3.11） |
 | common.calendar | HolidayCalendar・ReminderCalendar | 祝日・平日の判定、催促日の計算（25日。土日祝日なら前の平日）（ZPOP-126。3.18） |
+| common.equipment | EquipmentSummary・EquipmentSummaryAssembler／MyLoanList・MyLoanItem・MyLoanListAssembler | 備品の一覧の1件の形（3.12）／自分が借りている備品の一覧と今月の確認の案内（3.19。ZPOP-63。B-01・B-04） |
 | common.constant | PermissionCode・HomePage | 権限項目のコード（データ設計 5.3）、ログイン後の最初の画面（API設計 4.2） |
 | common.error | ApiResponse | 返す値の形（status・message・data・errors）。ok・created・accepted・error で作る |
 | common.error | ErrorItem | errors の1件（field・row・managementNo・message） |
@@ -482,7 +483,7 @@ A-01 は、ユーザがいて・パスワードがあり・ロックされてい
 | クラス | 役割 |
 |---|---|
 | HolidayCalendar | `isHoliday(LocalDate)`（holidays にある日か。HolidayMapper#selectByPrimaryKey）、`isBusinessDay(LocalDate)`（土曜・日曜・祝日でない日）、`businessDayOnOrBefore(LocalDate)`（その日が平日ならその日、そうでなければ、さかのぼって最初の平日） |
-| ReminderCalendar | `reminderDate(YearMonth)`（その月の催促日。25日。25日が土日祝日なら、前の平日。その日も祝日なら、さらに前の平日）、`reminderAt(YearMonth)`（催促日の催促の時刻。日本時間の ZonedDateTime。B-01 の reminderAt）、`reminderDateOfThisMonth()`・`reminderAtOfThisMonth()`（今月。Clock から）、`isReminderDue(LocalDate today)`（催促を送ってよい日か。今日が平日で、今日が、その月の催促日か、それより後。基本設計書 7章の3の1・2。「その月の催促をまだ送っていない」の確かめは、ZPOP-127 が reminder_runs で行う） |
+| ReminderCalendar | `reminderDate(YearMonth)`（その月の催促日。25日。25日が土日祝日なら、前の平日。その日も祝日なら、さらに前の平日）、`reminderAt(YearMonth)`（催促日の催促の時刻。日本時間の ZonedDateTime。B-01 の reminderAt）、`reminderDateOfThisMonth()`・`reminderAtOfThisMonth()`（今月。Clock から）、`isReminderPassed()`（今が今月の催促の日時と同じか、あとか。B-01 の reminderPassed。ZPOP-63）、`isReminderDue(LocalDate today)`（催促を送ってよい日か。今日が平日で、今日が、その月の催促日か、それより後。基本設計書 7章の3の1・2。「その月の催促をまだ送っていない」の確かめは、ZPOP-127 が reminder_runs で行う） |
 
 **催促の時刻**：設定の `app.reminder-cron`（毎朝9:00。`0 0 9 * * *`）の時刻にする（機能一覧 7章の9：テストのために、設定で変えられる）。毎日1回動く形の cron のときだけ、その時刻を使い、そうでない（曜日の指定など）ときは、9:00 にする。起動のとき、cron の書き方が正しいかを確かめる（誤りなら、起動しない）。
 
@@ -496,6 +497,20 @@ A-01 は、ユーザがいて・パスワードがあり・ロックされてい
 | 2 | 催促日は、25日から、1日ずつさかのぼり、最初の平日にする | 機能一覧 7章の1「その日も祝日なら、さらに前の平日」 | はい | ― |
 | 3 | 催促の時刻は、`app.reminder-cron` の時刻。毎日1回動く形でないときは 9:00 | 画面設計・API設計は「9:00」と決めていて、機能一覧 7章の9は、設定で変えられるようにすると決めている。時刻を、2か所（cron と、ここ）に書かないため | いいえ | まだ |
 | 4 | holidays にない日（収録の最後の日（2027-11-23）より後の祝日）は、平日として扱う。新しい年の分を足し忘れても、エラーにしない | 催促が止まるより、祝日に送ってしまうほうが、害が小さい。足し忘れは、毎年の作業（上）で防ぐ | はい | まだ |
+
+### 3.19 自分が借りている備品の一覧を作る部品（common.equipment。ZPOP-63）
+
+写したもと：API設計.md v1.4 の4.5・4.6・4.7、画面設計.md v1.5 の3章
+
+B-01（一覧）と B-04（確認したあとの最新の一覧。「B-01 と同じ形」）が使う。API のパッケージどうしは使い合わないので、common.equipment に1つだけ置く（CLAUDE.md 5章）。B-02 の「作った貸出履歴」（B-01 の items の1件と同じ形）も MyLoanItem を使う予定。
+
+| クラス | 役割 |
+|---|---|
+| MyLoanItem | 借りている備品の1件（loanId・equipmentId・managementNo・categoryName・maker・model・lentOn・dueOn・overdue・lastConfirmedOn・confirmedThisMonth） |
+| MyLoanList | 一覧と案内（unconfirmedCount・reminderAt（OffsetDateTime）・reminderPassed・items） |
+| MyLoanListAssembler | `assemble(userId)`：その人が今借りている貸出履歴（返却日が空・取り消されていない）を読み、管理中で削除されていない備品を IN で読み、EquipmentSummaryAssembler（3.12）で種別の名前と今月確認済みかを付け、期限超過（返却予定日が今日より前）を決め、未確認を上にして貸出日の古い順（同じ日は貸出履歴のID順）に並べ、未確認の数・今月の催促の日時・過ぎたか（ReminderCalendar。3.18）を付ける。読むだけ（`@Transactional` なし） |
+
+詳しい決まりと判断は、詳細設計 equipment/mine/B-01_自分の備品の一覧.md の5章・12章。
 
 ## 4. データベース
 
@@ -660,7 +675,8 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 | common.passwordlink.PasswordLinkTestSupportApiTest | 単体（API。データベースを使う） | テスト用のリンクを作る・消す API：テストの設定では、用途ごとに作れる・合言葉で A-05 が通る・5分に1回の決まりに当たらない・ユーザがいなければ 404・用途が誤りなら 400・DELETE で全部消える。本番の設定では Bean がなく、POST・DELETE とも 404 |
 | common.calendar.MonthlyConfirmationRuleTest | 単体（時計を止める） | 今月の1日（月の初日・末日・年の変わり目）／今月なら確認済み／未記入・先月・去年の同じ月は未確認／日本時間の月で判定する（UTC ではまだ前の月の時刻） |
 | common.calendar.HolidayCalendarApiTest | 単体（データベースを使う） | V3 で入れた祝日（1,067件。最初・最後の日）／祝日・平日の判定（最後の日より後は平日扱い）／「その日かそれより前の平日」（土日・祝日・ゴールデンウィークの続き）／実際の祝日での催促日・催促の日時・催促を送ってよい日（25日が祝日のときは祝日を足して確かめる） |
-| common.calendar.ReminderCalendarTest | 単体（時計を止める。祝日は偽物） | 催促日（25日が平日・土曜・日曜・祝日・祝日が続くとき）／催促の日時（日本時間。cron の時刻。毎日1回の形でなければ 9:00。cron の誤りで作れない）／今月（月末・年の変わり目）／催促を送ってよい日か（催促日の前・当日・あと・土日祝日・月の替わり） |
+| common.calendar.ReminderCalendarTest | 単体（時計を止める。祝日は偽物） | 催促日（25日が平日・土曜・日曜・祝日・祝日が続くとき）／催促の日時（日本時間。cron の時刻。毎日1回の形でなければ 9:00。cron の誤りで作れない）／今月の催促の日時を過ぎたか（前日・前の分・ちょうど・あと。土日にずれた月。設定の時刻）／今月（月末・年の変わり目）／催促を送ってよい日か（催促日の前・当日・あと・土日祝日・月の替わり） |
+| api.equipment.mine.search.item.EquipmentMineSearchItemApiTest | API（データベースを使う） | B-01：401・403／借りていないとき／1件の形・null／今月確認済み・並び順（未確認が上、貸出日の古い順）／期限超過（昨日・今日・明日・なし）／自分の分だけ（ほかの人・返却済み・取り消し）／管理中でない・削除された備品は出ない／すべて確認済み／催促の日時（+09:00 の形） |
 
 テストを書くときの決まり（CLAUDE.md 6章）：
 
@@ -905,3 +921,4 @@ EquipmentManagementSystem_Client/
 | v1.27 | 2026-11-16 | ZPOP-125：3.17「ログインしたままにする」を足した（RememberMeTokenRepository・RememberMeUserDetailsService・LoginRememberMe・RememberMeLoginFilter、LoginSession の変更）。3.10 の申し送りを、作成済みに直した。 |
 | v1.28 | 2026-11-16 | ZPOP-125：3.17 に、合言葉を替えた直後（10秒以内）の古いクッキーを、盗まれたと見ない猶予を足した（判断 No.7）。 |
 | v1.29 | 2026-11-16 | ZPOP-126：3.18「祝日と催促日の計算」を足した（HolidayCalendar・ReminderCalendar。Flyway の V3 で祝日を入れる）。3.11 の申し送りを、作成済みに直した。 |
+| v1.30 | 2026-11-16 | ZPOP-63：3.19「自分が借りている備品の一覧を作る部品」（common.equipment の MyLoanList・MyLoanItem・MyLoanListAssembler）を足し、3.18 に ReminderCalendar#isReminderPassed を足した |
