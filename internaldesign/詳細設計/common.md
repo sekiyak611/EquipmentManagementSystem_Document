@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.26 2026-11-16 |
+| 版 | v1.28 2026-11-16 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -24,6 +24,7 @@
 | common.calendar | 祝日・催促日の計算、「今月確認済み」の判定 | 「今月確認済み」の判定だけ作成済み（2026-11-11。C-01 の前の共通作業。3.11）。祝日・催促日は ZPOP-126 で足す |
 | common.passwordlink | パスワード設定用のリンク | 作成済み（ZPOP-124。3.14。リンクを作るところまで。A-04・A-05・A-06 ほかが使う） |
 | common.security（パスワードの決まり） | よく使われるパスワードの照らし合わせ（PasswordBlocklist）と、形式のチェック用の印（common.validation の NewPasswordFormat・PasswordConfirmed） | 作成済み（ZPOP-60。3.15。A-06・A-07 が使う） |
+| common.security（ログインしたままにする） | 60日間ログインしたままにする仕組み（RememberMeTokenRepository・RememberMeUserDetailsService・LoginRememberMe・RememberMeLoginFilter） | 作成済み（ZPOP-125。3.17。A-01・A-02・A-06・A-07 が使う） |
 | common.web | 組み立てた画面（Client）をサーバーから配る | 作成済み（ZPOP-22）。3.9 |
 | テーブルと最初のデータ | Flyway の SQL（db/migration） | 作成済み（ZPOP-122）。詳細設計 [テーブル.md](テーブル.md) |
 | common.constant | Enum（決まった値だけを持つ型）をまとめる場所 | 作成済み（2026-11-04）。今は HealthState だけ。各機能が足していく（2.3） |
@@ -72,6 +73,7 @@
 | common.passwordlink | PasswordLinkTestSupportController・PasswordLinkTestSupportService・PasswordLinkTestSupportRequest・PasswordLinkTestSupportIssued | テスト用：パスワード設定用のリンクを、用途を指定して作る・全部消す API（`POST`・`DELETE /api/test-support/password-links`）。`app.test-support.enabled` が true のときだけ動く（ZPOP-104。3.14） |
 | common.security | PasswordBlocklist | パスワードが、メールアドレス・システム名・よく使われるパスワード（SecLists の10k）と同じかを調べる（3.15） |
 | common.security | LoginFailureRecorder・AccountLockNotifier | パスワードを間違えた回数を数える・ロックする・0に戻す／ロックのDM（③）を送る（A-01・A-07 が使う。ZPOP-61。3.16） |
+| common.security | RememberMeTokenRepository・RememberMeUserDetailsService・LoginRememberMe・RememberMeLoginFilter | 「ログインしたままにする」（60日間。persistent_logins。3.17。ZPOP-125） |
 | common.validation | NewPasswordFormat・NewPasswordFormatCheck、PasswordConfirmed・PasswordConfirmedCheck・PasswordConfirmable | 新しいパスワードの形式のチェック（画面設計 8章）と、確認欄との一致のチェック。RestInDto に付ける（3.15） |
 | common.constant | PasswordLinkPurpose | リンクの用途（RESET・REGISTER・LOCK。データ設計 5.8 の purpose の値） |
 | common.slack | SlackSender・SlackDirectMessage・SlackSendResult | SlackのDMを送る約束（インターフェース）と、1通のDM、送った結果（3.13） |
@@ -275,7 +277,7 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 
 **あとのタスクへの申し送り**
 
-- ログインしたままにする（ZPOP-125）：Spring Security の RememberMe（ログインしたままにする仕組み）は、LoginRefreshFilter より後ろでログイン状態を作り、持ち主も LoginUser にならない。そのままでは権限項目の読み直しが効かないので、ZPOP-125 で、RememberMe で作ったログイン状態を LoginUser に置き換え、読み直しの前に来るようにする。
+- ログインしたままにする（ZPOP-125）：**3.17 で作成済み**。RememberMe で作ったログイン状態を LoginUser に置き換えるフィルター（RememberMeLoginFilter）を、LoginRefreshFilter の前に置いた。
 - パスワードの設定・変更（ZPOP-60・61）：session_valid_after は DATETIME（秒まで）、LoginUser の loggedInAt はもっと細かい。**ZPOP-60 で決めた：LoginUserRefresherImpl が、loggedInAt を秒までにそろえて（切り捨て）比べる。session_valid_after には、今を秒までにそろえて入れる**（A-06 の12章 No.1。同じ1秒の中のログインは切らない）。A-07 も同じ。
 
 ### 3.11 「今月確認済み」の判定（common.calendar.MonthlyConfirmationRule）
@@ -429,6 +431,44 @@ A-01（ログイン）と A-07（自分のパスワード変更。現在のパ�
 | AccountLockNotifier | `void notifyLocked(User user, IssuedPasswordLink link)`。ロックのDM（③）を送る（確定したあとに呼ぶ）。送れなかったときは WARN で残すだけ |
 
 A-01 は、ユーザがいて・パスワードがあり・ロックされていないときだけ数える。A-07 は、現在のパスワードを間違えたときに数える（ロック中は、SQL の条件（`locked_at IS NULL`）で数えない）。
+
+### 3.17 ログインしたままにする（common.security。ZPOP-125）
+
+写したもと：データ設計.md v1.0 の5.9、基本設計書.md v1.1 の5章、API設計.md v1.1 の4.1・6章、画面設計.md v1.1 の2章・2.1 の6・6章・7章、機能一覧.md v1.1 の6章の8
+
+ログイン（A-01）で「ログインしたままにする」にチェックがあれば、60日間（`app.remember-me-validity`）ログインしたままにする。Spring Security の PersistentTokenBasedRememberMeServices（クッキーに「端末ごとの番号（series）」と「合言葉（token）」を持たせ、合言葉と番号をデータベース（persistent_logins）にも持つ仕組み）を使う。セッション（JSESSIONID）が切れても、クッキー `remember-me` があれば、次の操作で自動でログインし直す。
+
+| クラス | 役割 |
+|---|---|
+| RememberMeTokenRepository | PersistentTokenRepository の中身。persistent_logins を、MyBatis の PersistentLoginMapper で読み書きする（作る・合言葉を更新する・番号で読む・その人の行をすべて消す・番号の行を1つだけ消す） |
+| RememberMeUserDetailsService | クッキーのユーザ名（メールアドレス）から、削除されていないユーザを探す。いなければ UsernameNotFoundException（自動ログインしない・クッキーを消す） |
+| LoginRememberMe | PersistentTokenBasedRememberMeServices を持ち、業務から使いやすい形にする：`remember(userId, request, response)`（この端末を「ログインしたまま」にする。クッキーを渡し、行を作る）、`forget(request, response)`（この端末の行とクッキーだけを消す）、`removeAllOf(email)`（その人の行をすべて消す。パスワードの変更・再設定のとき）、`isRemembered(request)`（この端末に、クッキーがあるか）、`autoLogin(request, response)`（クッキーで本人と確かめ、ユーザ ID を返す） |
+| RememberMeLoginFilter | LoginRefreshFilter の前に置くフィルター。`/api/` のリクエストで、ログイン状態がなく、クッキー `remember-me` があるときだけ、`LoginRememberMe#autoLogin` で自動ログインする。作ったログイン状態は LoginUser（ログインした日時は今）にして、セッションにも保存する（次からは、セッションで続く）。権限項目は、あとの LoginRefreshFilter が読み直す |
+| LoginSession | `start(userId, permissions, rememberMe, request, response)`：rememberMe が true なら remember、false なら、この端末の forget（チェックを外してログインし直したとき、前のクッキーを残さない）。`end`：これまでの動きに、この端末の forget を足す |
+
+**動き**
+
+1. **ログインしたとき（A-01）**：rememberMe が true なら、クッキー `remember-me`（HttpOnly。有効期間は60日。本番は Secure）を渡し、persistent_logins に1行（series・token・username＝メールアドレス・last_used）を作る。
+2. **セッションが切れたあと、クッキーで入るとき**：RememberMeLoginFilter が、series で行を読み、token が同じで、last_used から60日以内なら、本人とみなす。**入るたびに、token を新しいものに替え**（行の token・last_used を更新し、新しいクッキーを渡す）、新しいセッションを作る。
+3. **盗まれたとき**：series はあるが token が違う（古いクッキーをもう一度使った）ときは、盗まれたと見て、その人の行をすべて消し、自動ログインしない（401）。ただし、**合言葉を替えた直後（10秒以内）に、替える前のクッキーで来たとき**は、盗まれたとは見ず、本人として入れる（合言葉は替えず、新しいクッキーも渡さない。判断 No.7）。
+4. **60日をすぎたとき**・**ユーザが削除されたとき**：自動ログインしない。クッキーを消す。
+5. **ログアウトしたとき（A-02）・5回間違えて、この端末をログアウトさせたとき（A-07）**：この端末の行とクッキーだけを消す（LoginSession#end）。ほかの端末の「ログインしたまま」は残る。
+6. **パスワードを変えた・再設定したとき**：その人の行をすべて消す（`removeAllOf`。A-06・A-07。データ設計 5.9）。A-07 では、この端末が「ログインしたまま」だったときは、消したあとに、この端末だけ作り直す（`remember`）。
+7. **ロックされているとき**：自動ログインできる（ロックしても、ログインしたままの端末はそのまま使える。画面設計 2.1 の6）。
+
+設定：クッキーの名前は `remember-me`。有効期間は `app.remember-me-validity`（60日）。Secure は、セッションのクッキーと同じ設定（`server.servlet.session.cookie.secure`。本番だけ true）。
+
+**設計書にない判断**
+
+| No. | 判断 | 理由 | 外から見えるか | 人の確認 |
+|---|---|---|---|---|
+| 1 | ログアウトでは、この端末の「ログインしたまま」だけを解除する（Spring Security の標準は、その人のすべての端末） | 画面設計 2.1 の6・機能一覧 F-01 は、解除の場面を「ログアウト、パスワードの変更・再設定」と書くが、ログアウトがどの範囲かは決めていない。パソコンでログアウトして、スマートフォンまで解除されると困るため | はい | まだ |
+| 2 | チェックを付けずにログインしたときは、この端末に前のクッキーが残っていれば、消す（行も消す） | 今回は「ログインしたままにしない」と選んだため | はい | まだ |
+| 3 | 自動ログインでは、ログインした日時は「今」にする。パスワードを変えると行は消えるので、session_valid_after との食い違いは起きない | ログインした日時が、クッキーを作った日になると、パスワードを変えたあとのクッキーが、session_valid_after と比べて切られてしまうため | いいえ | ― |
+| 4 | 自動ログインは、`/api/` のリクエストだけで行う（画面のファイルのリクエストでは、データベースを読まない） | LoginRefreshFilter と同じ | いいえ | ― |
+| 5 | persistent_logins の username は、メールアドレス（データ設計 5.9）。ユーザのメールアドレスを変える（G-04）・ユーザを削除する（G-05）ときの行の扱い（行を消す）は、その機能で決める | メールアドレスを変えると、行の username と合わなくなるため | いいえ | ― |
+| 6 | last_used の日時は、Spring Security が、Clock でなく、パソコンの時計から作る（Date）。テストでは、行の last_used を書き換えて、期限切れを確かめる | Spring Security の部品の動きのため | いいえ | ― |
+| 7 | 合言葉を替えた直後（10秒以内）に、替える前の合言葉のクッキーで来たときは、盗まれたと見ない。同じ番号の自動ログインは、1つずつ処理する（LoginRememberMe の中の、番号ごとの鍵と、直前の合言葉の記録。サーバーのメモリの中。再起動すれば消える） | Spring Security の標準の作りでは、画面を開いたときに、同じクッキーで、複数のAPIがほぼ同時に来ると、1つ目が合言葉を替え、2つ目が「古い合言葉＝盗まれた」と見られて、その人の行がすべて消え、ログインしたままにならなかった（実際に起きた）。10秒の間に、古いクッキーを盗んだ人が入れてしまう危険は、小さいとして受け入れる | はい（見えるのは、ログインしたままになること） | まだ |
 
 ## 4. データベース
 
@@ -833,3 +873,5 @@ EquipmentManagementSystem_Client/
 | v1.24 | 2026-11-15 | ZPOP-61：3.16「パスワードの失敗を数える・ロックする部品」を足した。AuthLoginFailureRecorder・AuthLoginLockNotifier を common.security に移し、LoginFailureRecorder・AccountLockNotifier に名前を変えた。 |
 | v1.25 | 2026-11-15 | ZPOP-104：3.14 に、テスト用のリンクを作る・消す API（PasswordLinkTestSupportController ほか）を足した（画面のテストが使う）。 |
 | v1.26 | 2026-11-16 | ZPOP-106：11.4 の Header に、氏名を押したときの「パスワード変更」（S-04）を足した。 |
+| v1.27 | 2026-11-16 | ZPOP-125：3.17「ログインしたままにする」を足した（RememberMeTokenRepository・RememberMeUserDetailsService・LoginRememberMe・RememberMeLoginFilter、LoginSession の変更）。3.10 の申し送りを、作成済みに直した。 |
+| v1.28 | 2026-11-16 | ZPOP-125：3.17 に、合言葉を替えた直後（10秒以内）の古いクッキーを、盗まれたと見ない猶予を足した（判断 No.7）。 |
