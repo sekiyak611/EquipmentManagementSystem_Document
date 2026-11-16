@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.28 2026-11-16 |
+| 版 | v1.29 2026-11-16 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -21,7 +21,7 @@
 | テスト用の部品 | TestFlywayConfig、CsrfTestHelper | 作成済み（ZPOP-21） |
 | common.slack | Slack送信の部品と、テスト用の偽物・送った内容を読み出すAPI | 作成済み（ZPOP-123。3.13） |
 | common.csv | CSVの読み書き | 未作成（使う機能のタスクで章を足す） |
-| common.calendar | 祝日・催促日の計算、「今月確認済み」の判定 | 「今月確認済み」の判定だけ作成済み（2026-11-11。C-01 の前の共通作業。3.11）。祝日・催促日は ZPOP-126 で足す |
+| common.calendar | 祝日・催促日の計算、「今月確認済み」の判定 | 作成済み（「今月確認済み」の判定：2026-11-11。3.11。祝日と催促日の計算：ZPOP-126。3.18） |
 | common.passwordlink | パスワード設定用のリンク | 作成済み（ZPOP-124。3.14。リンクを作るところまで。A-04・A-05・A-06 ほかが使う） |
 | common.security（パスワードの決まり） | よく使われるパスワードの照らし合わせ（PasswordBlocklist）と、形式のチェック用の印（common.validation の NewPasswordFormat・PasswordConfirmed） | 作成済み（ZPOP-60。3.15。A-06・A-07 が使う） |
 | common.security（ログインしたままにする） | 60日間ログインしたままにする仕組み（RememberMeTokenRepository・RememberMeUserDetailsService・LoginRememberMe・RememberMeLoginFilter） | 作成済み（ZPOP-125。3.17。A-01・A-02・A-06・A-07 が使う） |
@@ -55,6 +55,7 @@
 | common.security | LoginUser・LoginUserRefresher・LoginRefreshFilter・LoginSession | ログイン状態の持ち方（3.10。ZPOP-55・56・57） |
 | common.error | UnauthorizedException | 401 と文を返す（6章。ZPOP-55） |
 | common.calendar | MonthlyConfirmationRule | 「今月確認済み」の判定（3.11） |
+| common.calendar | HolidayCalendar・ReminderCalendar | 祝日・平日の判定、催促日の計算（25日。土日祝日なら前の平日）（ZPOP-126。3.18） |
 | common.constant | PermissionCode・HomePage | 権限項目のコード（データ設計 5.3）、ログイン後の最初の画面（API設計 4.2） |
 | common.error | ApiResponse | 返す値の形（status・message・data・errors）。ok・created・accepted・error で作る |
 | common.error | ErrorItem | errors の1件（field・row・managementNo・message） |
@@ -293,7 +294,7 @@ API設計 2.1 のとおり、画面とAPIを同じアドレスで出す。
 | firstDayOfThisMonth() | 今月の1日（LocalDate） | SQL で「last_confirmed_on >= 今月の1日」なら今月確認済み、「last_confirmed_on IS NULL OR last_confirmed_on < 今月の1日」なら未確認、と比べるときに渡す。最終確認日は今日より後にならない（「確認した」はその日の日付を入れる。機能一覧 F-07）ので、「1日以降」は「今月」と同じ |
 | isConfirmedThisMonth(LocalDate lastConfirmedOn) | 今月確認済みなら true（null は false） | 読んだ行ごとに、返す値の confirmedThisMonth などを決めるときに使う |
 
-- 祝日の取り込みと催促日の計算（25日。土日祝日なら前の平日）は、ZPOP-126 でこのパッケージに足す。
+- 祝日の取り込みと催促日の計算（25日。土日祝日なら前の平日）は、ZPOP-126 でこのパッケージに足した（3.18）。
 
 ### 3.12 備品の一覧の1件の形（common.equipment。2026-11-15）
 
@@ -470,6 +471,32 @@ A-01 は、ユーザがいて・パスワードがあり・ロックされてい
 | 6 | last_used の日時は、Spring Security が、Clock でなく、パソコンの時計から作る（Date）。テストでは、行の last_used を書き換えて、期限切れを確かめる | Spring Security の部品の動きのため | いいえ | ― |
 | 7 | 合言葉を替えた直後（10秒以内）に、替える前の合言葉のクッキーで来たときは、盗まれたと見ない。同じ番号の自動ログインは、1つずつ処理する（LoginRememberMe の中の、番号ごとの鍵と、直前の合言葉の記録。サーバーのメモリの中。再起動すれば消える） | Spring Security の標準の作りでは、画面を開いたときに、同じクッキーで、複数のAPIがほぼ同時に来ると、1つ目が合言葉を替え、2つ目が「古い合言葉＝盗まれた」と見られて、その人の行がすべて消え、ログインしたままにならなかった（実際に起きた）。10秒の間に、古いクッキーを盗んだ人が入れてしまう危険は、小さいとして受け入れる | はい（見えるのは、ログインしたままになること） | まだ |
 
+### 3.18 祝日と催促日の計算（common.calendar。ZPOP-126）
+
+写したもと：機能一覧.md v1.1 の7章（1・2・9）、基本設計書.md v1.1 の7章（2・3・4）、データ設計.md v1.0 の5.13、API設計.md v1.1 の4.5（reminderAt）・6章
+
+2つ以上の機能（mine＝B-01、reminder＝催促の定期実行、画面の案内）が使うので、common.calendar に1つだけ置く（CLAUDE.md 5章）。
+
+**祝日のデータ**：Flyway の `V3__insert_holidays.sql`（内閣府の「国民の祝日・休日一覧」CSV を、UTF-8 の SQL にしたもの。1955-01-01〜2027-11-23、1,067件。取得日 2026-11-16。出典・取得日はファイルの先頭に書いた）。API設計 6章の「開発者が年1回、SQLで入れる」の、最初の1回。内閣府は、原則、前年の2月に翌年度分を足すので、毎年、新しい年の分を、新しいファイル（`V4__holidays_2028.sql` など。`INSERT IGNORE` で入れる）に足す。V3 は、一度当てたら、中身を変えない。
+
+| クラス | 役割 |
+|---|---|
+| HolidayCalendar | `isHoliday(LocalDate)`（holidays にある日か。HolidayMapper#selectByPrimaryKey）、`isBusinessDay(LocalDate)`（土曜・日曜・祝日でない日）、`businessDayOnOrBefore(LocalDate)`（その日が平日ならその日、そうでなければ、さかのぼって最初の平日） |
+| ReminderCalendar | `reminderDate(YearMonth)`（その月の催促日。25日。25日が土日祝日なら、前の平日。その日も祝日なら、さらに前の平日）、`reminderAt(YearMonth)`（催促日の催促の時刻。日本時間の ZonedDateTime。B-01 の reminderAt）、`reminderDateOfThisMonth()`・`reminderAtOfThisMonth()`（今月。Clock から）、`isReminderDue(LocalDate today)`（催促を送ってよい日か。今日が平日で、今日が、その月の催促日か、それより後。基本設計書 7章の3の1・2。「その月の催促をまだ送っていない」の確かめは、ZPOP-127 が reminder_runs で行う） |
+
+**催促の時刻**：設定の `app.reminder-cron`（毎朝9:00。`0 0 9 * * *`）の時刻にする（機能一覧 7章の9：テストのために、設定で変えられる）。毎日1回動く形の cron のときだけ、その時刻を使い、そうでない（曜日の指定など）ときは、9:00 にする。起動のとき、cron の書き方が正しいかを確かめる（誤りなら、起動しない）。
+
+**今日の日付・時刻**は、時計（Clock。日本時間）から取る（テストで止められる）。`reminderDate`・`isReminderDue` は、日付を引数で受け取る。
+
+**設計書にない判断**
+
+| No. | 判断 | 理由 | 外から見えるか | 人の確認 |
+|---|---|---|---|---|
+| 1 | V3 に、CSV の全期間（1955〜2027年）を入れた | 機能一覧 7章の2は「CSV を取り込んで使う」と決めている。全件でも、約1,000行で小さく、過去の日付の判定（貸出の日付など）にも使えるため | いいえ | ― |
+| 2 | 催促日は、25日から、1日ずつさかのぼり、最初の平日にする | 機能一覧 7章の1「その日も祝日なら、さらに前の平日」 | はい | ― |
+| 3 | 催促の時刻は、`app.reminder-cron` の時刻。毎日1回動く形でないときは 9:00 | 画面設計・API設計は「9:00」と決めていて、機能一覧 7章の9は、設定で変えられるようにすると決めている。時刻を、2か所（cron と、ここ）に書かないため | いいえ | まだ |
+| 4 | holidays にない日（収録の最後の日（2027-11-23）より後の祝日）は、平日として扱う。新しい年の分を足し忘れても、エラーにしない | 催促が止まるより、祝日に送ってしまうほうが、害が小さい。足し忘れは、毎年の作業（上）で防ぐ | はい | まだ |
+
 ## 4. データベース
 
 common には mapper（データベースを読み書きする部品）はない。データベースへのつなぎ方を、設定ファイルで次のように決めている。
@@ -632,6 +659,8 @@ API設計 6章の「データベースの接続先・ユーザ名・パスワー
 | common.passwordlink.PasswordLinkIssuerApiTest | 単体（API。データベースを使う） | 用途ごとの有効期限（RESET・LOCK は30分、REGISTER は3日）／保存するのはハッシュで、合言葉そのものは保存されない（アドレスの合言葉のハッシュが token_hash と同じ）／アドレスは `<app.base-url>/password-set?token=…`（base-url の終わりの「/」は除く）／前のリンク（未使用・未無効）が無効になり、使用済みのリンクと、ほかの人のリンクは変わらない／ログに合言葉が出ない |
 | common.passwordlink.PasswordLinkTestSupportApiTest | 単体（API。データベースを使う） | テスト用のリンクを作る・消す API：テストの設定では、用途ごとに作れる・合言葉で A-05 が通る・5分に1回の決まりに当たらない・ユーザがいなければ 404・用途が誤りなら 400・DELETE で全部消える。本番の設定では Bean がなく、POST・DELETE とも 404 |
 | common.calendar.MonthlyConfirmationRuleTest | 単体（時計を止める） | 今月の1日（月の初日・末日・年の変わり目）／今月なら確認済み／未記入・先月・去年の同じ月は未確認／日本時間の月で判定する（UTC ではまだ前の月の時刻） |
+| common.calendar.HolidayCalendarApiTest | 単体（データベースを使う） | V3 で入れた祝日（1,067件。最初・最後の日）／祝日・平日の判定（最後の日より後は平日扱い）／「その日かそれより前の平日」（土日・祝日・ゴールデンウィークの続き）／実際の祝日での催促日・催促の日時・催促を送ってよい日（25日が祝日のときは祝日を足して確かめる） |
+| common.calendar.ReminderCalendarTest | 単体（時計を止める。祝日は偽物） | 催促日（25日が平日・土曜・日曜・祝日・祝日が続くとき）／催促の日時（日本時間。cron の時刻。毎日1回の形でなければ 9:00。cron の誤りで作れない）／今月（月末・年の変わり目）／催促を送ってよい日か（催促日の前・当日・あと・土日祝日・月の替わり） |
 
 テストを書くときの決まり（CLAUDE.md 6章）：
 
@@ -875,3 +904,4 @@ EquipmentManagementSystem_Client/
 | v1.26 | 2026-11-16 | ZPOP-106：11.4 の Header に、氏名を押したときの「パスワード変更」（S-04）を足した。 |
 | v1.27 | 2026-11-16 | ZPOP-125：3.17「ログインしたままにする」を足した（RememberMeTokenRepository・RememberMeUserDetailsService・LoginRememberMe・RememberMeLoginFilter、LoginSession の変更）。3.10 の申し送りを、作成済みに直した。 |
 | v1.28 | 2026-11-16 | ZPOP-125：3.17 に、合言葉を替えた直後（10秒以内）の古いクッキーを、盗まれたと見ない猶予を足した（判断 No.7）。 |
+| v1.29 | 2026-11-16 | ZPOP-126：3.18「祝日と催促日の計算」を足した（HolidayCalendar・ReminderCalendar。Flyway の V3 で祝日を入れる）。3.11 の申し送りを、作成済みに直した。 |

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.api.auth.update.password.AuthUpdatePasswordApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.api.auth.update.password.AuthUpdatePasswordApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>A-07 自分のパスワード変更</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">23</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">4.769s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="blankCurrent().html">入力の誤り：現在のパスワードが空・ない：400「現在のパスワードを入力してください」。回数は数えない</a>
+</td>
+<td class="path">blankCurrent()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="61">0.061s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="blockedNewPassword().html">新しいパスワードが、よく使われるもの・自分のメールアドレス・システム名と同じ：400。password に画面設計 8章の文。回数は数えない</a>
+</td>
+<td class="path">blockedNewPassword()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="217">0.217s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="changesOnlyOwnPassword().html">変えるのは、ログインしている本人のパスワードだけ（ほかの人のパスワードは変わらない）</a>
+</td>
+<td class="path">changesOnlyOwnPassword()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="275">0.275s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="changeWhileLocked().html">ロック中でも、正しい現在のパスワードなら変えられる。ロックは解除しない（失敗の回数もそのまま）</a>
+</td>
+<td class="path">changeWhileLocked()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="216">0.216s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="confirmMismatch().html">入力の誤り：確認が違う・空・ない：400。passwordConfirm に「確認用のパスワードが一致しません」</a>
+</td>
+<td class="path">confirmMismatch()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="65">0.065s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="csrfRequired().html">なりすまし対策の合言葉（CSRF）がなければ 403</a>
+</td>
+<td class="path">csrfRequired()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="57">0.057s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="cutsOtherDevices().html">この端末以外のログインを切る：前にログインしていたほかの端末は、次の操作で 401</a>
+</td>
+<td class="path">cutsOtherDevices()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1321">1.321s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="fifthWrongLocksAndLogsOut().html">5回続けて間違えたらロック：5回目も同じ 400。DM（③）を送り、LOCK のリンクを作り、この端末をログアウトさせる</a>
+</td>
+<td class="path">fifthWrongLocksAndLogsOut()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="376">0.376s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="formatCheckComesFirst().html">入力の誤りが先：現在のパスワードが違い、確認も違うとき：確認のエラーを返し、回数は数えない</a>
+</td>
+<td class="path">formatCheckComesFirst()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="58">0.058s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="fourWrongThenSuccess().html">現在のパスワードを4回間違えても、まだロックしない（境界値）。そのあと正しく変えると、回数は0に戻る</a>
+</td>
+<td class="path">fourWrongThenSuccess()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="374">0.374s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="longPasswordWithSpaces().html">64文字・スペースを含むパスワードも、そのまま変えられる</a>
+</td>
+<td class="path">longPasswordWithSpaces()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="213">0.213s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ログインしていない：401</td>
+<td class="path">notLoggedIn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="2">0.002s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="passwordFormat().html">入力の誤り：新しいパスワードが空・短い・長い・使えない文字：400。password の1件だけ。回数は数えない</a>
+</td>
+<td class="path">passwordFormat()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="61">0.061s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="sameAsCurrent().html">新しいパスワードが現在と同じ：400。password に「現在と同じパスワードは使えません」。回数は数えない</a>
+</td>
+<td class="path">sameAsCurrent()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="108">0.108s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="sendsChangedDm().html">パスワードが変わったことを、本人にDM（④）で知らせる。パスワードは書かない</a>
+</td>
+<td class="path">sendsChangedDm()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="164">0.164s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">読んだあとにパスワードがほかで変わっていたら、書き換えない（0件）。読んだハッシュと同じなら、1件書き換える</td>
+<td class="path">staleHashIsNotOverwritten()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="6">0.006s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="success().html">変えられる：200（data は null）。新しいパスワードでログインでき、古いパスワードではできない</a>
+</td>
+<td class="path">success()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="280">0.280s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="successResetsFailedCount().html">成功すると、失敗の回数が0に戻る（ロックされていないとき）</a>
+</td>
+<td class="path">successResetsFailedCount()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="160">0.160s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="thisDeviceStaysLoggedIn().html">この端末はログインしたまま（次の操作も使える）。なりすまし対策の合言葉（XSRF-TOKEN）は新しくなる</a>
+</td>
+<td class="path">thisDeviceStaysLoggedIn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="179">0.179s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="updatesColumns().html">updated_by は本人、version は増えない、session_valid_after は秒までにそろえた今</a>
+</td>
+<td class="path">updatesColumns()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="160">0.160s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="wrongCurrent().html">現在のパスワードが違う：400。currentPassword に「現在のパスワードが違います」。パスワードは変わらず、回数が1増える。DMなし。この端末はそのまま</a>
+</td>
+<td class="path">wrongCurrent()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="118">0.118s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="wrongCurrentComesFirst().html">現在のパスワードが違い、新しいパスワードも使えないとき：currentPassword のエラーだけ（回数は数える）</a>
+</td>
+<td class="path">wrongCurrentComesFirst()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="114">0.114s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="wrongWhileLocked().html">ロック中に現在のパスワードを間違えても、数えない・DMを送らない。この端末はそのまま。同じ 400</a>
+</td>
+<td class="path">wrongWhileLocked()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="111">0.111s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.api.auth.update.password.AuthUpdatePasswordApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.api.auth.update.password.AuthUpdatePasswordApiTest">2026-11-16T22:30:01.217+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.update.password.AuthUpdatePasswordApiTest]: AuthUpdatePasswordApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:30:01.277+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.update.password.AuthUpdatePasswordApiTest
+2026-11-16T22:30:01.278+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.update.password.AuthUpdatePasswordApiTest]: AuthUpdatePasswordApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:30:01.278+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:30:01.279+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.update.password.AuthUpdatePasswordApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at 2026/11/16 22:30:20</p>
+</div>
+</div>
+</body>
+</html>
