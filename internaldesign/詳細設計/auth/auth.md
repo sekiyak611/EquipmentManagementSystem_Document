@@ -2,8 +2,8 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v2.6 2026-11-15 |
-| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01）、ZPOP-124（アカウントロック）、ZPOP-58（A-04）、ZPOP-59（A-05）、ZPOP-60（A-06）、ZPOP-61（A-07）、ZPOP-104（S-02） |
+| 版 | v2.7 2026-11-16 |
+| Jira | ZPOP-55（A-01）、ZPOP-56（A-02）、ZPOP-57（A-03）、ZPOP-103（S-01）、ZPOP-124（アカウントロック）、ZPOP-58（A-04）、ZPOP-59（A-05）、ZPOP-60（A-06）、ZPOP-61（A-07）、ZPOP-104（S-02）、ZPOP-105（S-03） |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.0 の4章（F-01・F-02）・8章、API設計.md v1.1 の2.2・3.1・4.1〜4.3・6章・7章、画面設計.md v1.1 の1・2章、データ設計.md v1.0 の5.1〜5.4、基本設計書.md v1.1 の5章 |
 
@@ -26,7 +26,8 @@ F-02：ログアウト。
 | パスワードを決める（A-06） | ZPOP-60 | **作成済み（ZPOP-60）**。合言葉を使って新しいパスワードを決める。ロックの解除、すべての端末のログインを切る、DM（④）も行う（A-06_合言葉でパスワードを決める.md）。画面（S-03）は ZPOP-105 |
 | パスワードを変える（A-07） | ZPOP-61 | **作成済み（ZPOP-61）**。ログイン中に、現在のパスワードと新しいパスワードで、自分のパスワードを変える。この端末以外のログインを切り、DM（④）で知らせる。現在のパスワードを間違えたら、回数を数える（A-07_自分のパスワード変更.md）。画面（S-04）は ZPOP-106 |
 | 画面 S-02（パスワード再設定の依頼） | ZPOP-104 | **作成済み（ZPOP-104）**。メールアドレスを入れて、A-04 を呼ぶ（S-02_パスワード再設定の依頼.md）。S-01 の「パスワードを忘れた方はこちら」の移り先 |
-| 画面 S-03・S-04 | ZPOP-105・106 | まだない |
+| 画面 S-03（パスワード設定） | ZPOP-105 | **作成済み（ZPOP-105）**。DM のリンクから開き、A-05 で合言葉を確かめ、新しいパスワードを2回入れて、A-06 で決める。ユーザ登録後の最初の設定にも使う（S-03_パスワード設定.md） |
+| 画面 S-04 | ZPOP-106 | まだない |
 
 ### 1.1 API一覧
 
@@ -50,6 +51,7 @@ F-02：ログアウト。
 |---|---|---|---|---|---|
 | S-01 | ログイン | /login | だれでも（ログイン前） | はい | [S-01_ログイン.md](S-01_ログイン.md) |
 | S-02 | パスワード再設定の依頼 | /password-reset | だれでも（ログイン前） | はい | [S-02_パスワード再設定の依頼.md](S-02_パスワード再設定の依頼.md) |
+| S-03 | パスワード設定 | /password-set?token=… | だれでも（ログイン前。リンクの合言葉で確かめる） | はい | [S-03_パスワード設定.md](S-03_パスワード設定.md) |
 
 ### 1.3 業務のルール
 
@@ -129,15 +131,17 @@ F-02：ログアウト。
 |---|---|---|
 | src/features/auth/pages/LoginPage.tsx | ログイン画面 | S-01 |
 | src/features/auth/pages/PasswordResetRequestPage.tsx | パスワード再設定の依頼の画面 | S-02 |
-| src/features/auth/validation.ts | メールアドレスの入力チェック（`validateEmail`。S-01・S-02 で使う。もとは LoginPage.tsx の中。ZPOP-104） | S-01・S-02 |
+| src/features/auth/pages/PasswordSetPage.tsx | パスワード設定の画面（開いたとき A-05、「設定する」で A-06。この画面を開いている間、no-referrer を付ける） | S-03 |
+| src/features/auth/validation.ts | メールアドレスの入力チェック（`validateEmail`。S-01・S-02 で使う。もとは LoginPage.tsx の中。ZPOP-104）、新しいパスワードの入力チェック（`validateNewPassword`・`validatePasswordConfirm`）と、決まりの横の ✓ の判定（`checkPasswordRules`）。S-03・S-04 で使う（ZPOP-105） | S-01〜S-04 |
 | src/features/auth/components/PasswordField.tsx | 目のマークで文字を表示できるパスワードの入力欄（S-03・S-04 でも使う） | S-01 |
-| src/features/auth/api.ts | A-01 の呼び出し（login）、A-04 の呼び出し（requestPasswordReset） | S-01・S-02 |
-| src/features/auth/types.ts | LoginRequest、PasswordResetRequest | S-01・S-02 |
+| src/features/auth/api.ts | A-01 の呼び出し（login）、A-04 の呼び出し（requestPasswordReset）、A-05 の呼び出し（verifyPasswordToken）、A-06 の呼び出し（setPasswordWithToken） | S-01〜S-03 |
+| src/features/auth/types.ts | LoginRequest、PasswordResetRequest、PasswordTokenVerifyRequest・PasswordTokenVerifyResponse、PasswordTokenUseRequest | S-01〜S-03 |
 | src/common/auth/（common.md 11.9） | ログイン中の人（A-03）を持つ部品、ログインが要る画面の守り、A-02 の呼び出し | 全画面 |
 | src/common/components/Header.tsx（変更） | ログイン中の人の氏名と、押すと出る「ログアウト」 | 全画面 |
-| src/routes.tsx（変更） | /login・/password-reset と、ログインが要る画面のまとまり | |
+| src/routes.tsx（変更） | /login・/password-reset・/password-set と、ログインが要る画面のまとまり | |
 | tests/auth/login.spec.ts | 画面のテスト | S-01 |
 | tests/auth/password-reset.spec.ts | 画面のテスト | S-02 |
+| tests/auth/password-set.spec.ts | 画面のテスト | S-03 |
 | tests/support/passwordLink.ts | 画面のテストで、パスワード設定用のリンクを作る・消す部品（Server のテスト用 API を呼ぶ。common.md 3.14。S-03・S-04 のテストでも使う） | S-02 ほか |
 | tests/support/slack.ts | 画面のテストで、送ったDM（Server の偽物の Slack が記録したもの）を読み出す・空にする部品 | S-02 ほか |
 
@@ -197,3 +201,4 @@ F-02：ログアウト。
 | v2.4 | 2026-11-15 | ZPOP-60：A-06（合言葉でパスワードを決める）を足した（1章・1.1・1.3 の R-12・R-13・2.1）。詳細は A-06_合言葉でパスワードを決める.md |
 | v2.5 | 2026-11-15 | ZPOP-61：A-07（自分のパスワード変更）を足した（1章・1.1・1.3 の R-14・R-15・2.1）。失敗を数えるクラスとロックのDMを common.security に移した（AuthLoginFailureRecorder → LoginFailureRecorder、AuthLoginLockNotifier → AccountLockNotifier）。詳細は A-07_自分のパスワード変更.md |
 | v2.6 | 2026-11-15 | ZPOP-104：画面 S-02（パスワード再設定の依頼）を足した（1章・1.2・2.2）。詳細は S-02_パスワード再設定の依頼.md |
+| v2.7 | 2026-11-16 | ZPOP-105：画面 S-03（パスワード設定）を足した（1章・1.2・2.2）。詳細は S-03_パスワード設定.md |
