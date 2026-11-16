@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ログインしたままにする：同時の自動ログイン" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-16T13:50:50.062Z" hostname="DESKTOP-32H5PQ0" time="0.085">
+  <properties/>
+  <testcase name="同じクッキーで6件が同時に来ても、全部 200。盗まれたと見て行を消すことはなく、行は1つのまま" classname="jp.co.highjunk.equipment.common.security.RememberMeConcurrencyTest" time="0.082"/>
+  <system-out><![CDATA[2026-11-16T22:50:50.064+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.security.RememberMeConcurrencyTest]: RememberMeConcurrencyTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:50:50.064+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.security.RememberMeConcurrencyTest
+2026-11-16T22:50:50.064+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.security.RememberMeConcurrencyTest]: RememberMeConcurrencyTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:50:50.065+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.security.RememberMeConcurrencyTest
+2026-11-16T22:50:50.122+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-16T22:50:50.129+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="B-01 自分が借りている備品" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-16T13:50:41.982Z" hostname="DESKTOP-32H5PQ0" time="0.229">
+  <properties/>
+  <testcase name="自分の分だけ：ほかの人の貸出・返却済み・取り消された貸出は出ない" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.025"/>
+  <testcase name="ログインしていない：401" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.003"/>
+  <testcase name="期限超過：返却予定日が昨日なら true、今日・明日・なしなら false" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.014"/>
+  <testcase name="管理中でない（不明）備品・削除された備品は出ない。管理中のものだけを数える" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.012"/>
+  <testcase name="催促の日時は、今月の催促日の時刻（日本時間の +09:00 の形）。過ぎたかは、今の時計で決まる" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.006"/>
+  <testcase name="並び順：未確認を上にし、その中は貸出日の古い順。確認済みの中も貸出日の古い順" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.013"/>
+  <testcase name="すべて確認済み：unconfirmedCount は 0" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.01"/>
+  <testcase name="メーカー・モデル・返却予定日・最終確認日が空なら null" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.01"/>
+  <testcase name="今月確認済みか：最終確認日が今月の1日・今日なら true、先月末・未記入なら false" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.013"/>
+  <testcase name="LOAN_SELF がない：403" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.007"/>
+  <testcase name="借りている備品がない：200。items は空、unconfirmedCount は 0。催促の日時は返す" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.004"/>
+  <testcase name="借りている備品の1件の形：貸出履歴のID・備品のID・管理番号・種別・メーカー・モデル・貸出日・返却予定日・期限超過・最終確認日・今月確認済みか" classname="jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest" time="0.008"/>
+  <system-out><![CDATA[2026-11-16T22:50:41.982+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest]: EquipmentMineSearchItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:50:42.077+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest
+2026-11-16T22:50:42.078+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest]: EquipmentMineSearchItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-16T22:50:42.078+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.search.item.EquipmentMineSearchItemApiTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
