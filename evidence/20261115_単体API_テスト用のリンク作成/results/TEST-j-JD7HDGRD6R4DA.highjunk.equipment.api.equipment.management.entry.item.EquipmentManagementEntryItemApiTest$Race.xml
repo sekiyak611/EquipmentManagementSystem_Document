@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="確かめのあとに、ほかの人が同じ管理番号を足していたとき" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-15T13:26:25.087Z" hostname="DESKTOP-32H5PQ0" time="0.027">
+  <properties/>
+  <testcase name="重複禁止に当たる：400。errors の managementNo に「この管理番号はすでに使われています」" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest$Race" time="0.015"/>
+  <system-out><![CDATA[2026-11-15T22:26:25.088+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:26:25.088+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest$Race
+2026-11-15T22:26:25.088+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:26:25.090+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest]: EquipmentManagementEntryItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T22:26:25.090+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemApiTest$Race
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
