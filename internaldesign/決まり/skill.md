@@ -16,6 +16,7 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 | frontend-impl | Client の実装（設計書を読む → 詳細設計 → 実装。テストは書かない） |
 | frontend-test | Client のテスト（Playwright）を書き、Server・Client のテストを全部動かす |
 | detailed-design | 詳細設計を書く・直す・コードと突き合わせる |
+| spec-check | 実装の前の、設計書の確認と確定・推測・未確定の整理、人への質問（ファイルは変えない。外から見える判断があるときだけ） |
 | backend-review | Server の実装のレビュー。コードは直さず、指摘の一覧を返す。作った会話とは別のエージェントで動く |
 | frontend-review | Client の実装のレビュー（同じ） |
 | deliver | 最後のテスト、証跡、commit・push、プルリクエスト（CLAUDE.md 7章・10章。2026-11-19 に、zip を渡す形から直した） |

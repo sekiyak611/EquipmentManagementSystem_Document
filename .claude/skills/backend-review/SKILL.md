@@ -35,7 +35,7 @@ Server のフォルダ（`EquipmentManagementSystem_Server`）と Document の�
 
 ## 2. 照らし合わせるものを読む
 
-- `internaldesign/決まり/Server実装.md`・`決まり/命名規則.md`（CLAUDE.md の 4.1・5章などの本体）と、CLAUDE.md の2章・10章（優先順位、確定・推測・未確定、禁止事項、完成条件）。
+- Server の `.claude/rules/java.md`（CLAUDE.md の 4.1・5章などの本体）と、CLAUDE.md の2章・10章（優先順位、確定・推測・未確定、禁止事項、完成条件）。
 
 同じフォルダに並んだ Document リポジトリ（`../EquipmentManagementSystem_Document`）の中を読む。
 

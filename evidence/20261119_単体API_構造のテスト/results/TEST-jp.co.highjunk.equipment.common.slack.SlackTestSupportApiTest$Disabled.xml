@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="本番の設定（app.test-support.enabled が false）" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-19T14:36:27.304Z" hostname="DESKTOP-32H5PQ0" time="0.052">
+  <properties/>
+  <testcase name="送り手は本物（SlackApiSender）で、偽物と読み出しの controller はない" classname="jp.co.highjunk.equipment.common.slack.SlackTestSupportApiTest$Disabled" time="0.001"/>
+  <testcase name="GET・DELETE とも 404（ログインなしでも、401 ではなく 404）" classname="jp.co.highjunk.equipment.common.slack.SlackTestSupportApiTest$Disabled" time="0.003"/>
+  <system-out><![CDATA[2026-11-19T23:36:27.306+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.slack.SlackTestSupportApiTest$Disabled]: Disabled does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-19T23:36:27.349+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.slack.SlackTestSupportApiTest$Disabled
+2026-11-19T23:36:27.350+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.slack.SlackTestSupportApiTest$Disabled]: Disabled does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-19T23:36:27.350+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.slack.SlackTestSupportApiTest]: SlackTestSupportApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-19T23:36:27.352+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.slack.SlackTestSupportApiTest$Disabled
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

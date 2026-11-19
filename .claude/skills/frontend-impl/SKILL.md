@@ -18,7 +18,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 ## 0. 始める前に確かめる
 
 - [ ] 共通の決まり（CLAUDE.md）が読み込めている。読み込めていなければ、作業を始めずに人に知らせる。
-- [ ] `internaldesign/決まり/Client実装.md` と `決まり/命名規則.md` を読んだ（CLAUDE.md 4章の表。この skill が「CLAUDE.md 4.1・5章」などと呼ぶ決まりの本体）。
+- [ ] Client の `.claude/rules/react.md` を読んだ（対象のファイルを触ると自動で読み込まれる。読み込まれていなければ先に読む。この skill が「CLAUDE.md 4.1・5章」などと呼ぶ決まりの本体）。
 - [ ] Document のフォルダを読み書きできる（`--add-dir ../EquipmentManagementSystem_Document`）。
 - [ ] 画面が使う API ができている（Server にある）。まだなら、人に順番を確かめる。同じタスクで Server も変えたなら、そのとき起動したリポジトリで続ける（CLAUDE.md 7章）。
 - [ ] 自分の担当の機能か（Document の `internaldesign/実装タスク一覧.md` の分担と Jira の担当者）。担当でなければ、止めて人に確かめる。
@@ -38,6 +38,8 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 次に、今のコードを調べる：お手本の画面（category の S-13）、使う common の部品（common/api、common/components、common/format、common/auth）。
 
 設計書があいまい、または設計書どうしが食い違うときは、**実装を止めて人に質問する**（CLAUDE.md 2章）。画面設計にない動き（ボタン、メッセージ、移り方）を自分の判断で足さない。
+
+外から見える判断（返す値・エラー・画面の文・移り方）や食い違いが出たときは、spec-check の skill の形（確定／推測／未確定）で整理して、実装の前にまとめて人に質問する（CLAUDE.md 2章）。
 
 ## 2. 詳細設計を書く
 

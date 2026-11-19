@@ -1,6 +1,6 @@
 ---
 name: implementation-guidelines
-description: 備品管理システム（Java・Spring Boot・MyBatis・React・TypeScript・MySQL）の実装・修正・テスト・レビューのときの一般的な心得。読みやすさ、保守性、null と例外、トランザクション、型、状態管理、SQL、セキュリティ、テストの観点を、このプロジェクトの決まりに合わせて書いたもの。
+description: 備品管理システムの実装・修正・テスト・レビューで、CLAUDE.md・.claude/rules・設計書に書いていない所の書き方で迷ったときの短い心得（正確さ、変える範囲、書く前の整理、テストの考え方、振る舞い）。
 when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backend-review・frontend-review・reverse-engineer の作業中に、CLAUDE.md や設計書に書いていない所の書き方で迷ったとき。
 ---
 
@@ -28,7 +28,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 | Request / Response DTO | `controller.<頭>RestInDto`（受け取る値）・`service.<頭>ServiceInDto`（Service に渡す値）・`model.<頭>RestOutDto`（返す値）。API のパッケージの中に置く |
 | カスタムバリデータ（自作のチェック） | チェック用アノテーション（`common.validation`。ConstraintValidator で中身を書く）。ServiceImpl の値が要る業務チェックは `validator.<頭>Validator`（渡す値は `<頭>ValidatorDto`） |
 | 定数・区分値 | Enum（`common.constant`） |
-| 差分を確認する（git diff） | 状態を見るコマンド（git status・git diff など）は使ってよい（CLAUDE.md 7章）。作業記録 `output/<タスク名>/変更ファイル一覧.md` もあわせて見る |
+| 差分を確認する（git diff） | 状態を見るコマンド（git status・git diff など）は使ってよい（CLAUDE.md 7章）。`git diff --name-only release/main...HEAD` も見る |
 
 ## 2. 作業の基本
 
@@ -41,14 +41,14 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 ### 2.2 変える範囲を小さくする
 
 - タスクの目的に必要な所だけを変える。関係のないファイル・名前・書式を、ついでに変えない。
-- 既存の不具合や直したい所に気づいたら、今回のタスクに必要なとき以外は直さず、説明.md の「とくに確認してほしい点」に書く。
+- 既存の不具合や直したい所に気づいたら、今回のタスクに必要なとき以外は直さず、プルリクエストの「とくに確認してほしい点」に書く。
 - API の形、テーブル、画面の動きを、設計書なしに変えない。
 
 ### 2.3 分からないこと・仮に決めたこと
 
 - まず設計書・詳細設計・お手本・テストから判断できるかを調べる。
 - 外から見える動き（返す値、エラー、メッセージ、画面）やデータの整合に関わる不明点は、決めずに人に質問する（CLAUDE.md 2章）。
-- 中の作りだけの小さな仮決めは、詳細設計の「設計書にない判断」と説明.md に書く。
+- 中の作りだけの小さな仮決めは、詳細設計の「設計書にない判断」とプルリクエストに書く。
 - 画面設計にない表示は、文のないものだけ足してよい（CLAUDE.md 5章）。
 
 ### 2.4 書く前に整理する
@@ -64,152 +64,9 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 
 これは API詳細・画面詳細に書く内容と同じ（detailed-design の skill）。
 
-## 3. 設計の原則
+## 3〜8, 10, 11（削除した）
 
-### 3.1 読みやすさ
-
-- 名前は役割が分かるものにする。`data`・`tmp`・`x` のような、意味のあいまいな名前を使わない。
-- 1つのメソッドは1つの目的に集中させる。条件の入れ子を深くしすぎない（早めに return する）。
-- コメントは「なぜそうしているか」を書く。コードを読めば分かることを言い直すだけのコメントは書かない。
-- このプロジェクトのコメントは日本語。設計書の章を指すと、読む人が追いやすい（例：`// docs/API設計.md 4.7`）。
-
-### 3.2 直しやすさと「重ねて書かない」（DRY）
-
-- 変わりうる値は設定に集める（CLAUDE.md 5章、API設計 6章）。
-- **このプロジェクトでの DRY**：API のパッケージどうしは使い合わないため、貸出のルール（equipment.mine・equipment.management（取込を含む））と確認のルール（equipment.mine・equipment.management）は、API ごとに書いてよい。そのかわり、1か所を直したらほかも同じように直し、テストも直す（CLAUDE.md 5章）。2つ以上の API で使う処理（催促日、今月確認済み、パスワード設定用のリンク、DB との整合性のチェック用アノテーションなど）は common に1つだけ置く。
-- 見た目が似ているだけで意味の違う処理は、無理にまとめない。
-
-### 3.3 1つの部品に1つの役目（SRP）
-
-- Controller は受け取る・ServiceInDto を作る・Service を呼ぶ・返すだけ、ServiceImpl は業務のルール、RestInDto は形式のチェック、ServiceInDto（とチェック用アノテーション）は受け取った値と DB の整合性と Enum のチェック、Validator は ServiceImpl の値が要る業務チェック（どちらも読むだけ）、dao の Mapper はデータベース（CLAUDE.md 4.1・5章）。形式のチェックを ServiceInDto に、DB を読むチェックを RestInDto に書かない。
-- ただし、機械的に細かく分けない。分けることで読みやすく・直しやすくなるときに分ける。
-
-### 3.4 簡単に保つ（KISS）・今いらないものは作らない（YAGNI）
-
-- 簡単な処理に、余分なインターフェース・抽象クラス・設計のパターンを持ち込まない。
-- 「いつか使うかもしれない」だけの機能・引数・設定を足さない。
-
-### 3.5 速さの工夫は根拠があるときだけ
-
-- まず正しく読みやすく書く。速くするための工夫は、件数や計測などの根拠があるときにする。
-- ただし N+1（一覧の件数だけ SQL が出る）は最初から避ける（CLAUDE.md 5章）。
-
-## 4. Java
-
-### 4.1 型
-
-- 値の意味と範囲に合った型を使う。日付は `LocalDate`。日時の型と JSON での形は、common.md 3.8 とお手本に合わせる。
-- 金額のように正確な十進の計算が要る値は `BigDecimal` を使い、文字列から作る（`new BigDecimal(0.1)` のような誤差を持ち込まない）。
-- `null` を許すかどうかを、設計（必須の入力チェック、列の NOT NULL）で決める。
-- `int` と `Integer` の違い（`Integer` は null になりうる）を意識して使い分ける。
-
-### 4.2 null
-
-- null になりうる所を把握し、使う前に確かめる。
-- null チェックを足すだけでなく、そもそも null にならない形（必須の入力チェック、初期値）にできないかを考える。
-- `Optional` は「見つからないことがある」戻り値に使う。フィールドや引数には使わない。
-
-### 4.3 例外
-
-- `catch (Exception e)` でなんでも受け止めない。受け止めた例外を握りつぶさない。
-- 投げ直すときは、もとの例外を原因として渡す。
-- 業務のエラーは common.error の例外（BusinessRuleException など）を投げ、返し方は GlobalExceptionHandler に任せる。
-- 画面に返す文と、ログに残す詳しい中身を分ける。SQL、スタックトレース、トークン、パスワードを画面に返さない（API設計 7章）。
-
-### 4.4 コレクション・Stream
-
-- Stream は、意図が読みやすくなるときに使う。単純なループのほうが読みやすければループにする。
-- Stream の途中で、外の変数やデータベースを書き換えない。並列の Stream は使わない。
-- JOIN を使わないので、別々に読んだ一覧を ID で突き合わせる所が多い。`Map<Long, …>` に入れてから突き合わせると、二重ループにならない。
-
-### 4.5 equals と hashCode
-
-- 値の比較は `equals`。`==` は数値や同じものかどうかの確認に使う。
-- `equals` を書き換えたら `hashCode` もそろえる（Lombok の `@EqualsAndHashCode` を使えば自動でそろう。`record` は使わない決まり。CLAUDE.md 3章）。
-
-## 5. Spring Boot
-
-### 5.1 部品の受け取り方（DI）
-
-- 部品はコンストラクタで受け取る（お手本と同じ形。Lombok の `@RequiredArgsConstructor` を使ってよい）。フィールドに `@Autowired` を付けない（テストのコードは別）。
-- 循環（A が B を使い、B も A を使う）が出たら、遅らせて作る設定で隠さず、役目の分け方を見直す。
-
-### 5.2 受け取る値・返す値と、テーブルの形
-
-- dao.entity（テーブルの形）をそのまま API で返さない。`<頭>RestOutDto` に移して、返してよい項目だけを返す（パスワードのハッシュ、version など、画面に要らない項目を出さない。version は編集画面で要るときだけ）。
-- RestInDto の形式のチェックの印は、画面設計の決まりに合わせる。`@Email` だけでは必須にならないので、必須なら `@NotBlank` も付ける。`@Min`・`@Max` も null を拒まないので、必須なら `@NotNull` も付ける。
-- ServiceInDto は Controller が作る（CLAUDE.md 5章）。チェック用アノテーションが見る項目（ID など）に null が入らないように作る。
-- 値の入れ物のクラスは、普通のクラスに Lombok のアノテーション（`@Getter`、`@AllArgsConstructor` など）を付けて作る（CLAUDE.md 3章）。
-
-### 5.3 トランザクション（まとめて確定・まとめて取り消し）
-
-- 2つ以上の書き換えを1つの操作として行う ServiceImpl のメソッドに `@Transactional` を付ける（CLAUDE.md 5章）。ServiceInDto のチェックもこの中で行い、確かめてから書き換えるまでを1つのまとまりにする。interface の `<頭>Service` には付けない。
-- 何も付けないと、SQL が1本ずつその場で確定する。途中で失敗すると、半分だけ変わったデータが残る。
-- `@Transactional` は、実行時の例外（RuntimeException）が起きると元に戻す。common.error の例外は実行時の例外。
-- 同じクラスの中のメソッドから呼んだメソッドの `@Transactional` は効かない（Spring の仕組みのため）。外から呼ばれる public のメソッドに付ける。
-- Slack の送信は、トランザクションの外で、書き込みが確定してから行う（CLAUDE.md 5章）。
-
-### 5.4 API
-
-- URL・操作・status・返す値の形は、API設計のとおり。返す値は ApiResponse で包む。
-- 認証（だれか）と認可（何をしてよいか）を分けて考える。ログインしているだけで、どのデータでも操作できるようにしない（IDOR。CLAUDE.md 5章）。
-
-## 6. React・TypeScript
-
-### 6.1 部品の分け方
-
-- 画面（pages）は、表示と、画面の状態と、API の呼び出しの組み立てを持つ。その機能だけで使う部品は components に分ける。
-- 2つ以上の機能で同じ部品が要りそうでも、自分で common に置かない（common の変更は相談。CLAUDE.md 9章）。
-
-### 6.2 型
-
-- `any` を使わない。型が分からない値は `unknown` で受け、確かめてから使う。
-- API で受け渡す値の型（types.ts）は、API設計の項目名・型・null になりうるかに合わせる。
-- `as` で型のエラーを無理に消さない。
-
-### 6.3 状態と副作用
-
-- 同じ情報を2か所の状態に持たない。props で受け取った値を、わけもなく useState に写さない。
-- 画面を開いたときに読む値は `useApi`（common/api）を使う。自分で `useEffect` と `fetch` を組まない。
-- `useEffect` を使うときは、依存する値の配列と、片付け（return で返す関数）を確かめる。
-- 状態を直接書き換えない（配列やオブジェクトは新しく作って set する）。
-
-### 6.4 入力と API
-
-- 画面でも入力チェックをするが、サーバーのチェックが本体（CLAUDE.md 5章）。
-- 読み込み中・成功・失敗・0件のそれぞれで、画面がどうなるかを考える。画面設計に書いていない表示は、文のないものだけ足す（CLAUDE.md 5章）。
-- API のエラーを握りつぶさない。`ApiError` の message を帯に、errors を入力欄に出す。
-
-### 6.5 XSS（外から入った文字で画面に仕掛けをされる攻撃）
-
-- 入力された文字を HTML として出さない。`dangerouslySetInnerHTML` を使わない。
-- リンクの URL を入力から作るときは、`http:`・`https:` 以外を使わせない。
-
-## 7. MySQL・SQL
-
-- テーブル・列・制約はデータ設計のとおり。テーブルを作る・変えるのは ZPOP-23 と、相談したうえでの作業だけ（CLAUDE.md 9章）。
-- DB の読み書きは、MyBatis Generator が作った dao の Mapper で行い、条件は Example の Criteria で組み立てる（CLAUDE.md 5章）。SQL を手で書くのは、Example では書けないものを dao.mapper.custom に書くときだけ。
-- 手で SQL を書くときは、SELECT に使う列を書く（`SELECT *` を使わない）。読む列が分かり、パスワードの列などを、うっかり読むことも防げる。
-- JOIN とサブクエリは使わない（CLAUDE.md 5章）。複数のテーブルはテーブルごとに読み、`IN` でまとめて読んで Java で突き合わせる。
-- 値は `#{}` で渡す。
-- UPDATE・DELETE は、対象を決める条件（id、`deleted_at IS NULL`、`version`）が足りているかを確かめる。条件の抜けで全件が変わらないようにする（`updateByExample` などで Criteria を空のまま渡さない）。
-- 更新した件数を見る。`version` を条件にした更新が0件なら、ほかの人が先に保存したとして 409（CLAUDE.md 5章）。
-- 一覧で大量の行を読むときは、設計書に件数の上限やページの分け方があるかを確かめる。
-- 大文字・小文字を区別しない検索は、データ設計 2章のやり方（両方を小文字にそろえる）に合わせる。
-
-## 8. セキュリティ
-
-| 危ないこと | 確かめること |
-|---|---|
-| SQLインジェクション | 値は `#{}` で渡している |
-| XSS | 入力を HTML として出していない |
-| CSRF | 画面は common/api を通している。テストは CsrfTestHelper（CLAUDE.md 6章） |
-| 権限のない操作 | すべての API に `@PreAuthorize` がある |
-| IDOR | ID を書き換えても、他人のデータを読めない・変えられない |
-| パスワードの漏れ | 平文で持たない（ハッシュの方式はログインのタスクで決めたもの） |
-| 秘密の情報の漏れ | ログ・返す値・例外の文に、パスワード・合言葉・トークンを出していない |
-| 設定の漏れ | 秘密の値をコードや設定ファイルに書いていない（secret.yml・環境変数） |
-| ファイルのアップロード（CSV） | 大きさの上限（設定値）、文字コード、行ごとのチェック |
+旧 3〜8章（一般的な設計・Java・Spring Boot・React・SQL・セキュリティの心得）は、このプロジェクトの決まりが Server の `.claude/rules/java.md`・Client の `.claude/rules/react.md`・CLAUDE.md にあるので、削った。構造の決まりは `ArchitectureTest`・`MapperXmlRulesTest`（Server）が確かめる。旧 10章（作業の流れ）は 決まり/skill.md、旧 11章（仕上げのチェック表）は CLAUDE.md 10章（完成条件）に移った。内容は git の履歴にある。
 
 ## 9. テストの考え方
 
@@ -228,37 +85,6 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 - テストが、中の作り（private のメソッドなど）に頼りすぎないようにする。
 - 今の日時は時計を止め、Slack は偽物にする。
 
-## 10. 作業の流れと skill
-
-| 段階 | skill |
-|---|---|
-| 依頼と設計書を理解する、今のコードを調べる、作りを決める | backend-impl・frontend-impl（detailed-design） |
-| 小さく実装する | backend-impl・frontend-impl |
-| テストを書いて動かす | backend-test・frontend-test |
-| 変えたファイルと影響を見直す | backend-review・frontend-review |
-| 結果を報告する | deliver（プルリクエストの説明） |
-
-## 11. 仕上げのチェック表
-
-**仕様・設計**
-- [ ] 設計書を読み、成功と失敗の両方を考えた。
-- [ ] 分からない仕様を、自分で決めていない。
-- [ ] ほかのまとまりへの影響（同じルールを書いている所）を確かめた。
-
-**コード**
-- [ ] 名前が役目を表している。部品の役目が分かれている。
-- [ ] 余分な抽象化・共通化をしていない。デバッグ用の出力や使わないコードが残っていない。
-- [ ] お手本と同じ書き方になっている。
-
-**安全・データ**
-- [ ] null、例外、おかしな入力を扱っている。
-- [ ] 権限と IDOR を確かめている。
-- [ ] 2つ以上の書き換えに `@Transactional` があり、Slack はその外。
-- [ ] 秘密の情報をログや返す値に出していない。
-
-**テスト・報告**
-- [ ] 成功・失敗・境目をテストした。Server・Client のテストを全部動かした。
-- [ ] 動かしていないテストを「成功」と書いていない。確かめていないことを、確かめたと書いていない。
 
 ## 12. Claude の振る舞い
 
