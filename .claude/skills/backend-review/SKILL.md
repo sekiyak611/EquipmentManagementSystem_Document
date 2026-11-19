@@ -1,8 +1,8 @@
 ---
 name: backend-review
 description: 備品管理システムのサーバー（EquipmentManagementSystem_Server）の実装を、CLAUDE.md の決まりと設計書に照らしてレビューし、指摘の一覧を返す。コードは直さない。作った会話とは別のエージェントで動くので、自分で作ったものを自分で採点する形にならない。
-when_to_use: zip を人に渡す前の見直し、相手が作ったプルリクエストの確認、「ZPOP-33 のサーバー側をレビューして」と頼まれたとき。
-argument-hint: "[タスク名かJiraの課題キー、zip のフォルダ、またはファイル・フォルダのパス]"
+when_to_use: プルリクエストを作る前の見直し、相手が作ったプルリクエストの確認、「ZPOP-33 のサーバー側をレビューして」と頼まれたとき。
+argument-hint: "[タスク名かJiraの課題キー、ブランチ名・プルリクエストの番号、またはファイル・フォルダのパス]"
 context: fork
 agent: general-purpose
 background: false
@@ -16,7 +16,7 @@ disallowed-tools:
 
 レビューする対象：$ARGUMENTS
 
-あなたは、備品管理システムのサーバーのコードをレビューする。**ファイルを作る・直す・消すことはしない。** Git の作業も何もしない（状態を見るだけのコマンドも動かさない）。テストも動かさない（結果は、作業メモと、残っているテストの結果のファイルを読む）。結果は、最後に決まった形の文章で返す。
+あなたは、備品管理システムのサーバーのコードをレビューする。**ファイルを作る・直す・消すことはしない。** Git は、状態を見るコマンド（`git status`・`git diff`・`git log`）だけ動かしてよい。それ以外の Git の作業はしない。テストも動かさない（結果は、作業メモと、残っているテストの結果のファイルを読む）。結果は、最後に決まった形の文章で返す。
 
 ## 1. 何をレビューするかを決める
 
@@ -24,17 +24,18 @@ disallowed-tools:
 
 | 指定 | 変わったファイルの見つけ方 |
 |---|---|
-| タスク名か Jira の課題キー（例：種別管理、ZPOP-33） | Server か Client のいちばん上の、作業記録 `output/種別管理/`（課題キーが渡されたら、`output/` の中の各フォルダの作業メモ.md の頭の課題キーで探す）の `変更ファイル一覧.md` と `作業メモ.md` を読む（形は deliver-zip の skill の「作業記録の形」） |
-| `output/` の中のフォルダ（作業記録、または zip の前のフォルダ） | そのフォルダの `変更ファイル一覧.md`（あれば `作業メモ.md` も）を読む |
-| 相手から受け取った zip を広げたフォルダ | その中の `変更ファイル一覧.md` と `説明.md` を読み、`EquipmentManagementSystem_Server/` の中のファイルをレビューする |
+| タスク名・Jira の課題キー・ブランチ名（例：種別管理、ZPOP-33、feature/ZPOP-33-…） | そのブランチの、release/main からの変更：`git diff --name-only release/main...<ブランチ>`（Server・Client・Document それぞれ）。あれば `output/<タスク名>/作業メモ.md` も読む |
+| プルリクエストの番号、または相手のブランチ | そのブランチの変更（同じ `git diff`）と、プルリクエストの説明 |
 | ファイル・フォルダのパス | そのファイル、またはそのフォルダの中の .java・.xml・.yml |
 | 何もない | 人に対象を聞く（自分で決めつけない） |
 
-変更ファイル一覧.md がなければ、そのことを結果に書き、指定されたパスだけをレビューする。Server のファイルが1つもなければ「Server の変更なし」と返して終わる。
+差分が取れなければ、そのことを結果に書き、指定されたパスだけをレビューする。Server のファイルが1つもなければ「Server の変更なし」と返して終わる。
 
 Server のフォルダ（`EquipmentManagementSystem_Server`）と Document のフォルダが読めなければ、そのことを結果に書いて終わる（人が `/add-dir ../EquipmentManagementSystem_Server` で読めるようにしてから、もう一度呼ぶ）。
 
 ## 2. 照らし合わせるものを読む
+
+- `internaldesign/決まり/Server実装.md`・`決まり/命名規則.md`（CLAUDE.md の 4.1・5章などの本体）と、CLAUDE.md の2章・10章（優先順位、確定・推測・未確定、禁止事項、完成条件）。
 
 同じフォルダに並んだ Document リポジトリ（`../EquipmentManagementSystem_Document`）の中を読む。
 
@@ -43,7 +44,7 @@ Server のフォルダ（`EquipmentManagementSystem_Server`）と Document の�
 - [ ] `internaldesign/パッケージ構成変更/API_パッケージとクラス名_決定版.md`（API のパッケージ名とクラス名の頭）
 - [ ] 詳細設計の「もとにした設計書」に書かれた章（API設計・画面設計・データ設計・機能一覧）
 - [ ] `internaldesign/テスト方針.md` 3・4・7章
-- [ ] 作業メモのテストの結果と、Server の `build/test-results/test/`（あれば。zip の前のフォルダなら evidence のテスト結果.md）
+- [ ] Document の evidence のテスト結果.md と、Server の `build/test-results/test/`（あれば）
 - [ ] 心得：`.claude/skills/implementation-guidelines/SKILL.md`（4・5・7・8章）
 
 ## 3. 確かめること
@@ -96,7 +97,7 @@ Server のフォルダ（`EquipmentManagementSystem_Server`）と Document の�
 - [ ] Slack に本物を送っていない。
 - [ ] 期待する結果が甘くなっていない（例：status だけで中身を見ていない、メッセージを確かめていない）。
 - [ ] 他人の ID を使ったときのテスト（IDOR）がある（ID を受け取る API）。
-- [ ] 最後に動かしたテストが全部成功している（作業メモ、結果のファイル）。
+- [ ] 最後に動かしたテストが全部成功している（evidence のテスト結果.md、結果のファイル）。
 
 **心得（implementation-guidelines）**
 - `catch (Exception e)` で何でも受け止めている、例外を握りつぶしている、null で落ちる所がある、`SELECT *` を使っている、部品をコンストラクタ以外で受け取っている、dao.entity をそのまま返している、など。根拠を「implementation-guidelines ○章」と書き、重さは「直したほうがよい」以下にする（決まりではないため）。

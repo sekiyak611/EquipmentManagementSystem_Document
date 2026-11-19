@@ -1,8 +1,8 @@
 ---
 name: frontend-review
 description: 備品管理システムの画面（EquipmentManagementSystem_Client）の実装を、CLAUDE.md の決まりと画面設計に照らしてレビューし、指摘の一覧を返す。コードは直さない。作った会話とは別のエージェントで動くので、自分で作ったものを自分で採点する形にならない。
-when_to_use: zip を人に渡す前の見直し、相手が作ったプルリクエストの確認、「ZPOP-33 の画面をレビューして」と頼まれたとき。
-argument-hint: "[タスク名かJiraの課題キー、zip のフォルダ、またはファイル・フォルダのパス]"
+when_to_use: プルリクエストを作る前の見直し、相手が作ったプルリクエストの確認、「ZPOP-33 の画面をレビューして」と頼まれたとき。
+argument-hint: "[タスク名かJiraの課題キー、ブランチ名・プルリクエストの番号、またはファイル・フォルダのパス]"
 context: fork
 agent: general-purpose
 background: false
@@ -16,23 +16,24 @@ disallowed-tools:
 
 レビューする対象：$ARGUMENTS
 
-あなたは、備品管理システムの画面のコードをレビューする。**ファイルを作る・直す・消すことはしない。** Git の作業も何もしない（状態を見るだけのコマンドも動かさない）。テストも動かさない（結果は、作業メモと、残っているテストの結果のファイルを読む）。結果は、最後に決まった形の文章で返す。
+あなたは、備品管理システムの画面のコードをレビューする。**ファイルを作る・直す・消すことはしない。** Git は、状態を見るコマンド（`git status`・`git diff`・`git log`）だけ動かしてよい。それ以外の Git の作業はしない。テストも動かさない（結果は、作業メモと、残っているテストの結果のファイルを読む）。結果は、最後に決まった形の文章で返す。
 
 ## 1. 何をレビューするかを決める
 
 | 指定 | 変わったファイルの見つけ方 |
 |---|---|
-| タスク名か Jira の課題キー（例：種別管理、ZPOP-33） | Server か Client のいちばん上の、作業記録 `output/種別管理/`（課題キーが渡されたら、`output/` の中の各フォルダの作業メモ.md の頭の課題キーで探す）の `変更ファイル一覧.md` と `作業メモ.md` を読む（形は deliver-zip の skill の「作業記録の形」） |
-| `output/` の中のフォルダ（作業記録、または zip の前のフォルダ） | そのフォルダの `変更ファイル一覧.md`（あれば `作業メモ.md` も）を読む |
-| 相手から受け取った zip を広げたフォルダ | その中の `変更ファイル一覧.md` と `説明.md` を読み、`EquipmentManagementSystem_Client/` の中のファイルをレビューする |
+| タスク名・Jira の課題キー・ブランチ名（例：種別管理、ZPOP-33、feature/ZPOP-33-…） | そのブランチの、release/main からの変更：`git diff --name-only release/main...<ブランチ>`（Server・Client・Document それぞれ）。あれば `output/<タスク名>/作業メモ.md` も読む |
+| プルリクエストの番号、または相手のブランチ | そのブランチの変更（同じ `git diff`）と、プルリクエストの説明 |
 | ファイル・フォルダのパス | そのファイル、またはそのフォルダの中の .ts・.tsx |
 | 何もない | 人に対象を聞く（自分で決めつけない） |
 
-変更ファイル一覧.md がなければ、そのことを結果に書き、指定されたパスだけをレビューする。Client のファイルが1つもなければ「Client の変更なし」と返して終わる。
+差分が取れなければ、そのことを結果に書き、指定されたパスだけをレビューする。Client のファイルが1つもなければ「Client の変更なし」と返して終わる。
 
 Client のフォルダ（`EquipmentManagementSystem_Client`）と Document のフォルダが読めなければ、そのことを結果に書いて終わる（人が `/add-dir ../EquipmentManagementSystem_Client` で読めるようにしてから、もう一度呼ぶ）。
 
 ## 2. 照らし合わせるものを読む
+
+- `internaldesign/決まり/Client実装.md`・`決まり/命名規則.md`（CLAUDE.md の 4.1・5章などの本体）と、CLAUDE.md の2章・10章（優先順位、確定・推測・未確定、禁止事項、完成条件）。
 
 同じフォルダに並んだ Document リポジトリ（`../EquipmentManagementSystem_Document`）の中を読む。
 
@@ -40,7 +41,7 @@ Client のフォルダ（`EquipmentManagementSystem_Client`）と Document の�
 - [ ] そのまとまりの詳細設計 `internaldesign/詳細設計/<まとまりのフォルダ>/`（まとまり全体と、変わった画面の画面詳細）と、`common.md` 11章
 - [ ] `externaldesign/画面設計.md` の1章と、その画面の章。`externaldesign/画面一覧.md`（スマートフォン優先かどうか）
 - [ ] 画面が呼ぶ API の章（`internaldesign/API設計.md`）
-- [ ] `internaldesign/テスト方針.md` 5章と、作業メモのテストの結果、Client の `playwright-report/`（あれば。zip の前のフォルダなら evidence のテスト結果.md）
+- [ ] `internaldesign/テスト方針.md` 5章と、Document の evidence のテスト結果.md、Client の `playwright-report/`（あれば）
 - [ ] 心得：`.claude/skills/implementation-guidelines/SKILL.md`（6・8章）
 
 ## 3. 確かめること
@@ -79,7 +80,7 @@ Client のフォルダ（`EquipmentManagementSystem_Client`）と Document の�
 - [ ] スマートフォン優先の画面は、スマートフォンと PC の両方で動かしている。
 - [ ] メッセージを画面設計の文そのもので確かめている（一部だけの一致で済ませていない）。
 - [ ] 待ち時間を固定の数字（`waitForTimeout`）に頼っていない。頼っているなら理由が書いてある。
-- [ ] 最後に動かしたテストが全部成功している（作業メモ、結果のファイル）。
+- [ ] 最後に動かしたテストが全部成功している（evidence のテスト結果.md、結果のファイル）。
 
 **心得（implementation-guidelines）**
 - `any` や `as` で型の確かめを消している、同じ情報を2つの状態に持っている、`useEffect` の依存する値や片付けが足りない、API のエラーを握りつぶしている、など。根拠を「implementation-guidelines ○章」と書き、重さは「直したほうがよい」以下にする（決まりではないため）。

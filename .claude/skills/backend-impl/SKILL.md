@@ -9,21 +9,22 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 
 対象のタスク：$ARGUMENTS
 
-（空なら、人に Jira の課題キーとタスク名を聞く。タスク名は、作業記録と成果物の zip の名前に使う。決め方は deliver-zip の skill の「作業記録の形」。）
+（空なら、人に Jira の課題キーとタスク名を聞く。タスク名は、証跡のフォルダとプルリクエストの名前に使う。決め方は deliver の skill。）
 
 この skill には、作業の順番とチェック表だけを書く。決まりの正本は Document の `internaldesign/CLAUDE.md` と設計書。この skill と食い違ったら CLAUDE.md・設計書に従い、食い違っていることを人に知らせる。CLAUDE.md・設計書に書いていない所の書き方は、implementation-guidelines の skill（Document の `.claude/skills/implementation-guidelines/SKILL.md`）を参考にする。
 
-1つのタスクは、人が `/backend-impl` → `/backend-test` → `/backend-review` → `/deliver-zip` の順に呼んで進める（CLAUDE.md 4.4）。この skill はテストを書かず、終わったら次の skill を人に案内する。
+1つのタスクは、人が `/backend-impl` → `/backend-test` → `/backend-review` → `/deliver` の順に呼んで進める（CLAUDE.md 4.4）。この skill はテストを書かず、終わったら次の skill を人に案内する。
 
 ## 0. 始める前に確かめる
 
 - [ ] 共通の決まり（CLAUDE.md）が読み込めている。読み込めていなければ、作業を始めずに人に知らせる。
+- [ ] `internaldesign/決まり/Server実装.md` と `決まり/命名規則.md` を読んだ（CLAUDE.md 4章の表。この skill が「CLAUDE.md 4.1・5章」などと呼ぶ決まりの本体）。
 - [ ] Document のフォルダを読み書きできる（`--add-dir ../EquipmentManagementSystem_Document`）。
 - [ ] 同じタスクで画面も作るなら、Client のフォルダも読み書きできる（`/add-dir ../EquipmentManagementSystem_Client`）。このタスクは、最後まで同じリポジトリで起動して進める（CLAUDE.md 7章）。
 - [ ] 自分の担当の機能か（Document の `internaldesign/実装タスク一覧.md` の分担と Jira の担当者）。担当でなければ、止めて人に確かめる。
 - [ ] 「先にやるタスク」（実装タスク一覧.md）が終わっている。終わっていなければ、人に知らせる。
-- [ ] 作業用のブランチ（`feature/<課題キー>`。release/main から）で作業している。マージ・release/main への push・強制 push はしない（CLAUDE.md 7章）。
-- [ ] 作業記録 `output/<タスク名>/` があれば、`作業メモ.md` と `変更ファイル一覧.md` を読んで続きから始める。なければ作る（形は deliver-zip の skill の「作業記録の形」）。
+- [ ] 作業用のブランチ（`feature/<課題キー>-<英語の機能名>`。release/main から。3つのリポジトリとも同じ名前）で作業している。マージ・release/main への push・強制 push はしない（CLAUDE.md 7章）。
+- [ ] 作業の続きなら、ブランチの `git diff` と詳細設計を読んで続きから始める（あれば `output/<タスク名>/作業メモ.md` も）。作業メモは、会話を分けるときだけ作る。
 
 ## 1. 設計書を読む
 
@@ -46,7 +47,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 
 detailed-design の skill に従って、`internaldesign/詳細設計/<まとまりのフォルダ>/`（例：`equipment/category/`）に、まとまり全体（`<まとまりの名前>.md`）と、作る API ごとのファイル（`<APIのID>_<短い名前>.md`）を書く（あれば書き足す）。
 
-「設計書にない判断」に、外から見た動き（返す値、エラー、メッセージなど）を変える項目が出たら、実装の前に人に確かめる。それ以外は、そのまま実装に進む。
+「設計書にない判断」に、外から見た動き（返す値、エラー、メッセージなど）を変える項目が出たら、実装の前に人に確かめる（まとめて1回で質問し、推奨案を付ける。CLAUDE.md 2章）。それ以外は、そのまま実装に進む。
 
 ## 3. 作る
 
@@ -87,9 +88,9 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<まとま
 - [ ] 変えられる値（時刻・期限・回数）をプログラムに直接書かず、設定にしている（API設計 6章）。
 - [ ] ログに、パスワード・パスワード設定用のリンクの合言葉・Slack のトークンを出さない。
 - [ ] 貸出のルール、確認のルールを変えたら、ほかのまとまり（equipment.mine・equipment.management）の同じルールも同じように直した（テストは backend-test で直す。作業メモに書いておく）。
-- [ ] タスクに関係のない所を、ついでに変えていない。気づいた不具合は作業メモの「確認してほしい点」に書く。
+- [ ] タスクに関係のない所を、ついでに変えていない。気づいた不具合は、報告の「確認してほしい点」に書く。
 
-足した・変えた・消したファイルは、そのつど `output/<タスク名>/変更ファイル一覧.md` に書く。
+足した・変えた・消したファイルは、`git status` で確かめる（変更ファイル一覧は作らない）。
 
 ## 4. 組み立てが通ることを確かめる
 
@@ -108,7 +109,7 @@ Server のフォルダで、本体とテストのコードが組み立てられ�
 
 ## 6. 作業記録を書いて、人に報告する
 
-- [ ] `output/<タスク名>/変更ファイル一覧.md` に、変えたファイルがすべてある。
-- [ ] `output/<タスク名>/作業メモ.md` の進み具合で「backend-impl」に印を付け、「確認してほしい点」を書いた。
+- [ ] `git status`・`git diff` で、変えたファイルが、このタスクの対象だけ。
+- [ ] 「確認してほしい点」（設計書にない判断を、確定／推測／未確定に分けて）を、人への報告に書いた（会話を分けるときだけ、`output/<タスク名>/作業メモ.md` にも書く）。
 
 人には短く書く：作ったもの、詳細設計の場所、確認してほしい点、次にすること（`/backend-test <タスク名>`）。

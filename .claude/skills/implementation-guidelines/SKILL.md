@@ -236,7 +236,7 @@ when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backe
 | 小さく実装する | backend-impl・frontend-impl |
 | テストを書いて動かす | backend-test・frontend-test |
 | 変えたファイルと影響を見直す | backend-review・frontend-review |
-| 結果を報告する | deliver-zip（説明.md） |
+| 結果を報告する | deliver（プルリクエストの説明） |
 
 ## 11. 仕上げのチェック表
 
