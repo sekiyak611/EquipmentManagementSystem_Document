@@ -18,7 +18,7 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 | detailed-design | 詳細設計を書く・直す・コードと突き合わせる |
 | backend-review | Server の実装のレビュー。コードは直さず、指摘の一覧を返す。作った会話とは別のエージェントで動く |
 | frontend-review | Client の実装のレビュー（同じ） |
-| deliver-zip | 最後のテスト、証跡、ブランチ・commit・push・プルリクエスト（7章。skill の中身は zip のときのままで、直すまでは 7章が正しい） |
+| deliver | 最後のテスト、証跡、commit・push、プルリクエスト（CLAUDE.md 7章・10章。2026-11-19 に、zip を渡す形から直した） |
 | reverse-engineer | コードから詳細設計を書き起こし、設計書との食い違いを一覧にする（設計書は直さない） |
 | implementation-guidelines | 実装・テスト・レビューのときの一般的な心得（読みやすさ、例外、型など）。この CLAUDE.md にない所で使う |
 | env-setup | 開発環境を作る・確かめる（Windows のPC） |
@@ -27,10 +27,10 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 
 ```
 （API・仕組みのストーリー。例：K-01_種別一覧）
-/detailed-design K-01_種別一覧 → /backend-impl K-01_種別一覧 → /backend-test K-01_種別一覧 → /backend-review K-01_種別一覧 →（指摘を直す）→ /deliver-zip K-01_種別一覧
+/detailed-design K-01_種別一覧 → /backend-impl K-01_種別一覧 → /backend-test K-01_種別一覧 → /backend-review K-01_種別一覧 →（指摘を直す）→ /deliver K-01_種別一覧
 
 （画面のストーリー。例：S-13_種別管理）
-/detailed-design S-13_種別管理 → /frontend-impl S-13_種別管理 → /frontend-test S-13_種別管理 → /frontend-review S-13_種別管理 →（指摘を直す）→ /deliver-zip S-13_種別管理
+/detailed-design S-13_種別管理 → /frontend-impl S-13_種別管理 → /frontend-test S-13_種別管理 → /frontend-review S-13_種別管理 →（指摘を直す）→ /deliver S-13_種別管理
 ```
 
 - backend-impl・frontend-impl は、詳細設計がすでにあれば、それを読んで書き足す。
