@@ -16,7 +16,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 ## 0. 始める前に確かめる
 
 - [ ] ブランチの `git diff` と詳細設計で、実装の内容を確かめる（あれば `output/<タスク名>/作業メモ.md` も読む）。frontend-impl が終わっていなければ、人に知らせる。何を作ったタスクか分からなければ、人に聞く。
-- [ ] `internaldesign/決まり/命名規則.md`（テストの名前）と、テスト方針の該当章、CLAUDE.md 6章を読んだ。
+- [ ] Client の `.claude/rules/react.md`（テストの名前）と、テスト方針の該当章、CLAUDE.md 6章を読んだ。
 - [ ] マージ・release/main への push・強制 push はしない（CLAUDE.md 7章）。
 
 ## 1. 何を確かめるかを、画面設計から決める

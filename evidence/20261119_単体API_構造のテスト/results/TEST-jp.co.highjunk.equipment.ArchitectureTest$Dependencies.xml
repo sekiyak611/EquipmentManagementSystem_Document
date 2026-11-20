@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="パッケージの依存（CLAUDE.md 4.1・5章）" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-19T14:35:44.541Z" hostname="DESKTOP-32H5PQ0" time="0.123">
+  <properties/>
+  <testcase name="api と batch は、互いに使わない" classname="jp.co.highjunk.equipment.ArchitectureTest$Dependencies" time="0.056"/>
+  <testcase name="API のクラスは、ほかの API のパッケージ（同じまとまりの API も）を使わない。使ってよいのは common・dao と、自分の API" classname="jp.co.highjunk.equipment.ArchitectureTest$Dependencies" time="0.007"/>
+  <testcase name="common・dao は、api・batch を使わない" classname="jp.co.highjunk.equipment.ArchitectureTest$Dependencies" time="0.055"/>
+  <testcase name="Controller は、ServiceImpl と dao の Mapper を直接使わない（Service の interface を通す）" classname="jp.co.highjunk.equipment.ArchitectureTest$Dependencies" time="0.003"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

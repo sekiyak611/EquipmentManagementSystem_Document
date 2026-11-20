@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ログインしたままにする" tests="24" skipped="0" failures="0" errors="0" timestamp="2026-11-19T14:36:24.201Z" hostname="DESKTOP-32H5PQ0" time="2.652">
+  <properties/>
+  <testcase name="合言葉を替えた直後（10秒以内）に、替える前のクッキーでもう一度来ても（画面を開いたときの、ほぼ同時の呼び出し）、盗まれたとは見ない：200。合言葉は替えず、新しいクッキーも渡さない" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.068"/>
+  <testcase name="チェックを付けずにログインし直す：この端末の前のクッキーと行が消える。ほかの端末の分は残る" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.171"/>
+  <testcase name="チェックを付けない・rememberMe がないログイン：クッキーも行もできない" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.108"/>
+  <testcase name="ロックされている人でも、ログインしたままの端末は、自動ログインできる（画面設計 2.1 の6）" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.062"/>
+  <testcase name="60日をすぎたクッキー（last_used が60日より前）：401。クッキーは消される" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.058"/>
+  <testcase name="セッションがなくても、クッキーだけで自動ログインできる。合言葉は新しいものに替わり（番号は同じ）、新しいクッキーが渡される" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.062"/>
+  <testcase name="チェックを付けてログイン：クッキー remember-me（HttpOnly・60日間）を渡し、persistent_logins に、その人のメールアドレスの行ができる" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.058"/>
+  <testcase name="削除されたユーザ：401。クッキーは消される" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.058"/>
+  <testcase name="ログアウト（A-02）：この端末の行とクッキーだけが消える。ほかの端末の「ログインしたまま」は残る" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.118"/>
+  <testcase name="ログアウトで、クッキーがない端末：何も消えない（ほかの端末の行は残る）" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.111"/>
+  <testcase name="パスワードを変更（A-07）：この端末が「ログインしたまま」でなければ、新しく作らない。ほかの端末の分は消える" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.215"/>
+  <testcase name="59日前のクッキーは、まだ使える（境界値）" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.06"/>
+  <testcase name="別の人のクッキーがある端末で、別の人としてログインすると、ログインした人として入る" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.119"/>
+  <testcase name="猶予（10秒）をすぎたあとに、替える前のクッキーをもう一度使うと（盗まれたと見る）：401。その人の行がすべて消える（ほかの端末の分も）" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.117"/>
+  <testcase name="読めないクッキー・でたらめなクッキー：500 にならず 401。クッキーは消される" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.003"/>
+  <testcase name="パスワードを再設定（A-06）すると、その人の「ログインしたまま」がすべて消える。ほかの人の分は残る" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.227"/>
+  <testcase name="自動ログインしたあとは、セッションで続く（クッキーなしでも、同じセッションなら使える。合言葉は、そのたびには替わらない）" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.064"/>
+  <testcase name="画面のファイル（/api/ でないアドレス）では、自動ログインしない（クッキーの合言葉を替えない）" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.073"/>
+  <testcase name="現在のパスワードを5回間違えて、この端末をログアウトさせたとき：この端末の行とクッキーだけが消える。ほかの端末の分は残る" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.385"/>
+  <testcase name="行がない（消された）番号のクッキー：401。クッキーは消される" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.06"/>
+  <testcase name="自動ログインできた人の権限項目は、ログインのときと同じ（読み直して返す）" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.06"/>
+  <testcase name="パスワードの変更（A-07）に失敗（現在のパスワードが違う）：「ログインしたまま」は、どれも消えない" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.164"/>
+  <testcase name="パスワードを変更（A-07）：ほかの端末の「ログインしたまま」は消える。この端末が「ログインしたまま」だったときは、この端末の分だけ新しい番号で作り直す" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.221"/>
+  <testcase name="ログイン状態もクッキーもなければ、401（自動ログインを試みない）" classname="jp.co.highjunk.equipment.common.security.RememberMeApiTest" time="0.002"/>
+  <system-out><![CDATA[2026-11-19T23:36:24.202+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.security.RememberMeApiTest]: RememberMeApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-19T23:36:24.204+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.security.RememberMeApiTest
+2026-11-19T23:36:24.204+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.security.RememberMeApiTest]: RememberMeApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-19T23:36:24.204+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-19T23:36:24.204+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.security.RememberMeApiTest
+2026-11-19T23:36:24.257+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.260+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.327+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.329+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.380+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.383+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.438+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.497+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.551+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.605+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.607+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.665+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.668+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.726+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.729+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.787+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.790+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.844+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.847+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.904+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.907+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.959+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:24.960+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:24.964+09:00 INFO  userId=3 [Test worker] j.c.h.e.common.security.LoginSession - ログアウトしました
+2026-11-19T23:36:25.022+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.025+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:25.074+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.077+09:00 INFO  userId=3 [Test worker] j.c.h.e.common.security.LoginSession - ログアウトしました
+2026-11-19T23:36:25.133+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.136+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:25.187+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.292+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.a.u.p.s.AuthUpdatePasswordServiceImpl - パスワードを変更しました（userId=3）
+2026-11-19T23:36:25.349+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.351+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:25.409+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.412+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:25.468+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+2026-11-19T23:36:25.528+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.529+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:25.580+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.583+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:25.590+09:00 WARN  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - 「ログインしたまま」のクッキーが、すでに使われたものでした。盗まれた可能性があるので、その人の「ログインしたまま」をすべて消しました
+2026-11-19T23:36:25.648+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.651+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:25.704+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.707+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:25.759+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+2026-11-19T23:36:25.762+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=2）
+2026-11-19T23:36:25.763+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=RESET）
+2026-11-19T23:36:25.816+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.p.u.s.AuthPasswordTokensUseServiceImpl - パスワードを設定しました（userId=3、用途=RESET）
+2026-11-19T23:36:25.877+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.880+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:25.941+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:25.942+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:26.014+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:26.017+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:26.070+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:26.073+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:26.126+09:00 WARN  userId=3 [Test worker] j.c.h.e.a.a.u.p.v.AuthUpdatePasswordValidator - パスワードを変更できませんでした（現在のパスワードが違う）
+2026-11-19T23:36:26.179+09:00 WARN  userId=3 [Test worker] j.c.h.e.a.a.u.p.v.AuthUpdatePasswordValidator - パスワードを変更できませんでした（現在のパスワードが違う）
+2026-11-19T23:36:26.234+09:00 WARN  userId=3 [Test worker] j.c.h.e.a.a.u.p.v.AuthUpdatePasswordValidator - パスワードを変更できませんでした（現在のパスワードが違う）
+2026-11-19T23:36:26.286+09:00 WARN  userId=3 [Test worker] j.c.h.e.a.a.u.p.v.AuthUpdatePasswordValidator - パスワードを変更できませんでした（現在のパスワードが違う）
+2026-11-19T23:36:26.340+09:00 WARN  userId=3 [Test worker] j.c.h.e.a.a.u.p.v.AuthUpdatePasswordValidator - パスワードを変更できませんでした（現在のパスワードが違う）
+2026-11-19T23:36:26.341+09:00 WARN  userId=3 [Test worker] j.c.h.e.c.s.LoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-19T23:36:26.343+09:00 INFO  userId=3 [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+2026-11-19T23:36:26.343+09:00 INFO  userId=3 [Test worker] j.c.h.e.common.security.LoginSession - ログアウトしました
+2026-11-19T23:36:26.399+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:26.402+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:26.458+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+2026-11-19T23:36:26.461+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=2）
+2026-11-19T23:36:26.520+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:26.523+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:26.572+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:26.575+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:26.626+09:00 WARN  userId=3 [Test worker] j.c.h.e.a.a.u.p.v.AuthUpdatePasswordValidator - パスワードを変更できませんでした（現在のパスワードが違う）
+2026-11-19T23:36:26.684+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:26.687+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:26.739+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-19T23:36:26.741+09:00 INFO  userId=- [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+2026-11-19T23:36:26.844+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.a.u.p.s.AuthUpdatePasswordServiceImpl - パスワードを変更しました（userId=3）
+2026-11-19T23:36:26.844+09:00 INFO  userId=3 [Test worker] j.c.h.e.c.security.LoginRememberMe - ログインしたままにしました（userId=3）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

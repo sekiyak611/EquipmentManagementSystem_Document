@@ -18,7 +18,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 ## 0. 始める前に確かめる
 
 - [ ] 共通の決まり（CLAUDE.md）が読み込めている。読み込めていなければ、作業を始めずに人に知らせる。
-- [ ] `internaldesign/決まり/Server実装.md` と `決まり/命名規則.md` を読んだ（CLAUDE.md 4章の表。この skill が「CLAUDE.md 4.1・5章」などと呼ぶ決まりの本体）。
+- [ ] Server の `.claude/rules/java.md` を読んだ（対象のファイルを触ると自動で読み込まれる。読み込まれていなければ先に読む。この skill が「CLAUDE.md 4.1・5章」などと呼ぶ決まりの本体）。
 - [ ] Document のフォルダを読み書きできる（`--add-dir ../EquipmentManagementSystem_Document`）。
 - [ ] 同じタスクで画面も作るなら、Client のフォルダも読み書きできる（`/add-dir ../EquipmentManagementSystem_Client`）。このタスクは、最後まで同じリポジトリで起動して進める（CLAUDE.md 7章）。
 - [ ] 自分の担当の機能か（Document の `internaldesign/実装タスク一覧.md` の分担と Jira の担当者）。担当でなければ、止めて人に確かめる。
@@ -43,6 +43,8 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 
 設計書があいまい、または設計書どうしが食い違うときは、**実装を止めて人に質問する**（CLAUDE.md 2章）。推測で進めない。質問には「どの設計書の何章と何章が、どう食い違うか」と「考えられる案」を書く。
 
+外から見える判断（返す値・エラー・画面の文・移り方）や食い違いが出たときは、spec-check の skill の形（確定／推測／未確定）で整理して、実装の前にまとめて人に質問する（CLAUDE.md 2章）。
+
 ## 2. 詳細設計を書く
 
 detailed-design の skill に従って、`internaldesign/詳細設計/<まとまりのフォルダ>/`（例：`equipment/category/`）に、まとまり全体（`<まとまりの名前>.md`）と、作る API ごとのファイル（`<APIのID>_<短い名前>.md`）を書く（あれば書き足す）。
@@ -65,29 +67,16 @@ detailed-design の skill に従って、`internaldesign/詳細設計/<まとま
 | common の部品の変更 | しない。必要になったら止めて人に相談する（CLAUDE.md 9章） |
 | ライブラリを足す | しない。必要になったら人に確かめる（CLAUDE.md 3章） |
 
-**書きながら確かめること**（くわしくは CLAUDE.md 5章）
+**書きながら確かめること**（細かい決まりは Server の `.claude/rules/java.md`。機械で確かめているもの――API どうしの依存、Controller が ServiceImpl・Mapper を使わない、`@PreAuthorize`、Clock、record、`@Transactional` の置き場所、JOIN・サブクエリ・`${}`――は `ArchitectureTest`・`MapperXmlRulesTest` が確かめる。ここには、人の判断が要るものだけを書く）
 
-- [ ] 業務のルールは ServiceImpl に書き、Controller は受け取る・ServiceInDto を作る・Service を呼ぶ・返すだけ。Controller は自分の API の interface（`<頭>Service`）を使い、ServiceImpl を直接使わない。（例外：ログインの開始・終了の LoginSession だけは Controller から呼んでよい。CLAUDE.md 5章）
-- [ ] Controller が、RestInDto・パスの値・ログインしている人の ID から `<頭>ServiceInDto` を作って Service に渡している。Service は ServiceInDto だけを受け取り、RestInDto やパスの値をそのまま受け取らない（CLAUDE.md 5章）。
-- [ ] 形式のチェック（必須・文字数・形など、受け取った値だけで分かるもの）は RestInDto の印（`@NotBlank`・`@Size` など）に書き、Controller の引数に `@Valid` を付けている。メッセージは画面設計の文のまま。
-- [ ] 受け取った値だけで、DB と照らせば確かめられるもの（例：ある、重なり、version、使われているか、Enum）は、ServiceInDto に common.validation のチェック用アノテーションで書き、ServiceImpl の `@Transactional` の中で ServiceInDtoChecker で確かめている。チェック用アノテーションの中は読むだけ（Mapper の `selectByExample`・`countByExample` など）で、書き換えない。
-- [ ] ServiceImpl が読んだ・計算した値が要る業務チェック（例：貸出の期間の重なり、その人が借りている備品か）は、`validator.<頭>Validator` に書き、ServiceImpl が `<頭>ValidatorDto` に値を入れて、`@Transactional` の中で、書き換えの前に呼んでいる。守れなければ common.error の例外を投げる。Validator は読むだけで、Controller からは呼ばない。
-- [ ] 返す値は `<頭>RestOutDto` を `ApiResponse`（ok・created・accepted）で包む。dao.entity をそのまま返さない。エラーは CLAUDE.md 5章の返し方で返し、自分で JSON を組み立てない。
-- [ ] すべての API に、必要な権限項目の確認（`@PreAuthorize("hasAuthority('…')")`）がある。コードはデータ設計 5.3 のもの。
-- [ ] ID を受け取る API は、その人が操作してよい対象かを ServiceInDto のチェックで確かめている（ログインしている人の ID は Controller が ServiceInDto に入れる。IDOR を防ぐ）。
-- [ ] 2つ以上の書き換えを1つの操作として行う ServiceImpl のメソッドに `@Transactional` を付けた（ServiceInDto のチェックもこの中）。interface・Controller・Mapper には付けない。Slack の送信はその外で、書き込みが確定してから行う。
-- [ ] 今の日時は `java.time.Clock` から取る（`LocalDate.now(clock)`）。`LocalDate.now()` のように直接取らない。
-- [ ] DB の読み書きは dao の Mapper で行い、条件は Example の Criteria で組み立てる（例：`example.createCriteria().andDeletedAtIsNull()`）。手で書く SQL（dao.mapper.custom）は XML に書き、値は `#{}` で渡す（`${}` で文字をつなげない）。
-- [ ] SQL に JOIN とサブクエリ（SQLの中にもう1つ SELECT を入れる書き方）がない。複数のテーブルはテーブルごとに読み、Java で突き合わせる。
-- [ ] ループの中で Mapper を呼んでいない（N+1 を防ぐ）。ID を集めて `IN`（Criteria の `andIdIn`、手で書く XML なら `<foreach>`）で1回で読む。
-- [ ] 一覧・検索で、削除済みの行（`deleted_at` が入っている行）を出さない。削除は論理削除。
-- [ ] 編集する API は楽観ロック（`version` 列）で、ほかの人が先に保存していたら 409。
-- [ ] ほかの API のパッケージ（同じまとまりの API も）のクラスを import していない。使うのは自分の API のパッケージと、common・dao だけ（CLAUDE.md 5章）。
-- [ ] Mapper とテーブルの形の import が、新しい `dao.mapper`・`dao.entity` のものになっている。
-- [ ] Lombok は、読みやすくなる所で使ってよい。`record` は使わない（CLAUDE.md 3章）。
-- [ ] 変えられる値（時刻・期限・回数）をプログラムに直接書かず、設定にしている（API設計 6章）。
-- [ ] ログに、パスワード・パスワード設定用のリンクの合言葉・Slack のトークンを出さない。
-- [ ] 貸出のルール、確認のルールを変えたら、ほかのまとまり（equipment.mine・equipment.management）の同じルールも同じように直した（テストは backend-test で直す。作業メモに書いておく）。
+- [ ] 業務のルールは ServiceImpl に書き、Controller は、受け取る・ServiceInDto を作る・Service（interface）を呼ぶ・返すだけ。
+- [ ] 確かめることを3つに分けた：形式のチェック＝RestInDto（`@Valid`。メッセージは画面設計の文のまま）、DB と照らして分かるもの＝ServiceInDto（common.validation。読むだけ）、ServiceImpl が読んだ・計算した値が要るもの＝Validator（`@Transactional` の中で、書き換えの前に呼ぶ）。
+- [ ] 返す値は `<頭>RestOutDto` を `ApiResponse` で包む（dao.entity をそのまま返さない。自分で JSON を組み立てない）。
+- [ ] 必要な権限項目（データ設計 5.3）を `@PreAuthorize` に書いた。ID を受け取る API は、その人が操作してよい対象かを ServiceInDto のチェックで確かめた（IDOR）。
+- [ ] 2つ以上の書き換えは ServiceImpl の `@Transactional`、Slack の送信はその外（書き込みが確定してから）。
+- [ ] ループの中で Mapper を呼んでいない（N+1。`IN` でまとめて読む）。一覧・検索で削除済みの行を出さない。編集する API は version で 409。
+- [ ] 変えられる値（時刻・期限・回数）は設定にした。ログにパスワード・合言葉・トークンを出さない。
+- [ ] 貸出・確認のルールを変えたら、ほかのまとまり（equipment.mine・equipment.management）の同じルールも直した（テストは backend-test で直す）。
 - [ ] タスクに関係のない所を、ついでに変えていない。気づいた不具合は、報告の「確認してほしい点」に書く。
 
 足した・変えた・消したファイルは、`git status` で確かめる（変更ファイル一覧は作らない）。

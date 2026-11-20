@@ -1,7 +1,7 @@
 # CLAUDE.md（備品管理システム：共通の決まり）
 
 Claude Code が毎回読む決まり。人が読んでも分かるように書く。置き場所は Document の `internaldesign/CLAUDE.md`（正本）。Server・Client の CLAUDE.md はこれを読み込み、そのリポジトリだけの決まりを足す。
-毎回は要らない細かい決まりは、`internaldesign/決まり/` に分けた（4章の表。章の番号は移す前のまま）。**作業の前に、その表の該当ファイルを必ず読む。読まずに書かない。**
+毎回は要らない細かい決まりは、Server・Client の `.claude/rules/`（対象のファイルを触ると自動で読み込まれる）と、`internaldesign/決まり/`（skill・Git）に分けた（4章の表。章の番号は移す前のまま）。**作業の前に、その表の該当ファイルを必ず読む。読まずに書かない。**
 
 ## 1. このシステム
 
@@ -46,7 +46,7 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
 
 - 使わないもの：Docker、AI機能、メール送信（お知らせはすべてSlackのDM）。
 - ライブラリの版は build.gradle・package.json のとおり。勝手に上げ下げしない。**新しく足すときは、人に確かめる。** Spring Security は 6.4.4・6.3.8 以降。
-- 使ってよいライブラリ。サーバー：Spring Boot（Web・Security・Validation）、MyBatis、Flyway、MySQL Connector/J、Slack Java SDK、Lombok、MyBatis Generator。画面：Vite、React Router、MUI、Playwright。TanStack Query と React Hook Form は使わない。
+- 使ってよいライブラリ。サーバー：Spring Boot（Web・Security・Validation）、MyBatis、Flyway、MySQL Connector/J、Slack Java SDK、Lombok、MyBatis Generator、ArchUnit（構造のテスト用）。画面：Vite、React Router、MUI、Playwright。TanStack Query と React Hook Form は使わない。
 - Java の `record` は使わない。値の入れ物は、普通のクラスに Lombok（`@Getter`・`@AllArgsConstructor` など）を付ける。Lombok は、読みやすくなるなら、どのクラスでも使ってよい。Eclipse には各自 Lombok を入れる（環境構築手順書.md）。
 
 ## 4. リポジトリとフォルダの構成
@@ -67,9 +67,8 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
 
 | 作業 | 先に読むファイル | 章 |
 |---|---|---|
-| Server の API・部品を書く | 決まり/Server実装.md | 4.1・4.2（パッケージとクラス）、5章（Java の書き方） |
-| Client の画面を書く | 決まり/Client実装.md | 4.3（フォルダ）、5章（画面の書き方） |
-| 名前を付ける（クラス・テスト・関数など） | 決まり/命名規則.md | 5章（命名規則） |
+| Server の API・部品・SQL を書く | Server の `.claude/rules/java.md`（Java・XML を触ると自動で読み込まれる。読み込まれていなければ先に読む） | 4.1・4.2（パッケージとクラス）、5章（Java の書き方・命名規則） |
+| Client の画面・テストを書く | Client の `.claude/rules/react.md`（同上） | 4.3（フォルダ）、5章（画面の書き方・命名規則） |
 | skill を使う・直す | 決まり/skill.md | 4.4 |
 | commit・push・プルリクエスト | 決まり/Git運用.md | 7章（してよいこと・.gitignore・ブランチ・PR の説明の形） |
 
@@ -135,7 +134,7 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
 | routes.tsx、共通ヘッダーのメニュー | 1行足すだけにする。ぶつかったら人が手で直す |
 | Flyway のファイル（Server の db/migration） | 足すときは、先に相手に伝える（同じ版の番号を使うと Flyway が止まる） |
 | Server の build.gradle・settings.gradle、Client の package.json | ライブラリを足すときは、2人で合意してから |
-| Document の .claude/skills/ | 決まりと同じ扱い。変えるときは2人で相談し、その変更だけの小さな作業にして、先に main に入れる |
+| Document の .claude/skills/、Server・Client の .claude/rules/ | 決まりと同じ扱い。変えるときは2人で相談し、その変更だけの小さな作業にして、先に main に入れる |
 
 ## 10. してはいけないこと・完成条件
 
