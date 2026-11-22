@@ -11,29 +11,32 @@ skill は、作業の順番とチェック表をまとめたファイル（SKILL
 
 | skill | 使うとき |
 |---|---|
-| backend-impl | Server の実装（設計書を読む → 詳細設計 → 実装。テストは書かない） |
-| backend-test | Server のテスト（単体・API）を書き、Server・Client のテストを全部動かす |
-| frontend-impl | Client の実装（設計書を読む → 詳細設計 → 実装。テストは書かない） |
-| frontend-test | Client のテスト（Playwright）を書き、Server・Client のテストを全部動かす |
-| detailed-design | 詳細設計を書く・直す・コードと突き合わせる |
+| backend-impl | Server の実装（工程②。詳細設計がマージ済みなのが前提。ゲート A。テストは書かない） |
+| backend-test | Server のテスト（工程③。実装がマージ済みなのが前提。ゲート B） |
+| frontend-impl | Client の実装（工程②。同じ） |
+| frontend-test | Client のテスト（Playwright。工程③。同じ） |
+| detailed-design | 詳細設計の工程（工程①）。書く・直す |
+| phase-gate | 工程の前後の確かめ（役割・ゲート判定・Jira の自動更新・「マージした」の確認・次の機能の提案） |
+| design-review | 詳細設計の独立した AI レビュー（直さない） |
 | spec-check | 実装の前の、設計書の確認と確定・推測・未確定の整理、人への質問（ファイルは変えない。外から見える判断があるときだけ） |
 | backend-review | Server の実装のレビュー。コードは直さず、指摘の一覧を返す。作った会話とは別のエージェントで動く |
 | frontend-review | Client の実装のレビュー（同じ） |
-| deliver | 最後のテスト、証跡、commit・push、プルリクエスト（CLAUDE.md 7章・10章。2026-11-19 に、zip を渡す形から直した） |
+| deliver | 各工程の MR の仕上げ（design・impl・ut。テスト・証跡・commit・push・MR。CLAUDE.md 7章・10章） |
 | reverse-engineer | コードから詳細設計を書き起こし、設計書との食い違いを一覧にする（設計書は直さない） |
 | implementation-guidelines | 実装・テスト・レビューのときの一般的な心得（読みやすさ、例外、型など）。この CLAUDE.md にない所で使う |
 | env-setup | 開発環境を作る・確かめる（Windows のPC） |
 
-1つのストーリー（Jira の課題。API 1本、画面1つ、仕組み1つ）は、人が次の順に skill を呼んで進める。ストーリーの3つのサブタスクとの対応は、detailed-design が［詳細設計］、backend-impl・frontend-impl が［実装］、backend-test（部品と API の単体テスト）と frontend-test（画面の単体テスト。Playwright）が［単体テスト］（実装タスク一覧.md 0.1）。レビューとプルリクエストづくりはサブタスクにしていない。skill どうしは自動でつながない（人がそれぞれの終わりに結果を確かめるため）。
+1つのストーリー（Jira の課題。API 1本、画面1つ、仕組み1つ）は、3つの工程で進める。**工程ごとに MR を出し、マージしてから次へ進む**（CLAUDE.md 11章、`決まり/開発フロー.md`）。各工程の最初は phase-gate（役割・ゲート・Jira）。
 
 ```
-（API・仕組みのストーリー。例：K-01_種別一覧）
-/detailed-design K-01_種別一覧 → /backend-impl K-01_種別一覧 → /backend-test K-01_種別一覧 → /backend-review K-01_種別一覧 →（指摘を直す）→ /deliver K-01_種別一覧
-
-（画面のストーリー。例：S-13_種別管理）
-/detailed-design S-13_種別管理 → /frontend-impl S-13_種別管理 → /frontend-test S-13_種別管理 → /frontend-review S-13_種別管理 →（指摘を直す）→ /deliver S-13_種別管理
+① 詳細設計  /detailed-design <ストーリー> →（spec-check で質問）→ 詳細設計 → /design-review → 人のチェック → /deliver design → リーダーがマージ
+   ↓ ゲート A（設計がマージ済みか。未マージなら警告し、別機能の設計を提案）
+② 実装      /backend-impl または /frontend-impl → /backend-review または /frontend-review → 人のチェック → /deliver impl → リーダーがマージ
+   ↓ ゲート B（実装がマージ済みか。未マージなら、絶対に進まない）
+③ 単体テスト /backend-test または /frontend-test → /backend-review または /frontend-review → 人のチェック → /deliver ut → リーダーがマージ
+   ↓ ゲート C（マージ済みを確かめて完了）→ 別の機能の詳細設計を提案
 ```
 
-- backend-impl・frontend-impl は、詳細設計がすでにあれば、それを読んで書き足す。
+- 実装の工程は、詳細設計を書かない（マージ済みの設計を読む）。設計との食い違いは、設計の修正の MR を先に出す。
 - 画面のストーリーの単体テストは、frontend-test で Playwright のテストを書く（テスト方針 5章）。結合テストは行わず、機能をまたいだ結合はシナリオテストで確かめる（2026-11-15 に決めた。テスト方針 2章）。
 

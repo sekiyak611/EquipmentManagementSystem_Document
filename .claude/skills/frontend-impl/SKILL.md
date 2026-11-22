@@ -13,7 +13,7 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 
 この skill には、作業の順番とチェック表だけを書く。決まりの正本は Document の `internaldesign/CLAUDE.md` と設計書。この skill と食い違ったら CLAUDE.md・設計書に従い、食い違っていることを人に知らせる。CLAUDE.md・設計書に書いていない所の書き方は、implementation-guidelines の skill（Document の `.claude/skills/implementation-guidelines/SKILL.md`）の6章を参考にする。
 
-1つのタスクは、人が `/frontend-impl` → `/frontend-test` → `/frontend-review` → `/deliver` の順に呼んで進める（CLAUDE.md 4.4）。この skill はテストを書かず、終わったら次の skill を人に案内する。
+実装の工程（`決まり/開発フロー.md` ②）。**詳細設計は、マージ済みであることが前提**で、この skill では書かない。終わったら、独立した AI レビュー（`/frontend-review`）→ 人のチェック → `/deliver impl`（MR）の順に進む。単体テストは、実装の MR がマージされてから（`/frontend-test`）。
 
 ## 0. 始める前に確かめる
 
@@ -22,7 +22,9 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 - [ ] Document のフォルダを読み書きできる（`--add-dir ../EquipmentManagementSystem_Document`）。
 - [ ] 画面が使う API ができている（Server にある）。まだなら、人に順番を確かめる。同じタスクで Server も変えたなら、そのとき起動したリポジトリで続ける（CLAUDE.md 7章）。
 - [ ] 自分の担当の機能か（Document の `internaldesign/実装タスク一覧.md` の分担と Jira の担当者）。担当でなければ、止めて人に確かめる。
-- [ ] 作業用のブランチ（`feature/<課題キー>-<英語の機能名>`。release/main から。3つのリポジトリとも同じ名前）で作業している。マージ・release/main への push・強制 push はしない（CLAUDE.md 7章）。
+- [ ] phase-gate の 0章（`DEV_ROLE`・Jira・最新の release/main）を済ませた。
+- [ ] **ゲート A**：phase-gate の手順で、`[詳細設計]` サブタスクのマージを `check-merged.sh` で確かめた。`MERGED` なら進む。未マージなら、警告して、人の選択（別の機能の設計を進める／未マージのまま進む／待つ）を待つ。`NOT_FOUND`・`ERROR` なら進まない。Jira の `[実装]` を「進行中」にした。
+- [ ] 作業用のブランチ（`feature/<[実装] のサブタスクの課題キー>-<英語の機能名>-impl`。release/main の最新から）で作業している。マージ・release/main への push・強制 push はしない（CLAUDE.md 7章）。
 - [ ] 作業の続きなら、ブランチの `git diff` と詳細設計を読んで続きから始める（あれば `output/<タスク名>/作業メモ.md` も）。作業メモは、会話を分けるときだけ作る。
 
 ## 1. 設計書を読む
@@ -41,11 +43,9 @@ argument-hint: "[タスク名かJiraの課題キー（例：種別管理、ZPOP-
 
 外から見える判断（返す値・エラー・画面の文・移り方）や食い違いが出たときは、spec-check の skill の形（確定／推測／未確定）で整理して、実装の前にまとめて人に質問する（CLAUDE.md 2章）。
 
-## 2. 詳細設計を書く
+## 2. 詳細設計を確かめる（書かない）
 
-detailed-design の skill に従って、`internaldesign/詳細設計/<まとまりのフォルダ>/`（例：`equipment/category/`）に、作る画面ごとのファイル（`<画面のID>_<短い名前>.md`）を書く。まとまり全体（`<まとまりの名前>.md`）の 1.2（画面一覧）と 2.2（Client のファイル）も書き足す（なければ作る）。
-
-「設計書にない判断」に、外から見た動き（画面の文、移り方など）を変える項目が出たら、実装の前に人に確かめる（まとめて1回で質問し、推奨案を付ける。CLAUDE.md 2章）。それ以外は、そのまま実装に進む。
+この工程では、詳細設計を書かない。`internaldesign/詳細設計/<まとまり>/` の、このタスクのファイルを読む（ゲート A で未マージのまま進むときは、`git show origin/<設計のブランチ>:<パス>` で読む）。**設計がない・足りない・誤っているときは、実装を止めて人に知らせる**（設計の修正の MR を先に出す。開発フロー.md 6章）。設計にない外から見える判断が出たら、spec-check の形で整理して、人に質問する。
 
 ## 3. 作る
 
@@ -95,11 +95,12 @@ npm run typecheck
 ## 5. 詳細設計とコードを突き合わせる
 
 - [ ] まとまり全体の 2.2（Client のファイル）と、画面詳細の 2.2・3章（部品・項目）・4章（入力チェック）・5章（操作）・6章（状態）・7章（API）・9章（メッセージ）が、作ったコードと同じ（detailed-design の skill の5章）。
-- [ ] 作りの途中で変えた所は、詳細設計も直した（版と変更履歴も）。
+- [ ] 詳細設計と違う所は、コードを直すか、設計の修正の MR を先に出す（この MR で詳細設計を直さない）。
 
-## 6. 作業記録を書いて、人に報告する
+## 6. レビューと MR
 
 - [ ] `git status`・`git diff` で、変えたファイルが、このタスクの対象だけ。
-- [ ] 「確認してほしい点」（設計書にない判断を、確定／推測／未確定に分けて）を、人への報告に書いた（会話を分けるときだけ、`output/<タスク名>/作業メモ.md` にも書く）。
+- [ ] 「確認してほしい点」（設計書にない判断を、確定／推測／未確定に分けて）を、報告にまとめた。
+- [ ] すでにあるテストと組み立てが通る（ArchitectureTest などを含む）。新しい機能のテストは、次の工程（単体テスト）で書く。
 
-人には短く書く：作ったもの、詳細設計の場所、確認してほしい点、画面を見て確かめる方法（`npm run dev` のあと開くアドレス）、次にすること（`/frontend-test <タスク名>`）。
+次の流れ：①独立した AI レビュー（`/frontend-review <ブランチ>`。指摘は直す）→ ②人がチェック（直しは AI に頼むか手で直す。手で直したら `git diff` を読んで反映）→ ③`/deliver impl`（commit・push・MR。`DEV_ROLE=junior` は Draft）→ ④リーダーがマージ → 人が「マージした」と伝える（phase-gate の merged）→ ⑤`/frontend-test`。
