@@ -1,0 +1,2 @@
+# シェルスクリプトは、Windows でも改行を LF のままにする（CRLF になると bash で動かない）
+tools/*.sh text eol=lf

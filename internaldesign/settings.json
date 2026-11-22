@@ -1,5 +1,11 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(git fetch)",
+      "Bash(git fetch *)",
+      "Bash(git pull --ff-only origin release/main)",
+      "Bash(bash ../EquipmentManagementSystem_Document/tools/check-merged.sh *)"
+    ],
     "deny": [
       "Bash(git push origin release/main)",
       "Bash(git push origin release/main *)",
@@ -18,8 +24,6 @@
       "Bash(git push * :*)",
       "Bash(git merge)",
       "Bash(git merge *)",
-      "Bash(git pull)",
-      "Bash(git pull *)",
       "Bash(git rebase *)",
       "Bash(git reset --hard *)",
       "Bash(git branch -D *)",

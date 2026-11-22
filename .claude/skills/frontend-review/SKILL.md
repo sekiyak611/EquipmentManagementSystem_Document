@@ -1,7 +1,7 @@
 ---
 name: frontend-review
 description: 備品管理システムの画面（EquipmentManagementSystem_Client）の実装を、CLAUDE.md の決まりと画面設計に照らしてレビューし、指摘の一覧を返す。コードは直さない。作った会話とは別のエージェントで動くので、自分で作ったものを自分で採点する形にならない。
-when_to_use: プルリクエストを作る前の見直し、相手が作ったプルリクエストの確認、「ZPOP-33 の画面をレビューして」と頼まれたとき。
+when_to_use: 実装・単体テストの工程で、人がチェックする前の、独立した AI レビュー。相手が作ったプルリクエストの確認、「ZPOP-33 の画面をレビューして」と頼まれたとき。
 argument-hint: "[タスク名かJiraの課題キー、ブランチ名・プルリクエストの番号、またはファイル・フォルダのパス]"
 context: fork
 agent: general-purpose

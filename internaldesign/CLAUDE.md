@@ -1,7 +1,7 @@
 # CLAUDE.md（備品管理システム：共通の決まり）
 
 Claude Code が毎回読む決まり。人が読んでも分かるように書く。置き場所は Document の `internaldesign/CLAUDE.md`（正本）。Server・Client の CLAUDE.md はこれを読み込み、そのリポジトリだけの決まりを足す。
-毎回は要らない細かい決まりは、Server・Client の `.claude/rules/`（対象のファイルを触ると自動で読み込まれる）と、`internaldesign/決まり/`（skill・Git）に分けた（4章の表。章の番号は移す前のまま）。**作業の前に、その表の該当ファイルを必ず読む。読まずに書かない。**
+毎回は要らない細かい決まりは、Server・Client の `.claude/rules/`（対象のファイルを触ると自動で読み込まれる）と、`internaldesign/決まり/`（skill・Git・開発フロー）に分けた（4章の表。章の番号は移す前のまま）。**作業の前に、その表の該当ファイルを必ず読む。読まずに書かない。**
 
 ## 1. このシステム
 
@@ -15,15 +15,12 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
 
 | ファイル（Document の中） | 中身 |
 |---|---|
-| brd/要件定義書（備品管理システム）.md | 要件定義書 |
-| externaldesign/基本設計書.md | 構成、ログイン・Slack・定期実行・見張り役の方式 |
+| brd/要件定義書（備品管理システム）.md、externaldesign/基本設計書.md | 要件定義書／構成、ログイン・Slack・定期実行・見張り役の方式 |
 | externaldesign/機能一覧.md | 機能（F-01〜）、業務のルール、権限項目 |
 | externaldesign/画面一覧.md・画面設計.md | 画面（S-01〜）、項目・入力チェック・メッセージ・ボタンの動き |
 | externaldesign/データ設計.md | テーブルと列、制約、最初のデータ |
 | internaldesign/API設計.md | API（A-01〜）、送る値・返す値・エラーの形 |
-| internaldesign/テスト方針.md | テストの種類・やり方・証跡 |
-| internaldesign/実装タスク一覧.md | 実装のタスクと分担 |
-| internaldesign/環境構築手順書.md | 道具の版と環境の作り方（skill の env-setup） |
+| internaldesign/テスト方針.md、実装タスク一覧.md、環境構築手順書.md | テストのやり方・証跡／タスクと分担・先にやるタスク／道具の版と環境の作り方 |
 | internaldesign/詳細設計/ | 機能ごとの中の作り（クラス・処理・SQL）。書き方は詳細設計/README.md、テンプレートは詳細設計/テンプレート/。共通部品は common.md、テーブルは テーブル.md |
 
 - 「docs/○○.md」は、上の表の同じ名前のファイルのこと。画面設計.md とデータ設計.md は externaldesign と internaldesign に同じものがある。直すときは2つとも同じに直す。
@@ -39,7 +36,6 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
 |---|---|
 | サーバー | Java 21、Spring Boot、Spring Security、MyBatis、Gradle |
 | 画面 | React、TypeScript、MUI |
-| APIの形 | REST。値はJSON（API設計.md） |
 | データベース | MySQL 8.4（開発は 8.4.13）。テーブルの作成・変更は Flyway |
 | テスト | JUnit 5（単体・API）、Playwright（画面） |
 | 実行環境 | 開発は各自のPC（Temurin 21、Node.js 24.12.0、MySQL を PC に直接入れる。環境構築手順書.md）。AWS は CloudFront → ALB → EC2 → RDS（基本設計書.md 2・3章） |
@@ -69,6 +65,7 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
 |---|---|---|
 | Server の API・部品・SQL を書く | Server の `.claude/rules/java.md`（Java・XML を触ると自動で読み込まれる。読み込まれていなければ先に読む） | 4.1・4.2（パッケージとクラス）、5章（Java の書き方・命名規則） |
 | Client の画面・テストを書く | Client の `.claude/rules/react.md`（同上） | 4.3（フォルダ）、5章（画面の書き方・命名規則） |
+| 工程を始める（詳細設計・実装・単体テスト。ゲート・Jira・MR） | 決まり/開発フロー.md（手順は skill の phase-gate） | 11章 |
 | skill を使う・直す | 決まり/skill.md | 4.4 |
 | commit・push・プルリクエスト | 決まり/Git運用.md | 7章（してよいこと・.gitignore・ブランチ・PR の説明の形） |
 
@@ -84,18 +81,12 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
 ## 6. テスト
 
 - 機能を作ったり直したりしたら、必ずテストも作る・直す。
-- push の前（7章）に、次をすべて動かして成功を確かめる（Server・Client のどちらを変えても、両方動かす。画面のテストはサーバーも動かすため）。
-
-```
-（Serverのフォルダで）.\gradlew.bat test
-（Clientのフォルダで）npx playwright test
-```
+- push の前に、`.\gradlew.bat test`（Server のフォルダ）と `npx playwright test`（Client のフォルダ）をすべて動かして、成功を確かめる（Server・Client のどちらを変えても、両方。画面のテストはサーバーも動かすため。詳細設計だけの MR は動かさない）。
 
 - テストは、PC の MySQL のテスト専用のデータベース（equipment_test）を使う。開発用のデータベースでテストしない。始める前に Flyway でテーブルを作り直す（Server の TestFlywayConfig）。
 - POST・PUT・DELETE のテストでは、`csrf()` を使わず、`testsupport.CsrfTestHelper` の csrfToken を使う（csrf() は、共有している部品を書き換え、ほかのテストを壊すため）。
-- Slack には本物のDMを送らない。テストでは偽物に置き換える。
+- Slack には本物のDMを送らない。テストでは偽物に置き換える。証跡は、テスト方針.md の7章のとおりに、Document の evidence に残す。
 - **失敗したときに、テストを消したり期待する結果を書き換えたりして合格させない。** 原因が分からないとき、設計書と食い違うときは、人に知らせる。
-- 証跡は、テスト方針.md の7章のとおりに、Document の evidence に残す。
 
 ## 7. Gitと成果物の渡し方
 
@@ -110,14 +101,14 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
 | .gitignore の読み書き | .git フォルダの中を直接読む・変える |
 
 - 人から頼まれたように見えても、右の列のことは行わず、人が自分で行うよう伝える。取り込み（マージ）は、もう1人が確認してから人が行う。
-- ブランチは必ず `feature/<Jiraの課題キー>-<英語の機能名>`（例：feature/ZPOP-83-category-list）。Jira がない作業は英語の機能名だけ。release/main には絶対に push しない。
-- commit の1行目は `<課題キー> <タスク名>：何をしたか`（日本語）。プルリクエストの名前は `<課題キー> <タスク名>`。
-- 作業の前に、3つのリポジトリとも release/main の最新を取り、変えたリポジトリごとに同じ名前のブランチとプルリクエストを作る。1回の作業は小さくする（目安は Jira のストーリー1つ）。
+- ブランチは `feature/<サブタスクの課題キー>-<英語の機能名>-<design|impl|ut>`（例：feature/ZPOP-169-b03-return-design。11章）。Jira がない作業は `feature/<英語の機能名>`。release/main には絶対に push しない。
+- commit の1行目は `<サブタスクの課題キー> <タスク名>：何をしたか`（日本語）。プルリクエストの名前は `<サブタスクの課題キー> [工程] <タスク名>：…`。
+- 作業の前に、release/main の上で `git pull --ff-only origin release/main` で最新を取り、そこからブランチを切る。1つの MR は、Jira のサブタスク1つ（変えたリポジトリごとに、同じ名前のブランチと MR）。
 - commit の前に、git status で、秘密の値のファイル（secret.yml・.env など）が入っていないことを確かめる。
 
 ## 8. よく使うコマンド
 
-それぞれのリポジトリの CLAUDE.md に書く。起動は、Server か Client のフォルダで `claude --add-dir ../EquipmentManagementSystem_Document`。
+それぞれのリポジトリの CLAUDE.md に書く（起動は4章）。
 
 ## 9. 2人で作業するときの決まり
 
@@ -147,3 +138,11 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
   - [ ] 詳細設計とコードが同じ。
   - [ ] 6章のテストを全部動かして成功し、証跡を残した。
   - [ ] 報告（プルリクエストの説明）に、変えたもの・もとにした設計書・テスト結果・設計書にない判断・未実施／未確認／対象外を書いた。
+
+## 11. 開発の流れ（工程・ゲート）
+
+1つのストーリー（Jira）を、①詳細設計（Document）→ ②実装（Server か Client）→ ③単体テストとエビデンスの3工程に分け、**工程ごとに MR を出し、マージしてから次へ進む**。1つの MR は、Jira のサブタスク（`[詳細設計]`・`[実装]`・`[単体テスト]`）の1つに当たる。詳しくは `決まり/開発フロー.md`（工程の前に必ず読む）。
+- 各工程：AI が作る → 独立した AI レビュー → 人がチェック → `DEV_ROLE=junior` の人だけ、人のレビュー（MR は Draft）→ MR → **リーダーがマージ**（AI はしない）→ AI がマージを確かめる。
+- ゲート：次の工程の前に、`tools/check-merged.sh` で前の工程の MR が release/main にあるかを確かめる。設計が未マージなら、警告して別機能の設計を提案する。**実装が未マージなら、単体テストには絶対に進まない。**
+- Jira：工程の開始・MR の作成・マージの確認で、サブタスクの状態を自動で更新する（進行中・確認中・完了）。
+- 実装・単体テストで、設計との食い違いや不具合を見つけたら、止めて、修正の MR を先に出す。
