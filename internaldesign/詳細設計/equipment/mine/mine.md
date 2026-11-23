@@ -2,14 +2,14 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.1 2026-11-23 |
-| Jira | ZPOP-63（B-01）、ZPOP-65（B-03）。B-02・B-04・B-05、S-05・S-06 は、作るときに書き足す |
+| 版 | v1.2 2026-11-23 |
+| Jira | ZPOP-63（B-01）、ZPOP-65（B-03）、ZPOP-66（B-04）。B-02・B-05、S-05・S-06 は、作るときに書き足す |
 | 状態 | 作成中 |
-| もとにした設計書 | 機能一覧.md v1.1 の1章・5章・7章（F-07・F-10・F-18・F-19）、API設計.md v1.4 の2.3〜2.5・3.2・4.5〜4.7、画面設計.md v1.6 の3章・4章、画面一覧.md v1.1 の2章、データ設計.md v1.0 の2章・5.6・5.7 |
+| もとにした設計書 | 機能一覧.md v1.1 の1章・5章・7章（F-07・F-10・F-18・F-19）、API設計.md v1.4 の2.3〜2.5・3.2・4.5〜4.7、画面設計.md v1.7 の3章・4章・10章、画面一覧.md v1.1 の2章、データ設計.md v1.0 の2章・5.6・5.7 |
 
 ## 1. 概要
 
-写したもと：機能一覧.md v1.1 の4章（F-07・F-18・F-19）、画面設計.md v1.6 の3章
+写したもと：機能一覧.md v1.1 の4章（F-07・F-18・F-19）、画面設計.md v1.7 の3章
 
 一般社員が、自分が借りている備品を見て（B-01）、借りる（B-02）・返す（B-03）・確認した（B-04）をする。借りられる備品を探す（B-05）。今月まだ確認していない備品の数と、今月の催促日時を案内する
 
@@ -22,7 +22,7 @@
 | B-01 | GET | /api/me/loans | 自分が借りている備品の一覧と、今月の確認の案内を返す | LOAN_SELF | S-05 | api.equipment.mine.search.item（EquipmentMineSearchItem） | [B-01_自分の備品の一覧.md](B-01_自分の備品の一覧.md) |
 | B-02 | POST | /api/me/loans | 備品を借りる | LOAN_SELF | S-06 | api.equipment.mine.entry.item（EquipmentMineEntryItem） | まだ（ZPOP-64） |
 | B-03 | POST | /api/me/loans/{貸出履歴のID}/return | 借りている備品を返す | LOAN_SELF | S-05 | api.equipment.mine.update.returnitem（EquipmentMineUpdateReturnItem） | [B-03_備品を返す.md](B-03_備品を返す.md) |
-| B-04 | POST | /api/me/confirmations | 自分が借りている備品を「確認した」にする | CONFIRM_SELF | S-05 | api.equipment.mine.update.item（EquipmentMineUpdateItem） | まだ（ZPOP-66） |
+| B-04 | POST | /api/me/confirmations | 自分が借りている備品を「確認した」にする | CONFIRM_SELF | S-05 | api.equipment.mine.update.item（EquipmentMineUpdateItem） | [B-04_確認した.md](B-04_確認した.md) |
 | B-05 | GET | /api/me/available-equipment | 借りられる備品を探す | LOAN_SELF | S-06 | api.equipment.mine.search.availableitem（EquipmentMineSearchAvailableItem） | まだ（ZPOP-67） |
 
 ### 1.2 画面一覧
@@ -36,7 +36,7 @@
 
 ### 1.3 業務のルール
 
-写したもと：機能一覧.md v1.1 の5章、画面設計.md v1.6 の3章、API設計.md v1.4 の4.5
+写したもと：機能一覧.md v1.1 の5章、画面設計.md v1.7 の3章、API設計.md v1.4 の4.5
 
 | No. | ルール | 写したもと |
 |---|---|---|
@@ -72,6 +72,11 @@ API ごとのパッケージ（api.equipment.mine の下。その中を controll
 | api.equipment.mine.update.returnitem.service | EquipmentMineUpdateReturnItemService（interface）・EquipmentMineUpdateReturnItemServiceImpl・EquipmentMineUpdateReturnItemServiceInDto | B-03 の業務の処理（`@Service`、`@Transactional`）。ServiceInDto に、貸出履歴のチェック（common.validation） | B-03 |
 | api.equipment.mine.update.returnitem.model | EquipmentMineUpdateReturnItemRestOutDto | B-03 で返す、返したあとの最新の一覧（B-01 と同じ形） | B-03 |
 | （テスト）api.equipment.mine.update.returnitem | EquipmentMineUpdateReturnItemApiTest | B-03 のテスト | B-03 |
+| api.equipment.mine.update.item.controller | EquipmentMineUpdateItemController・EquipmentMineUpdateItemRestInDto | B-04 の入口。RestInDto（equipmentIds）と形式のチェック（1つ以上）。ServiceInDto を作る | B-04 |
+| api.equipment.mine.update.item.service | EquipmentMineUpdateItemService（interface）・EquipmentMineUpdateItemServiceImpl・EquipmentMineUpdateItemServiceInDto | B-04 の業務の処理（`@Service`、`@Transactional`）。貸出履歴・備品を FOR UPDATE で読み、Validator で確かめ、まとめて更新する | B-04 |
+| api.equipment.mine.update.item.validator | EquipmentMineUpdateItemValidator・EquipmentMineUpdateItemValidatorDto | 業務チェック（備品がある・自分が借りている・管理中）。ServiceImpl が読んだ行を渡して確かめる（読むだけ） | B-04 |
+| api.equipment.mine.update.item.model | EquipmentMineUpdateItemRestOutDto | B-04 で返す、確認したあとの最新の一覧（B-01 と同じ形） | B-04 |
+| （テスト）api.equipment.mine.update.item | EquipmentMineUpdateItemApiTest | B-04 のテスト | B-04 |
 
 使う dao（作らない。MyBatis Generator が作ったもの）
 
@@ -82,6 +87,8 @@ API ごとのパッケージ（api.equipment.mine の下。その中を controll
 | dao.entity | Loan・LoanExample・Equipment・EquipmentExample | テーブルの1行の形と、取得の条件 | B-01 |
 | dao.mapper | LoanMapper・EquipmentMapper | 返却日・メモ・最終確認日・version を更新する（B-03） | B-03 |
 | dao.mapper.custom | LoanCustomMapper（新規。XML は dao/mapper/custom/） | selectByIdForUpdate（FOR UPDATE。Example では書けない）。common.md 3.20 | B-03 |
+| dao.mapper.custom | LoanCustomMapper | selectCurrentByEquipmentIdsForUpdate（新規。備品の ID の一覧から、今借りている貸出履歴を、FOR UPDATE で読む。`active_equipment_id IN`） | B-04 |
+| dao.mapper.custom | EquipmentCustomMapper | selectByIdsForUpdate（新規。ID の一覧の備品を FOR UPDATE で読む。IN）、updateLastConfirmedOnByIds（新規。最終確認日・version+1・更新日時・更新者を、1つの SQL でまとめて更新） | B-04 |
 
 足した共通部品（common。B-04 も同じ形の一覧を返すので common に置く。common.md 3.19）
 
@@ -90,7 +97,7 @@ API ごとのパッケージ（api.equipment.mine の下。その中を controll
 | common.equipment | MyLoanList・MyLoanItem | B-01 の data と items の1件の形 | B-01・B-04 |
 | common.equipment | MyLoanListAssembler | ログインしている人の分の一覧を作る（今借りている貸出履歴・備品・種別を、テーブルごとに読んで突き合わせる） | B-01・B-04 |
 | common.calendar | ReminderCalendar#isReminderPassed | 今月の催促の日時を過ぎたか（common.md 3.18） | B-01 |
-| common.validation・common.error | LoanExists・LoanBorrowedBySelf・LoanNotReturned・LoanEquipmentManaged、ServiceErrorType.Forbidden・ForbiddenException | 貸出履歴のチェックと、403 の返し方（common.md 3.20。B-04 も使う） | B-03・B-04 |
+| common.validation・common.error | LoanExists・LoanBorrowedBySelf・LoanNotReturned・LoanEquipmentManaged、ServiceErrorType.Forbidden・ForbiddenException | 貸出履歴のチェックと、403 の返し方（common.md 3.20）。B-04 が使うのは、ForbiddenException だけ（B-04 の確かめは、Validator） | B-03（ForbiddenException は B-04 も） |
 
 ### 2.2 Client
 
@@ -120,7 +127,9 @@ B-01 では作らない（S-05 は ZPOP-107）。
 | 2 | common に足した部品 | common.equipment に MyLoanList・MyLoanItem・MyLoanListAssembler、common.calendar の ReminderCalendar に isReminderPassed | 2人で共有するファイル（CLAUDE.md 9章） | 相手に伝える（プルリクエストの説明に書く） |
 | 3 | Flyway | 変えない | ― | ― |
 | 4 | common に足す部品 | ForbiddenException・ServiceErrorType.Forbidden（403 の返し方）、貸出履歴のチェック用アノテーション4つ、LoanCustomMapper（common.md 3.20） | 2人で共有するファイル（CLAUDE.md 9章） | 実装の工程の前に、相手に伝える。common の変更として、その変更だけの小さな MR にして、先に main に入れる（B-03 の実装 MR は、それがマージされてから） |
-| 5 | 同じルール | 返却のルール（自分の分だけ返せる、返却日は今日、最終確認日を更新する、行を押さえる順は貸出履歴 → 備品） | equipment.management の C-07・C-08、equipment.mine の B-02 | C-07・C-08・B-02 の詳細設計を書くとき、同じにする |
+| 5 | 同じルール | 返却のルール（自分の分だけ返せる、返却日は今日、最終確認日を更新する）と、行を押さえる順（貸出履歴 → 備品。複数なら、備品の ID の小さい順） | equipment.management の C-07・C-08・C-05（備品の削除）・D-02・D-03（貸出履歴の直し・取り消し）・I-03（今貸出中の取り込み）、equipment.mine の B-02 | それぞれの詳細設計を書くとき、同じ順にする。B-02 は、貸出履歴を先に足し、そのあとで備品を押さえる（B-04 は、借りられていない備品の貸出履歴の隙間を押さえるため）。貸出履歴を読む・書き換える向きは、各詳細設計で決める |
+| 6 | dao に足す部品 | LoanCustomMapper#selectCurrentByEquipmentIdsForUpdate、EquipmentCustomMapper#selectByIdsForUpdate・#updateLastConfirmedOnByIds（B-04 の詳細設計の7章。`version = version + 1` の式で、1つの SQL でまとめて更新する） | 2人で共有するファイル（CLAUDE.md 9章。dao） | 実装の工程の前に、相手に伝える。dao の変更として、その変更だけの小さな MR にして、先に main に入れる（B-04 の実装 MR は、それがマージされてから） |
+| 7 | 同じルール | 確認のルール（最終確認日は今日、保存のたびに version +1、今月すでに確認済みでも誤りにしない、管理中の備品だけ、複数の行を押さえるときは備品の ID の小さい順） | equipment.management の C-06・E-02 | C-06 は作成済み。E-02（CSV で確認日を更新）の詳細設計を書くとき、同じにする（日付は CSV の値）。B-04 を直したら、C-06 も同じに直す。別件：C-06・B-03 は、読んだ version に 1 を足した値を Example で書き、B-04 は式（`version + 1`）。結果は同じだが、そろえるかは、実装の工程で、人に相談する |
 
 ## 4. 設計書にない判断
 
@@ -129,6 +138,7 @@ B-01 では作らない（S-05 は ZPOP-107）。
 | No. | 判断 | 理由 | 外から見えるか | 人の確認 |
 |---|---|---|---|---|
 | 1 | S-05・S-06 の URL は、画面の詳細設計（ZPOP-107・108）で決める | 画面一覧 2章で確かめる | いいえ | ― |
+| 2 | B-04 の 404（送った備品がない・削除済み）のとき、S-05 が S-19（見つからない）に移るか、一覧を最新にするかは、画面の詳細設計（ZPOP-107）で決める（API設計 2.3 は、404 のとき S-19 を出すと書く） | 画面設計 3章に、404 のときの動きがない | はい | まだ（未確定） |
 
 ## 変更履歴
 
@@ -136,3 +146,4 @@ B-01 では作らない（S-05 は ZPOP-107）。
 |---|---|---|
 | v1.0 | 2026-11-16 | 初版（ZPOP-63。B-01 の分） |
 | v1.1 | 2026-11-23 | ZPOP-65：B-03 の分を足した（1.1 のリンク、2.1 のクラス・dao・共通部品、3章の No.4・5） |
+| v1.2 | 2026-11-23 | ZPOP-66：B-04 の分を足した（1.1 のリンク、2.1 のクラス・dao、3章の No.6・7、4章の No.2）。3章の No.5 に、C-05・D-02・D-03・I-03 と、B-02 の順を足した |
