@@ -17,8 +17,8 @@ argument-hint: "[design|impl|ut] [タスク名かサブタスクの課題キー�
 - [ ] 変えたリポジトリのすべてで、ブランチが `feature/<サブタスクの課題キー>-<英語の機能名>-<design|impl|ut>`（release/main から。同じ工程では、同じ名前）。
 - [ ] `git status`・`git diff` で、変えたファイルが、**この工程の成果物だけ**。
   - design：詳細設計（Document）だけ。実装・テスト・エビデンスを入れない。
-  - impl：コード（Server か Client）だけ。詳細設計を直さない（直すなら、設計の修正の MR を先に出す）。
-  - ut：テストのコード（Server か Client）と、エビデンス（Document）だけ。実装のコードを直さない（不具合なら、実装の修正の MR を先に出す）。
+  - impl：コード（Server か Client）だけ。詳細設計を直さない（直すなら、設計の修正の MR（開発フロー.md 6.1）を先に出す）。
+  - ut：テストのコード（Server か Client）と、エビデンス（Document）だけ。実装のコードを直さない（不具合なら、障害チケットを作ってやり直す（開発フロー.md 6.2））。
   - `secret.yml`・`.env`・`build/`・`node_modules/` などが入っていない。
 - [ ] 独立した AI レビューの指摘を直し、人のチェックが済んでいる。人が手で直した所は、`git diff` で読んで反映した。
 
