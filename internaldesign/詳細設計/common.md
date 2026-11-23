@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.30 2026-11-16 |
+| 版 | v1.31 2026-11-23 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -65,6 +65,7 @@
 | common.error | BusinessRuleException | 決まりに合わない操作（400） |
 | common.error | NotFoundException | 見つからない（404） |
 | common.error | ConflictException | ぶつかった（409） |
+| common.error | ForbiddenException | ほかの人の貸出・備品は操作できない（403。ZPOP-65 で足す。3.20） |
 | common.error | CsvErrorException | CSVの行のエラー（400） |
 | common.error | ServiceUnavailableException | 動いていない（503。A-08） |
 | common.error | GlobalExceptionHandler | controller・service で起きたエラーを、返す値の形に変える |
@@ -500,7 +501,7 @@ A-01 は、ユーザがいて・パスワードがあり・ロックされてい
 
 ### 3.19 自分が借りている備品の一覧を作る部品（common.equipment。ZPOP-63）
 
-写したもと：API設計.md v1.4 の4.5・4.6・4.7、画面設計.md v1.5 の3章
+写したもと：API設計.md v1.4 の4.5・4.6・4.7、画面設計.md v1.6 の3章
 
 B-01（一覧）と B-04（確認したあとの最新の一覧。「B-01 と同じ形」）が使う。API のパッケージどうしは使い合わないので、common.equipment に1つだけ置く（CLAUDE.md 5章）。B-02 の「作った貸出履歴」（B-01 の items の1件と同じ形）も MyLoanItem を使う予定。
 
@@ -511,6 +512,25 @@ B-01（一覧）と B-04（確認したあとの最新の一覧。「B-01 と同
 | MyLoanListAssembler | `assemble(userId)`：その人が今借りている貸出履歴（返却日が空・取り消されていない）を読み、管理中で削除されていない備品を IN で読み、EquipmentSummaryAssembler（3.12）で種別の名前と今月確認済みかを付け、期限超過（返却予定日が今日より前）を決め、未確認を上にして貸出日の古い順（同じ日は貸出履歴のID順）に並べ、未確認の数・今月の催促の日時・過ぎたか（ReminderCalendar。3.18）を付ける。読むだけ（`@Transactional` なし） |
 
 詳しい決まりと判断は、詳細設計 equipment/mine/B-01_自分の備品の一覧.md の5章・12章。
+
+### 3.20 貸出履歴のチェックと 403 の返し方（common.validation・common.error。ZPOP-65）
+
+写したもと：機能一覧.md v1.1 の5章、API設計.md v1.4 の4.7、画面設計.md v1.6 の3章。B-03（備品を返す）で足す。**2人で共有するファイル（CLAUDE.md 9章）なので、実装の工程の前に相手に伝え、その変更だけの小さな MR にして、先に main に入れる。**
+
+| 部品 | 場所 | 役割 |
+|---|---|---|
+| ForbiddenException | common.error | 403 と、決まった文を返す（ConflictException と同じ形。message は、画面設計の文）。errors なし |
+| ServiceErrorType.Forbidden | common.validation | チェック用アノテーションの payload の印。ServiceInDtoChecker が ForbiddenException に変える |
+| LoanExists（中身は LoanExistsCheck） | common.validation | 取り消されていない貸出履歴があるか（forUpdate で行を押さえる）。First・NotFound |
+| LoanBorrowedBySelf（中身は …Check） | common.validation | 貸出履歴の借用者が、ログインしている人か。Second・Forbidden。クラスに付け、Target（貸出履歴のID・ログインしている人のID を返す interface）を ServiceInDto が実装する |
+| LoanNotReturned（中身は …Check） | common.validation | 返却日が空か（まだ返却されていないか）。Second・Conflict |
+| LoanEquipmentManaged（中身は …Check） | common.validation | その貸出履歴の備品が、管理中か（備品の行も FOR UPDATE で押さえる）。Second・BusinessRule |
+| LoanCustomMapper#selectByIdForUpdate | dao.mapper.custom | 貸出履歴を FOR UPDATE で読む（Example では書けない。EquipmentCustomMapper#selectByIdForUpdate と同じ形） |
+
+- 守れないものが2つ以上あるときは、NotFound → Forbidden → Conflict → BusinessRule の順に、先のものを返す（上の ServiceInDtoChecker の決まり）。
+- 行を押さえる順は、**貸出履歴 → 備品**（B-02・B-03・C-07・C-08 で、そろえる。デッドロックを防ぐため）。
+- B-03 が使う。B-04（自分の備品を確認した。ほかの人の備品が含まれていたら 403）も、ForbiddenException を使う。
+- Server の `.claude/rules/java.md` 5章の「返し方（NotFound・Conflict・BusinessRule・なし）」の一覧と、確かめる順番にも、Forbidden を足す（`.claude/rules` は2人で相談する決まり。同じ小さな MR に入れる）。
 
 ## 4. データベース
 
@@ -561,9 +581,10 @@ common には mapper（データベースを読み書きする部品）はない
 | ServiceErrorType.NotFound | NotFoundException | 404 | 決まった文。errors なし |
 | ServiceErrorType.Conflict | ConflictException | 409 | アノテーションの message（画面設計の文）。errors なし |
 | ServiceErrorType.BusinessRule | BusinessRuleException | 400 | アノテーションの message（画面設計の文）。errors なし |
+| ServiceErrorType.Forbidden（ZPOP-65 で足す） | ForbiddenException | 403 | アノテーションの message（画面設計の文）。errors なし。「ほかの人の貸出・備品は操作できない」（IDOR）に使う |
 | なし | FieldErrorException | 400 | 「入力内容に誤りがあります。」。errors に入力欄ごとの文（ServiceInDto の項目の順） |
 
-- 1つの段で2つ以上の種類が出たら、NotFound → Conflict → BusinessRule → 入力欄のエラーの順に、先のものを返す。
+- 1つの段で2つ以上の種類が出たら、NotFound → Forbidden → Conflict → BusinessRule → 入力欄のエラーの順に、先のものを返す（Forbidden は ZPOP-65 で足す）。
 - クラスに付けるチェック（2つ以上の項目を見るもの）は、アノテーションの中の Target という interface を ServiceInDto が実装して、値を渡す。入力欄のエラーにするときは、CategoryChecks#addFieldViolation のように、誤りを入力欄に付ける。
 - 今あるチェック用アノテーション（種別）：CategoryExists（forUpdate で行を押さえる）、CategoryVersionMatches、CategoryNameNotDuplicated、CategoryInitialNotDuplicated、CategoryNotInUse。使い方は equipment/category/ の詳細設計。
 
@@ -598,6 +619,7 @@ common には mapper（データベースを読み書きする部品）はない
 | NotFoundException() | 404 | 見つからない（削除された備品など） | 決まった文 |
 | FieldErrorException(入力欄, 文) ／ FieldErrorException(入力欄のエラーの一覧) | 400 | DB との整合性のチェックの結果を、入力欄の下に出すエラーとして返すとき（新しい形では、ServiceInDtoChecker が payload のないチェックの誤りから作る）。例：種別の名前・頭文字が、ほかの種別ともう重なっている（画面設計 16章） | 決まった文「入力内容に誤りがあります。」。入力欄ごとの文は ErrorItem.ofField(入力欄, 画面設計の文)。受け取った値だけで分かる形式のチェックには使わない（RestInDto の印で行う） |
 | ConflictException(文) | 409 | ほかの人が先に保存した、すでに貸し出されている、すでに返却されている | 画面設計の文を渡す |
+| ForbiddenException(文) | 403 | ほかの人が借りている貸出履歴・備品を操作しようとした（B-03。B-04） | 画面設計の文を渡す（ZPOP-65 で足す。3.20） |
 | CsvErrorException(行のエラーの一覧) | 400 | CSVの行にエラーがある | 決まった文。行ごとの理由は ErrorItem.ofCsvRow(行番号, 管理番号, 理由) |
 | ServiceUnavailableException() | 503 | A-08 でデータベースにつながらない | 決まった文 |
 | UnauthorizedException(文) | 401 | ログインできなかった（A-01）、ログイン状態が読めなくなった（A-03） | A-01 は画面設計の文「メールアドレスまたはパスワードが違います」、ほかは ApiMessages.UNAUTHORIZED |
@@ -922,3 +944,4 @@ EquipmentManagementSystem_Client/
 | v1.28 | 2026-11-16 | ZPOP-125：3.17 に、合言葉を替えた直後（10秒以内）の古いクッキーを、盗まれたと見ない猶予を足した（判断 No.7）。 |
 | v1.29 | 2026-11-16 | ZPOP-126：3.18「祝日と催促日の計算」を足した（HolidayCalendar・ReminderCalendar。Flyway の V3 で祝日を入れる）。3.11 の申し送りを、作成済みに直した。 |
 | v1.30 | 2026-11-16 | ZPOP-63：3.19「自分が借りている備品の一覧を作る部品」（common.equipment の MyLoanList・MyLoanItem・MyLoanListAssembler）を足し、3.18 に ReminderCalendar#isReminderPassed を足した |
+| v1.31 | 2026-11-23 | ZPOP-65：3.20「貸出履歴のチェックと 403 の返し方」を足した（ForbiddenException・ServiceErrorType.Forbidden・貸出履歴のチェック用アノテーション・LoanCustomMapper）。ServiceErrorType の表と、守れないものが2つ以上あるときの順に、Forbidden を足した |
