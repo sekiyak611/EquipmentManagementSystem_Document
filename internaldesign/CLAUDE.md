@@ -81,7 +81,8 @@ Claude Code が毎回読む決まり。人が読んでも分かるように書�
 ## 6. テスト
 
 - 機能を作ったり直したりしたら、必ずテストも作る・直す。
-- push の前に、`.\gradlew.bat test`（Server のフォルダ）と `npx playwright test`（Client のフォルダ）をすべて動かして、成功を確かめる（Server・Client のどちらを変えても、両方。画面のテストはサーバーも動かすため。詳細設計だけの MR は動かさない）。
+- **作業の途中は、変えた部分のテストだけを動かしてよい**（例：`.\gradlew.bat test --tests '*XxxTest'`）。**push の前（MR を出す前）に、全件を1回だけ動かして**、成功を確かめる（Server のフォルダで `.\gradlew.bat test`、Client のフォルダで `npx playwright test`。詳細設計だけの MR は動かさない）。結果は、成功・失敗の件数と、失敗したテストの名前だけを読む（出力を全部読まない）。
+- 動かす範囲（2026-11-23 に決めた）：Client を変えたときは、Server・Client の両方（画面のテストはサーバーも動かすため）。**Server だけを変えたときは、Server の全件を動かす。Client の全件は、画面に見える API の動きを変えていなければ、動かさなくてよい**（変えていないとは、API が返す値・メッセージ・状態コード・エラーの形に当たる所＝RestOutDto・common.error・画面設計の文を返す所に、差分がないこと。`git diff` で確かめる）。Client を動かさなかったときは、プルリクエストの「未実施」に、その理由を書く。
 
 - テストは、PC の MySQL のテスト専用のデータベース（equipment_test）を使う。開発用のデータベースでテストしない。始める前に Flyway でテーブルを作り直す（Server の TestFlywayConfig）。
 - POST・PUT・DELETE のテストでは、`csrf()` を使わず、`testsupport.CsrfTestHelper` の csrfToken を使う（csrf() は、共有している部品を書き換え、ほかのテストを壊すため）。
