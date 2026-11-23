@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.31 2026-11-23 |
+| 版 | v1.32 2026-11-23 |
 | Jira | ZPOP-21（雛形：サーバー）、ZPOP-22（雛形：画面）、ZPOP-122（テーブルと最初のデータ）、ZPOP-55・56・57・103（ログインの最小限）、ZPOP-121（S-19 エラー）、ZPOP-123（Slack送信の部品）、ZPOP-124（アカウントロック。common.passwordlink） |
 | もとにした設計書 | internaldesign/API設計.md v1.1 の2章・6章・7章、externaldesign/基本設計書.md v1.5 の4・5・6・9章、externaldesign/画面設計.md 1章・9章、externaldesign/画面一覧.md 7章、CLAUDE.md 3〜5章 |
 
@@ -522,12 +522,13 @@ B-01（一覧）と B-04（確認したあとの最新の一覧。「B-01 と同
 | ForbiddenException | common.error | 403 と、決まった文を返す（ConflictException と同じ形。message は、画面設計の文）。errors なし |
 | ServiceErrorType.Forbidden | common.validation | チェック用アノテーションの payload の印。ServiceInDtoChecker が ForbiddenException に変える |
 | LoanExists（中身は LoanExistsCheck） | common.validation | 取り消されていない貸出履歴があるか（forUpdate で行を押さえる）。First・NotFound |
-| LoanBorrowedBySelf（中身は …Check） | common.validation | 貸出履歴の借用者が、ログインしている人か。Second・Forbidden。クラスに付け、Target（貸出履歴のID・ログインしている人のID を返す interface）を ServiceInDto が実装する |
-| LoanNotReturned（中身は …Check） | common.validation | 返却日が空か（まだ返却されていないか）。Second・Conflict |
+| LoanBorrowedBySelf（中身は …Check） | common.validation | 貸出履歴の借用者が、ログインしている人か（貸出履歴は LoanCustomMapper#selectByIdForUpdate で読む）。Second・Forbidden。クラスに付け、Target（貸出履歴のID・ログインしている人のID を返す interface）を ServiceInDto が実装する |
+| LoanNotReturned（中身は …Check） | common.validation | 返却日が空か（まだ返却されていないか。貸出履歴は LoanCustomMapper#selectByIdForUpdate で読む）。Second・Conflict |
 | LoanEquipmentManaged（中身は …Check） | common.validation | その貸出履歴の備品が、管理中か（備品の行も FOR UPDATE で押さえる）。Second・BusinessRule |
 | LoanCustomMapper#selectByIdForUpdate | dao.mapper.custom | 貸出履歴を FOR UPDATE で読む（Example では書けない。EquipmentCustomMapper#selectByIdForUpdate と同じ形） |
 
 - 守れないものが2つ以上あるときは、NotFound → Forbidden → Conflict → BusinessRule の順に、先のものを返す（上の ServiceInDtoChecker の決まり）。
+- 2段目の3つのチェックは、貸出履歴を、普通の SELECT ではなく LoanCustomMapper#selectByIdForUpdate（FOR UPDATE。1段目で押さえた行を、もう一度読むだけで、待たない）で読む。MySQL の REPEATABLE READ では、普通の SELECT は、その transaction で最初に読んだ時点の記録を見る。チェックの前に、同じ transaction で、貸出履歴を普通の SELECT で読んでいると、先に返した人の返却日が見えず、二重返却をすり抜けるため。
 - 行を押さえる順は、**貸出履歴 → 備品**（B-02・B-03・C-07・C-08 で、そろえる。デッドロックを防ぐため）。
 - B-03 が使う。B-04（自分の備品を確認した。ほかの人の備品が含まれていたら 403）も、ForbiddenException を使う。
 - Server の `.claude/rules/java.md` 5章の「返し方（NotFound・Conflict・BusinessRule・なし）」の一覧と、確かめる順番にも、Forbidden を足す（`.claude/rules` は2人で相談する決まり。同じ小さな MR に入れる）。
@@ -945,3 +946,4 @@ EquipmentManagementSystem_Client/
 | v1.29 | 2026-11-16 | ZPOP-126：3.18「祝日と催促日の計算」を足した（HolidayCalendar・ReminderCalendar。Flyway の V3 で祝日を入れる）。3.11 の申し送りを、作成済みに直した。 |
 | v1.30 | 2026-11-16 | ZPOP-63：3.19「自分が借りている備品の一覧を作る部品」（common.equipment の MyLoanList・MyLoanItem・MyLoanListAssembler）を足し、3.18 に ReminderCalendar#isReminderPassed を足した |
 | v1.31 | 2026-11-23 | ZPOP-65：3.20「貸出履歴のチェックと 403 の返し方」を足した（ForbiddenException・ServiceErrorType.Forbidden・貸出履歴のチェック用アノテーション・LoanCustomMapper）。ServiceErrorType の表と、守れないものが2つ以上あるときの順に、Forbidden を足した |
+| v1.32 | 2026-11-23 | ZPOP-65：3.20 に、2段目のチェックは貸出履歴を FOR UPDATE で読み直す、を足した（B-03 の独立レビューの指摘） |
