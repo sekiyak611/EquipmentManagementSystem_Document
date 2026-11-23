@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.api.auth.passwordtokens.use.AuthPasswordTokensUseApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.api.auth.passwordtokens.use.AuthPasswordTokensUseApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>A-06 合言葉でパスワードを決める</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">23</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">3.327s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="blankPassword().html">入力の誤り：空は 400。errors は password の1件だけ（確認も空なら一致する）</a>
+</td>
+<td class="path">blankPassword()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="bothErrors().html">入力の誤り：パスワードの形と確認の違いが同時にあれば、2つとも errors に出る</a>
+</td>
+<td class="path">bothErrors()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="14">0.014s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="cannotReuse().html">同じリンクを2回使えない：2回目は 400（使えないリンク）。パスワードは1回目のまま</a>
+</td>
+<td class="path">cannotReuse()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="66">0.066s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="commonPassword().html">使えないパスワード（よく使われる）：400。password に画面設計 8章の文。リンクは使用済みにならず、別のパスワードで決め直せる</a>
+</td>
+<td class="path">commonPassword()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="64">0.064s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="confirmMismatch().html">入力の誤り：確認が違う・空・ないときは、passwordConfirm に「確認用のパスワードが一致しません」</a>
+</td>
+<td class="path">confirmMismatch()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="12">0.012s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="csrfRequired().html">なりすまし対策の合言葉（CSRF）がなければ 403</a>
+</td>
+<td class="path">csrfRequired()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="8">0.008s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="cutsOldSessions().html">すべての端末のログインを切る：前にログインしていた端末は、次の操作で 401。決めたあとのログインは使える</a>
+</td>
+<td class="path">cutsOldSessions()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1299">1.299s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="doesNotLogin().html">自動ではログインさせない：ログイン状態（セッション）を渡さない</a>
+</td>
+<td class="path">doesNotLogin()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="63">0.063s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="emailAndSystemName().html">使えないパスワード：大文字・小文字がちがっても、自分のメールアドレス・システム名は使えない</a>
+</td>
+<td class="path">emailAndSystemName()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="76">0.076s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">入力の誤りが先：パスワードが誤りで、合言葉も使えないときは、入力の誤り（400・errors あり）を返す</td>
+<td class="path">formatCheckComesFirst()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="4">0.004s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="lockFlow().html">ロックの流れ全体：5回間違えてロック → DM（③）のリンクで決める → ロックが解け、ログインできる</a>
+</td>
+<td class="path">lockFlow()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="445">0.445s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="lockLink().html">ロックのリンク（LOCK）でも決められる。DM（④）は送る</a>
+</td>
+<td class="path">lockLink()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="62">0.062s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="maxLengthPassword().html">64文字のパスワードで決められ、そのパスワードでログインできる</a>
+</td>
+<td class="path">maxLengthPassword()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="144">0.144s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="noLoginNeeded().html">ログインしていなくても呼べる</a>
+</td>
+<td class="path">noLoginNeeded()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="71">0.071s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="passwordFormat().html">入力の誤り：7文字は短い、65文字は長い、日本語は使えない文字。どれも1つだけ</a>
+</td>
+<td class="path">passwordFormat()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="69">0.069s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="passwordWithSpaces().html">スペースを含むパスワードは、前後も取らずに、そのまま決められる</a>
+</td>
+<td class="path">passwordWithSpaces()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="168">0.168s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="register().html">ユーザ登録のリンク（REGISTER）：パスワードがまだない人が、最初のパスワードを決められる。DMは送らない</a>
+</td>
+<td class="path">register()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="119">0.119s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="reset().html">再設定のリンクで決める：200（data は null）。新しいパスワードでログインでき、古いパスワードではできない</a>
+</td>
+<td class="path">reset()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="173">0.173s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="sendsChangedDm().html">再設定：パスワードが変わったことを、本人にDM（④）で知らせる。パスワードは書かない</a>
+</td>
+<td class="path">sendsChangedDm()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="65">0.065s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="storesHashAndMarksUsed().html">パスワードそのものは保存しない（bcrypt のハッシュ）。リンクは使用済み（used_at）になる</a>
+</td>
+<td class="path">storesHashAndMarksUsed()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="65">0.065s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="unlocksAccount().html">ロックを解除し、失敗の回数を0に戻す</a>
+</td>
+<td class="path">unlocksAccount()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="123">0.123s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="unusableTokens().html">使えない合言葉（ない・空・ない値・より新しいリンクがある・期限切れ・削除されたユーザ）：400。同じ文。パスワードは変わらない</a>
+</td>
+<td class="path">unusableTokens()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="36">0.036s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="updatesColumns().html">session_valid_after には、今を秒までにそろえて入る。updated_by は本人、version は増えない</a>
+</td>
+<td class="path">updatesColumns()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="66">0.066s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.api.auth.passwordtokens.use.AuthPasswordTokensUseApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.api.auth.passwordtokens.use.AuthPasswordTokensUseApiTest">2026-11-23T21:53:24.531+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.passwordtokens.use.AuthPasswordTokensUseApiTest]: AuthPasswordTokensUseApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:24.610+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.passwordtokens.use.AuthPasswordTokensUseApiTest
+2026-11-23T21:53:24.610+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.passwordtokens.use.AuthPasswordTokensUseApiTest]: AuthPasswordTokensUseApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:24.611+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:24.612+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.passwordtokens.use.AuthPasswordTokensUseApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at 2026/11/23 21:53:56</p>
+</div>
+</div>
+</body>
+</html>

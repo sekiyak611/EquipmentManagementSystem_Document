@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="SQL（Mapper の XML）の書き方" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-23T12:53:12.050Z" hostname="DESKTOP-32H5PQ0" time="0.031">
+  <properties/>
+  <testcase name="調べる XML が見つかる（フォルダを間違えて、何も調べないまま成功にしない）" classname="jp.co.highjunk.equipment.MapperXmlRulesTest" time="0.001"/>
+  <testcase name="JOIN を使わない（複数のテーブルは、テーブルごとに読んで、Java で突き合わせる）" classname="jp.co.highjunk.equipment.MapperXmlRulesTest" time="0.02"/>
+  <testcase name="手で書いた SQL（custom）で、値を ${} でつなげない（#{} で渡す）。MyBatis Generator が作った Example の並び順（orderByClause）は対象外" classname="jp.co.highjunk.equipment.MapperXmlRulesTest" time="0.002"/>
+  <testcase name="サブクエリ（かっこの中の SELECT）を使わない" classname="jp.co.highjunk.equipment.MapperXmlRulesTest" time="0.006"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

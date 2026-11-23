@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="確かめのあとに、ほかの人が先に変えていたとき" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-23T12:53:39.650Z" hostname="DESKTOP-32H5PQ0" time="0.042">
+  <properties/>
+  <testcase name="名前が重複禁止に当たる：400。errors の name に「この名前はすでに使われています」" classname="jp.co.highjunk.equipment.api.equipment.category.update.item.EquipmentCategoryUpdateItemApiTest$Race" time="0.015"/>
+  <testcase name="version が変わっていて UPDATE が0件：409。画面設計 16章の文" classname="jp.co.highjunk.equipment.api.equipment.category.update.item.EquipmentCategoryUpdateItemApiTest$Race" time="0.008"/>
+  <system-out><![CDATA[2026-11-23T21:53:39.651+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.category.update.item.EquipmentCategoryUpdateItemApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:39.653+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.category.update.item.EquipmentCategoryUpdateItemApiTest$Race
+2026-11-23T21:53:39.653+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.category.update.item.EquipmentCategoryUpdateItemApiTest$Race]: Race does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:39.654+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.category.update.item.EquipmentCategoryUpdateItemApiTest]: EquipmentCategoryUpdateItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:39.654+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.EquipmentCategoryApiTestBase]: EquipmentCategoryApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:39.655+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.category.update.item.EquipmentCategoryUpdateItemApiTest$Race
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
