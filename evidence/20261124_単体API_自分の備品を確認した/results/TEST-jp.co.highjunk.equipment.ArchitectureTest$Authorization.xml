@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="権限の確認（CLAUDE.md 5章）" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-23T15:40:40.918Z" hostname="DESKTOP-32H5PQ0" time="0.013">
+  <properties/>
+  <testcase name="API の Controller の、URL を持つメソッドには @PreAuthorize が付いている（ログイン不要の5つの Controller を除く）" classname="jp.co.highjunk.equipment.ArchitectureTest$Authorization" time="0.012"/>
+  <testcase name="ログイン不要の Controller の一覧が、実在するクラスだけ（消した・名前を変えたものが残らない）" classname="jp.co.highjunk.equipment.ArchitectureTest$Authorization" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

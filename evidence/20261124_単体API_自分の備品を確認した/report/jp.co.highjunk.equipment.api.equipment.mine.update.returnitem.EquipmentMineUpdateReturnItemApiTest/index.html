@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>B-03 備品を返す</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">26</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">0.424s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">ほかの人が借りていて、返却済みで、しかも備品が管理中でない（3つとも）：403</td>
+<td class="path">allThreeBroken()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">すでに返却されている：409（この備品はすでに返却されています）。貸出履歴も備品も変わらない（返却日・メモ・version・最終確認日）</td>
+<td class="path">alreadyReturned()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="blankMemoIsNotRecorded().html">メモが空白だけ・空：記録しない。貸出のときのメモがなければ null、あれば、そのまま残る（上書きも消しもしない）</a>
+</td>
+<td class="path">blankMemoIsNotRecorded()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="22">0.022s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="boundaryDates().html">借りた日に返す（貸出日が今日、返却日も今日）も、期限を過ぎた貸出も、返せる</a>
+</td>
+<td class="path">boundaryDates()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="canBeLentAgain().html">返した備品は、また借りられる（返却日が入ると、貸出中の印が外れる）</a>
+</td>
+<td class="path">canBeLentAgain()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">取り消された貸出履歴：404。貸出履歴も備品も変わらない</td>
+<td class="path">cancelledLoan()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">返却済みで、しかも備品が管理中でない：409（409 を 400 より先に）</td>
+<td class="path">conflictBeforeBusinessRule()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">備品が削除されている：管理中でないものとして 400。貸出履歴は変わらない</td>
+<td class="path">equipmentDeleted()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">備品が管理中でない（廃棄・所在不明）：400（総務へお問い合わせください）。貸出履歴も備品も変わらない</td>
+<td class="path">equipmentNotManaged()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="15">0.015s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ほかの人が借りていて、しかも備品が管理中でない：403（403 を 400 より先に）</td>
+<td class="path">forbiddenBeforeBusinessRule()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ほかの人が借りていて、しかも返却済み：403（403 を 409 より先に）</td>
+<td class="path">forbiddenBeforeConflict()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="listAfterReturn().html">返したあとの一覧：返した備品は出ず、ほかに借りている備品が残る。今月まだ確認していない数は、返した分だけ減る</a>
+</td>
+<td class="path">listAfterReturn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">貸出履歴のID が数でない：400（入力内容に誤りがあります）</td>
+<td class="path">loanIdNotNumber()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="4">0.004s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="memoLength().html">メモ：200文字ちょうどは通る（前後の空白は数えない）。201文字は 400（メモ欄のエラー）で、何も変わらない</a>
+</td>
+<td class="path">memoLength()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="memoOverwrites().html">返却時のメモは、貸出のときのメモを上書きする</a>
+</td>
+<td class="path">memoOverwrites()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="12">0.012s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">CSRF の合言葉がない：403（権限がない文）。貸出履歴も備品も変わらない</td>
+<td class="path">noCsrfToken()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="7">0.007s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">LOAN_SELF がない：403（権限がない文）。貸出履歴も備品も変わらない</td>
+<td class="path">noPermission()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">貸出履歴がない：404（対象が見つかりません）</td>
+<td class="path">notFound()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="4">0.004s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">取り消された貸出履歴は、ほかの人のものでも、返却済みでも、404（404 を 403・409 より先に）</td>
+<td class="path">notFoundFirst()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="12">0.012s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ログインしていない：401（ログインしてください）</td>
+<td class="path">notLoggedIn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="3">0.003s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ほかの人が借りている貸出履歴：403（文はほかの人が借りているため）。その人の貸出も備品も変わらない。総務でも同じ</td>
+<td class="path">othersLoan()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="14">0.014s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="returnedOnIsIgnored().html">返却日を送っても使わない：今日になる</a>
+</td>
+<td class="path">returnedOnIsIgnored()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="returnTwice().html">同じ貸出履歴を2回続けて返す：1回目は 200、2回目は 409。2回目では何も変わらない</a>
+</td>
+<td class="path">returnTwice()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="15">0.015s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="returnWithMemo().html">返す：200。貸出履歴の返却日が今日・メモ・version+1・更新日時・更新者、備品の最終確認日が今日・version+1・更新日時・更新者。返した備品は一覧から消える</a>
+</td>
+<td class="path">returnWithMemo()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="16">0.016s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="returnWithoutMemo().html">本文なし・{} ・メモなしでも返せる。メモを書かなければ、貸出のときのメモは変わらない</a>
+</td>
+<td class="path">returnWithoutMemo()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="19">0.019s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="soumuReturnsOwn().html">総務も、自分が借りている分は返せる</a>
+</td>
+<td class="path">soumuReturnsOwn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="12">0.012s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest">2026-11-24T00:41:25.266+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest]: EquipmentMineUpdateReturnItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:25.366+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest
+2026-11-24T00:41:25.367+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest]: EquipmentMineUpdateReturnItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:25.368+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.EquipmentMineApiTestBase]: EquipmentMineApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:25.369+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at 2026/11/24 0:41:41</p>
+</div>
+</div>
+</body>
+</html>

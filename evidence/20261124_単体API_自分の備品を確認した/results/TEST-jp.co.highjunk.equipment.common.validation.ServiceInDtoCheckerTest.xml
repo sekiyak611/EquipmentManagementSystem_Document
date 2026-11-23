@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jp.co.highjunk.equipment.common.validation.ServiceInDtoCheckerTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-23T15:41:37.705Z" hostname="DESKTOP-32H5PQ0" time="0.019">
+  <properties/>
+  <testcase name="すべて守れていれば、何も起きない" classname="jp.co.highjunk.equipment.common.validation.ServiceInDtoCheckerTest" time="0.001"/>
+  <testcase name="BusinessRule だけなら、BusinessRuleException（これまでどおり）" classname="jp.co.highjunk.equipment.common.validation.ServiceInDtoCheckerTest" time="0.001"/>
+  <testcase name="同じ段に NotFound と Forbidden が出たら、NotFound（404）を先に返す" classname="jp.co.highjunk.equipment.common.validation.ServiceInDtoCheckerTest" time="0.001"/>
+  <testcase name="Conflict と BusinessRule だけなら、Conflict を返す（これまでどおり）" classname="jp.co.highjunk.equipment.common.validation.ServiceInDtoCheckerTest" time="0.0"/>
+  <testcase name="1段目が守れなければ、2段目は確かめない（1段目の Conflict を返す。2段目も確かめると Forbidden が勝ってしまう）" classname="jp.co.highjunk.equipment.common.validation.ServiceInDtoCheckerTest" time="0.001"/>
+  <testcase name="1つの段に Forbidden と Conflict と BusinessRule が出たら、Forbidden を返す" classname="jp.co.highjunk.equipment.common.validation.ServiceInDtoCheckerTest" time="0.001"/>
+  <testcase name="payload のないチェック：入力欄のエラー（FieldErrorException。400。これまでどおり）" classname="jp.co.highjunk.equipment.common.validation.ServiceInDtoCheckerTest" time="0.001"/>
+  <testcase name="Forbidden だけ：403 の ForbiddenException。文はアノテーションの message" classname="jp.co.highjunk.equipment.common.validation.ServiceInDtoCheckerTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

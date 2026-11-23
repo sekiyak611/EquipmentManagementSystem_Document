@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>ReminderCalendar（単体）</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">13</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">0.006s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">25日が平日なら、その日が催促日</td>
+<td class="path">businessDay()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1">0.001s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">25日が祝日なら、前の平日。その日も祝日なら、さらに前の平日</td>
+<td class="path">holiday()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="0">0s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">cron の書き方が誤っていれば、作れない（起動のときに止まる）</td>
+<td class="path">invalidCron()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1">0.001s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">催促を送ってよい日：催促日の前は false、当日と、あとの平日は true</td>
+<td class="path">isReminderDue()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="2">0.002s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">催促を送ってよい日：月が替わると、また催促日の前に戻る</td>
+<td class="path">isReminderDueMonthChange()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="0">0s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">催促を送ってよい日：土日祝日は false（催促日があとの日でも）</td>
+<td class="path">isReminderDueNotBusinessDay()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="0">0s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">今月の催促の日時を過ぎたか：催促日の前の日・当日の催促の時刻の前は false、ちょうどの時刻と、あとは true</td>
+<td class="path">isReminderPassed()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1">0.001s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">今月の催促の日時を過ぎたか：25日が土日なら前の平日の9:00。設定の時刻にも従う</td>
+<td class="path">isReminderPassedShifted()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="0">0s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">催促の日時は、催促日の9:00（日本時間）</td>
+<td class="path">reminderAtDefault()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="0">0s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">毎日1回の形でない cron（曜日の指定・毎時など）のときは、9:00</td>
+<td class="path">reminderTimeFallback()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="0">0s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">催促の時刻は、設定の cron の時刻に従う（毎日1回の形のとき）</td>
+<td class="path">reminderTimeFromCron()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="0">0s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">今月の催促日・催促の日時は、時計の今日から決まる</td>
+<td class="path">thisMonth()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1">0.001s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">25日が土曜なら金曜、日曜なら金曜（前の平日）</td>
+<td class="path">weekend()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="0">0s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at 2026/11/24 0:41:41</p>
+</div>
+</div>
+</body>
+</html>

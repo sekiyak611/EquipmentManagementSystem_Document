@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="LoanCustomMapper#selectCurrentByEquipmentIdsForUpdate" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-23T15:41:40.997Z" hostname="DESKTOP-32H5PQ0" time="0.035">
+  <properties/>
+  <testcase name="備品の ID の一覧が空・null：空を返す（SQL の誤りにならない）" classname="jp.co.highjunk.equipment.dao.mapper.custom.LoanCustomMapperTest" time="0.001"/>
+  <testcase name="送った備品の、今借りている貸出履歴だけを、備品の ID の昇順で返す（返却済み・取り消し済み・送っていない備品の分は返さない）" classname="jp.co.highjunk.equipment.dao.mapper.custom.LoanCustomMapperTest" time="0.013"/>
+  <testcase name="備品を1件だけ送ったときも、今借りている貸出履歴を返す。借りられていない備品なら、空" classname="jp.co.highjunk.equipment.dao.mapper.custom.LoanCustomMapperTest" time="0.01"/>
+  <testcase name="同じ備品に、返却済みの履歴と今借りている履歴が両方あっても、今借りている1件だけを返す。同じ ID が重なって送られても、1件だけ" classname="jp.co.highjunk.equipment.dao.mapper.custom.LoanCustomMapperTest" time="0.008"/>
+  <system-out><![CDATA[2026-11-24T00:41:40.998+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.mapper.custom.LoanCustomMapperTest]: LoanCustomMapperTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:40.999+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.mapper.custom.LoanCustomMapperTest
+2026-11-24T00:41:40.999+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.mapper.custom.LoanCustomMapperTest]: LoanCustomMapperTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:41.000+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.mapper.custom.LoanCustomMapperTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
