@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.2 2026-11-23 |
+| 版 | v1.3 2026-11-23 |
 | Jira | ZPOP-63（B-01）、ZPOP-65（B-03）、ZPOP-66（B-04）。B-02・B-05、S-05・S-06 は、作るときに書き足す |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.1 の1章・5章・7章（F-07・F-10・F-18・F-19）、API設計.md v1.4 の2.3〜2.5・3.2・4.5〜4.7、画面設計.md v1.7 の3章・4章・10章、画面一覧.md v1.1 の2章、データ設計.md v1.0 の2章・5.6・5.7 |
@@ -86,8 +86,9 @@ API ごとのパッケージ（api.equipment.mine の下。その中を controll
 | dao.mapper | EquipmentMapper | 貸出中の備品を読む（読むだけ） | B-01 |
 | dao.entity | Loan・LoanExample・Equipment・EquipmentExample | テーブルの1行の形と、取得の条件 | B-01 |
 | dao.mapper | LoanMapper・EquipmentMapper | 返却日・メモ・最終確認日・version を更新する（B-03） | B-03 |
+| dao.mapper | LoanMapper | 今借りている貸出履歴を、押さえずに、Example（equipment_id IN・返却日が空・取り消されていない）で読む（B-04） | B-04 |
 | dao.mapper.custom | LoanCustomMapper（新規。XML は dao/mapper/custom/） | selectByIdForUpdate（FOR UPDATE。Example では書けない）。common.md 3.20 | B-03 |
-| dao.mapper.custom | LoanCustomMapper | selectCurrentByEquipmentIdsForUpdate（新規。備品の ID の一覧から、今借りている貸出履歴を、FOR UPDATE で読む。`active_equipment_id IN`） | B-04 |
+| dao.mapper.custom | LoanCustomMapper | selectCurrentByEquipmentIdsForUpdate（初版の B-04 で足したが、使わなくなる。障害 ZPOP-434 の実装の修正で削除する） | （なし） |
 | dao.mapper.custom | EquipmentCustomMapper | selectByIdsForUpdate（新規。ID の一覧の備品を FOR UPDATE で読む。IN）、updateLastConfirmedOnByIds（新規。最終確認日・version+1・更新日時・更新者を、1つの SQL でまとめて更新） | B-04 |
 
 足した共通部品（common。B-04 も同じ形の一覧を返すので common に置く。common.md 3.19）
@@ -127,8 +128,8 @@ B-01 では作らない（S-05 は ZPOP-107）。
 | 2 | common に足した部品 | common.equipment に MyLoanList・MyLoanItem・MyLoanListAssembler、common.calendar の ReminderCalendar に isReminderPassed | 2人で共有するファイル（CLAUDE.md 9章） | 相手に伝える（プルリクエストの説明に書く） |
 | 3 | Flyway | 変えない | ― | ― |
 | 4 | common に足す部品 | ForbiddenException・ServiceErrorType.Forbidden（403 の返し方）、貸出履歴のチェック用アノテーション4つ、LoanCustomMapper（common.md 3.20） | 2人で共有するファイル（CLAUDE.md 9章） | 実装の工程の前に、相手に伝える。common の変更として、その変更だけの小さな MR にして、先に main に入れる（B-03 の実装 MR は、それがマージされてから） |
-| 5 | 同じルール | 返却のルール（自分の分だけ返せる、返却日は今日、最終確認日を更新する）と、行を押さえる順（貸出履歴 → 備品。複数なら、備品の ID の小さい順） | equipment.management の C-07・C-08・C-05（備品の削除）・D-02・D-03（貸出履歴の直し・取り消し）・I-03（今貸出中の取り込み）、equipment.mine の B-02 | それぞれの詳細設計を書くとき、同じ順にする。B-02 は、貸出履歴を先に足し、そのあとで備品を押さえる（B-04 は、借りられていない備品の貸出履歴の隙間を押さえるため）。貸出履歴を読む・書き換える向きは、各詳細設計で決める |
-| 6 | dao に足す部品 | LoanCustomMapper#selectCurrentByEquipmentIdsForUpdate、EquipmentCustomMapper#selectByIdsForUpdate・#updateLastConfirmedOnByIds（B-04 の詳細設計の7章。`version = version + 1` の式で、1つの SQL でまとめて更新する） | 2人で共有するファイル（CLAUDE.md 9章。dao） | 実装の工程の前に、相手に伝える。dao の変更として、その変更だけの小さな MR にして、先に main に入れる（B-04 の実装 MR は、それがマージされてから） |
+| 5 | 同じルール | 返却のルール（自分の分だけ返せる、返却日は今日、最終確認日を更新する）と、行を押さえる順（貸出履歴 → 備品。複数なら、備品の ID の小さい順） | equipment.management の C-07・C-08・C-05（備品の削除）・D-02・D-03（貸出履歴の直し・取り消し）・I-03（今貸出中の取り込み）、equipment.mine の B-02 | それぞれの詳細設計を書くとき、同じ順にする。B-02 は、貸出履歴を足す・変える処理は、確定する前に、その備品の行を FOR UPDATE で押さえる（B-04 は、この約束に頼っている。B-04 の8章）。B-04 は、備品の行だけを押さえ、貸出履歴は押さえない（障害 ZPOP-434）。貸出履歴を FOR UPDATE で押さえるときの索引（主キーか、備品の ID の索引か）は、B-03（主キーで押さえてから、備品の ID の索引を書き換える）と行き違うと、同じ障害（デッドロック）になる。**未確定（人の確認がまだ。4章 No.3）**。B-02 は、B-04・C-06 との同時実行を、実機で確かめて、押さえる順を、B-02 の詳細設計で決める（外部キーのために、貸出履歴の追加は、備品の行を共有ロックで押さえる）。I-03・E-02 のように、複数の備品を書き換えるものは、備品の ID の昇順で書き換える |
+| 6 | dao に足す部品 | EquipmentCustomMapper#selectByIdsForUpdate・#updateLastConfirmedOnByIds（B-04 の詳細設計の7章。`version = version + 1` の式で、1つの SQL でまとめて更新する）。初版で足した LoanCustomMapper#selectCurrentByEquipmentIdsForUpdate は、使わなくなるので、削除する（ほかの機能は使っていない）。**実装の修正（ZPOP-436）の MR のあとで、dao の変更だけの小さな MR にして、先に main に入れる**（2人で相談。dao のテスト（LoanCustomMapperTest の該当、CustomMapperBulkLockTest の貸出履歴の分）も一緒に直す） | 2人で共有するファイル（CLAUDE.md 9章。dao） | 実装の工程の前に、相手に伝える。dao の変更として、その変更だけの小さな MR にして、先に main に入れる（B-04 の実装 MR は、それがマージされてから） |
 | 7 | 同じルール | 確認のルール（最終確認日は今日、保存のたびに version +1、今月すでに確認済みでも誤りにしない、管理中の備品だけ、複数の行を押さえるときは備品の ID の小さい順） | equipment.management の C-06・E-02 | C-06 は作成済み。E-02（CSV で確認日を更新）の詳細設計を書くとき、同じにする（日付は CSV の値）。B-04 を直したら、C-06 も同じに直す。別件：C-06・B-03 は、読んだ version に 1 を足した値を Example で書き、B-04 は式（`version + 1`）。結果は同じだが、そろえるかは、実装の工程で、人に相談する |
 
 ## 4. 設計書にない判断
@@ -139,6 +140,7 @@ B-01 では作らない（S-05 は ZPOP-107）。
 |---|---|---|---|---|
 | 1 | S-05・S-06 の URL は、画面の詳細設計（ZPOP-107・108）で決める | 画面一覧 2章で確かめる | いいえ | ― |
 | 2 | B-04 の 404（送った備品がない・削除済み）のとき、S-05 が S-19（見つからない）に移るか、一覧を最新にするかは、画面の詳細設計（ZPOP-107）で決める（API設計 2.3 は、404 のとき S-19 を出すと書く） | 画面設計 3章に、404 のときの動きがない | はい | まだ（未確定） |
+| 3 | 貸出履歴を FOR UPDATE で押さえるときの決まり：案A「貸出履歴の ID（主キー）で押さえる。備品の ID から探すときは、先に普通の SELECT で貸出履歴の ID を知り、主キーで押さえ直して確かめる」、案B「全部を、備品 → 貸出履歴の順にそろえる（B-03 も直す）」。障害 ZPOP-434 と同じデッドロックを、C-08・C-05・C-07・I-03・D-02・D-03 に残さないため | 障害 ZPOP-434 のレビュー（2026-11-23）。決まれば、common.md 3.20 に書く（2人で共有するファイル） | はい（同時に操作されたときの結果） | まだ（未確定。B-04 には、影響しない） |
 
 ## 変更履歴
 
@@ -147,3 +149,4 @@ B-01 では作らない（S-05 は ZPOP-107）。
 | v1.0 | 2026-11-16 | 初版（ZPOP-63。B-01 の分） |
 | v1.1 | 2026-11-23 | ZPOP-65：B-03 の分を足した（1.1 のリンク、2.1 のクラス・dao・共通部品、3章の No.4・5） |
 | v1.2 | 2026-11-23 | ZPOP-66：B-04 の分を足した（1.1 のリンク、2.1 のクラス・dao、3章の No.6・7、4章の No.2）。3章の No.5 に、C-05・D-02・D-03・I-03 と、B-02 の順を足した |
+| v1.3 | 2026-11-23 | 障害 ZPOP-434：B-04 は備品の行だけを押さえる形に直した（2.1 の dao、3章の No.5・6、4章の No.3）。LoanCustomMapper#selectCurrentByEquipmentIdsForUpdate は削除する。貸出履歴の押さえ方の一般の決まりは、未確定として残した |
