@@ -65,6 +65,7 @@
 | common.error | BusinessRuleException | 決まりに合わない操作（400） |
 | common.error | NotFoundException | 見つからない（404） |
 | common.error | ConflictException | ぶつかった（409） |
+| common.error | ForbiddenException | ほかの人の貸出・備品は操作できない（403。ZPOP-65 で足す。3.20） |
 | common.error | CsvErrorException | CSVの行のエラー（400） |
 | common.error | ServiceUnavailableException | 動いていない（503。A-08） |
 | common.error | GlobalExceptionHandler | controller・service で起きたエラーを、返す値の形に変える |
@@ -500,7 +501,7 @@ A-01 は、ユーザがいて・パスワードがあり・ロックされてい
 
 ### 3.19 自分が借りている備品の一覧を作る部品（common.equipment。ZPOP-63）
 
-写したもと：API設計.md v1.4 の4.5・4.6・4.7、画面設計.md v1.5 の3章
+写したもと：API設計.md v1.4 の4.5・4.6・4.7、画面設計.md v1.6 の3章
 
 B-01（一覧）と B-04（確認したあとの最新の一覧。「B-01 と同じ形」）が使う。API のパッケージどうしは使い合わないので、common.equipment に1つだけ置く（CLAUDE.md 5章）。B-02 の「作った貸出履歴」（B-01 の items の1件と同じ形）も MyLoanItem を使う予定。
 
@@ -529,6 +530,7 @@ B-01（一覧）と B-04（確認したあとの最新の一覧。「B-01 と同
 - 守れないものが2つ以上あるときは、NotFound → Forbidden → Conflict → BusinessRule の順に、先のものを返す（上の ServiceInDtoChecker の決まり）。
 - 行を押さえる順は、**貸出履歴 → 備品**（B-02・B-03・C-07・C-08 で、そろえる。デッドロックを防ぐため）。
 - B-03 が使う。B-04（自分の備品を確認した。ほかの人の備品が含まれていたら 403）も、ForbiddenException を使う。
+- Server の `.claude/rules/java.md` 5章の「返し方（NotFound・Conflict・BusinessRule・なし）」の一覧と、確かめる順番にも、Forbidden を足す（`.claude/rules` は2人で相談する決まり。同じ小さな MR に入れる）。
 
 ## 4. データベース
 
@@ -617,6 +619,7 @@ common には mapper（データベースを読み書きする部品）はない
 | NotFoundException() | 404 | 見つからない（削除された備品など） | 決まった文 |
 | FieldErrorException(入力欄, 文) ／ FieldErrorException(入力欄のエラーの一覧) | 400 | DB との整合性のチェックの結果を、入力欄の下に出すエラーとして返すとき（新しい形では、ServiceInDtoChecker が payload のないチェックの誤りから作る）。例：種別の名前・頭文字が、ほかの種別ともう重なっている（画面設計 16章） | 決まった文「入力内容に誤りがあります。」。入力欄ごとの文は ErrorItem.ofField(入力欄, 画面設計の文)。受け取った値だけで分かる形式のチェックには使わない（RestInDto の印で行う） |
 | ConflictException(文) | 409 | ほかの人が先に保存した、すでに貸し出されている、すでに返却されている | 画面設計の文を渡す |
+| ForbiddenException(文) | 403 | ほかの人が借りている貸出履歴・備品を操作しようとした（B-03。B-04） | 画面設計の文を渡す（ZPOP-65 で足す。3.20） |
 | CsvErrorException(行のエラーの一覧) | 400 | CSVの行にエラーがある | 決まった文。行ごとの理由は ErrorItem.ofCsvRow(行番号, 管理番号, 理由) |
 | ServiceUnavailableException() | 503 | A-08 でデータベースにつながらない | 決まった文 |
 | UnauthorizedException(文) | 401 | ログインできなかった（A-01）、ログイン状態が読めなくなった（A-03） | A-01 は画面設計の文「メールアドレスまたはパスワードが違います」、ほかは ApiMessages.UNAUTHORIZED |
