@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="C-03 備品を登録する：同時に種別を消されたとき" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-23T12:53:40.123Z" hostname="DESKTOP-32H5PQ0" time="1.039">
+  <properties/>
+  <testcase name="種別を消すまとまりが種別の行を押さえている間、C-03 は待たされ、消されたのを見て 400（備品を足さない）" classname="jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemLockTest" time="1.035"/>
+  <system-out><![CDATA[2026-11-23T21:53:40.125+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemLockTest]: EquipmentManagementEntryItemLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:40.126+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemLockTest
+2026-11-23T21:53:40.126+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemLockTest]: EquipmentManagementEntryItemLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:40.126+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.management.entry.item.EquipmentManagementEntryItemLockTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="jp.co.highjunk.equipment.common.slack.SlackApiSenderTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-23T12:53:55.076Z" hostname="DESKTOP-32H5PQ0" time="0.385">
+  <properties/>
+  <testcase name="ユーザーを探すとき、Slack がほかの error で断った：FAILED で、メッセージは送らない" classname="jp.co.highjunk.equipment.common.slack.SlackApiSenderTest" time="0.001"/>
+  <testcase name="メッセージを送るとき、Slack が ok を返さない：FAILED" classname="jp.co.highjunk.equipment.common.slack.SlackApiSenderTest" time="0.002"/>
+  <testcase name="送れた：SENT。見つけたユーザーのIDを宛先に、見出しを太字にした文を、リンクのプレビューなしで送る" classname="jp.co.highjunk.equipment.common.slack.SlackApiSenderTest" time="0.002"/>
+  <testcase name="ボットトークンが空：FAILED で、Slack を呼ばない" classname="jp.co.highjunk.equipment.common.slack.SlackApiSenderTest" time="0.001"/>
+  <testcase name="通信の失敗：FAILED（例外は投げない）" classname="jp.co.highjunk.equipment.common.slack.SlackApiSenderTest" time="0.001"/>
+  <testcase name="送れなかったとき、記録に宛先と結果は残るが、見出し・本文・トークンは出ない" classname="jp.co.highjunk.equipment.common.slack.SlackApiSenderTest" time="0.0"/>
+  <testcase name="Slack のユーザーが見つからない（users_not_found）：USER_NOT_FOUND で、メッセージは送らない" classname="jp.co.highjunk.equipment.common.slack.SlackApiSenderTest" time="0.001"/>
+  <system-out><![CDATA[2026-11-23T21:53:55.452+09:00 WARN  userId=- [Test worker] j.c.h.e.common.slack.SlackApiSender - SlackのDMを送れませんでした。結果：FAILED、Slackのerror：missing_scope、宛先：taro@example.com
+2026-11-23T21:53:55.455+09:00 WARN  userId=- [Test worker] j.c.h.e.common.slack.SlackApiSender - SlackのDMを送れませんでした。結果：FAILED、Slackのerror：channel_not_found、宛先：taro@example.com
+2026-11-23T21:53:55.458+09:00 WARN  userId=- [Test worker] j.c.h.e.common.slack.SlackApiSender - Slackのボットトークンが設定されていません。DMを送れませんでした。宛先：taro@example.com
+2026-11-23T21:53:55.458+09:00 WARN  userId=- [Test worker] j.c.h.e.common.slack.SlackApiSender - Slackのボットトークンが設定されていません。DMを送れませんでした。宛先：taro@example.com
+2026-11-23T21:53:55.459+09:00 WARN  userId=- [Test worker] j.c.h.e.common.slack.SlackApiSender - SlackのDMを送れませんでした。結果：FAILED、Slackのerror：IOException、宛先：taro@example.com
+2026-11-23T21:53:55.459+09:00 WARN  userId=- [Test worker] j.c.h.e.common.slack.SlackApiSender - SlackのDMを送れませんでした。結果：FAILED、Slackのerror：channel_not_found、宛先：taro@example.com
+2026-11-23T21:53:55.460+09:00 WARN  userId=- [Test worker] j.c.h.e.common.slack.SlackApiSender - SlackのDMを送れませんでした。結果：USER_NOT_FOUND、宛先：taro@example.com
+2026-11-23T21:53:55.460+09:00 WARN  userId=- [Test worker] j.c.h.e.common.slack.SlackApiSender - SlackのDMを送れませんでした。結果：USER_NOT_FOUND、宛先：taro@example.com
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

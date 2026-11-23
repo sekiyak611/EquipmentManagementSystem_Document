@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="B-03 備品を返す" tests="26" skipped="0" failures="0" errors="0" timestamp="2026-11-23T12:53:42.223Z" hostname="DESKTOP-32H5PQ0" time="0.51">
+  <properties/>
+  <testcase name="返す：200。貸出履歴の返却日が今日・メモ・version+1・更新日時・更新者、備品の最終確認日が今日・version+1・更新日時・更新者。返した備品は一覧から消える" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.026"/>
+  <testcase name="ほかの人が借りていて、しかも備品が管理中でない：403（403 を 400 より先に）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.013"/>
+  <testcase name="ほかの人が借りていて、しかも返却済み：403（403 を 409 より先に）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.012"/>
+  <testcase name="ログインしていない：401（ログインしてください）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.003"/>
+  <testcase name="返却日を送っても使わない：今日になる" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.013"/>
+  <testcase name="返したあとの一覧：返した備品は出ず、ほかに借りている備品が残る。今月まだ確認していない数は、返した分だけ減る" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.018"/>
+  <testcase name="CSRF の合言葉がない：403（権限がない文）。貸出履歴も備品も変わらない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.011"/>
+  <testcase name="同じ貸出履歴を2回続けて返す：1回目は 200、2回目は 409。2回目では何も変わらない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.02"/>
+  <testcase name="ほかの人が借りていて、返却済みで、しかも備品が管理中でない（3つとも）：403" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.013"/>
+  <testcase name="取り消された貸出履歴：404。貸出履歴も備品も変わらない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.012"/>
+  <testcase name="ほかの人が借りている貸出履歴：403（文はほかの人が借りているため）。その人の貸出も備品も変わらない。総務でも同じ" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.02"/>
+  <testcase name="備品が管理中でない（廃棄・所在不明）：400（総務へお問い合わせください）。貸出履歴も備品も変わらない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.019"/>
+  <testcase name="貸出履歴のID が数でない：400（入力内容に誤りがあります）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.006"/>
+  <testcase name="返却時のメモは、貸出のときのメモを上書きする" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.014"/>
+  <testcase name="メモ：200文字ちょうどは通る（前後の空白は数えない）。201文字は 400（メモ欄のエラー）で、何も変わらない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.019"/>
+  <testcase name="LOAN_SELF がない：403（権限がない文）。貸出履歴も備品も変わらない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.014"/>
+  <testcase name="取り消された貸出履歴は、ほかの人のものでも、返却済みでも、404（404 を 403・409 より先に）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.016"/>
+  <testcase name="本文なし・{} ・メモなしでも返せる。メモを書かなければ、貸出のときのメモは変わらない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.024"/>
+  <testcase name="返した備品は、また借りられる（返却日が入ると、貸出中の印が外れる）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.015"/>
+  <testcase name="借りた日に返す（貸出日が今日、返却日も今日）も、期限を過ぎた貸出も、返せる" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.023"/>
+  <testcase name="メモが空白だけ・空：記録しない。貸出のときのメモがなければ null、あれば、そのまま残る（上書きも消しもしない）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.031"/>
+  <testcase name="貸出履歴がない：404（対象が見つかりません）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.006"/>
+  <testcase name="備品が削除されている：管理中でないものとして 400。貸出履歴は変わらない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.017"/>
+  <testcase name="総務も、自分が借りている分は返せる" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.013"/>
+  <testcase name="すでに返却されている：409（この備品はすでに返却されています）。貸出履歴も備品も変わらない（返却日・メモ・version・最終確認日）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.013"/>
+  <testcase name="返却済みで、しかも備品が管理中でない：409（409 を 400 より先に）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest" time="0.01"/>
+  <system-out><![CDATA[2026-11-23T21:53:42.224+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest]: EquipmentMineUpdateReturnItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:42.318+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest
+2026-11-23T21:53:42.319+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest]: EquipmentMineUpdateReturnItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:42.319+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.EquipmentMineApiTestBase]: EquipmentMineApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-23T21:53:42.321+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemApiTest
+2026-11-23T21:53:42.337+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=31, managementNo=R010）
+2026-11-23T21:53:42.384+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=34, managementNo=R025）
+2026-11-23T21:53:42.400+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=35, managementNo=R030）
+2026-11-23T21:53:42.429+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=39, managementNo=R054）
+2026-11-23T21:53:42.521+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=46, managementNo=R022）
+2026-11-23T21:53:42.536+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=47, managementNo=R040）
+2026-11-23T21:53:42.587+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=52, managementNo=R020）
+2026-11-23T21:53:42.596+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=53, managementNo=R021）
+2026-11-23T21:53:42.610+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=54, managementNo=R033）
+2026-11-23T21:53:42.626+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=56, managementNo=R027）
+2026-11-23T21:53:42.634+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=57, managementNo=R028）
+2026-11-23T21:53:42.649+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=58, managementNo=R023）
+2026-11-23T21:53:42.657+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=59, managementNo=R024）
+2026-11-23T21:53:42.665+09:00 INFO  userId=3 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=60, managementNo=R026）
+2026-11-23T21:53:42.701+09:00 INFO  userId=2 [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=62, managementNo=R034）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
