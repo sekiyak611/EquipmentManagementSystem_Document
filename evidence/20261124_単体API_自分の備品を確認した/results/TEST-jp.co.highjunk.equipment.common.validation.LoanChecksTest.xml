@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="貸出履歴のチェック（common.validation）" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-23T15:41:37.544Z" hostname="DESKTOP-32H5PQ0" time="0.16">
+  <properties/>
+  <testcase name="ほかの人が借りていて、しかも備品が管理中でない：403（403 を 400 より先に返す）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.011"/>
+  <testcase name="ほかの人が借りていて、しかも返却済み：403（403 を 409 より先に返す）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.007"/>
+  <testcase name="ログインしている人の ID が null：自分の貸出履歴ではないとして 403（安全側）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.008"/>
+  <testcase name="自分が借りていて、まだ返していない、管理中の備品：守れている（何も起きない）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.007"/>
+  <testcase name="備品が管理中でない（廃棄・所在不明）：400（文は「この備品は返却できません。総務へお問い合わせください。」）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.009"/>
+  <testcase name="取り消された貸出履歴：404（ないものとして扱う）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.006"/>
+  <testcase name="LoanExists（forUpdate なし）：ある貸出履歴は守れている。ない・取り消し済みは守れない" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.009"/>
+  <testcase name="貸出履歴がない：404（NotFoundException）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.001"/>
+  <testcase name="備品が削除されている：管理中でないものとして 400" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.007"/>
+  <testcase name="loanId が null：チェックしない（何も起きない）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.001"/>
+  <testcase name="すでに返却されている：409（文は「この備品はすでに返却されています」）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.011"/>
+  <testcase name="返却済みで、しかも備品が管理中でない：409（409 を 400 より先に返す）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.007"/>
+  <testcase name="ほかの人が借りている：403（文は「ほかの人が借りているため、返却はできません。」）" classname="jp.co.highjunk.equipment.common.validation.LoanChecksTest" time="0.008"/>
+  <system-out><![CDATA[2026-11-24T00:41:37.545+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.validation.LoanChecksTest]: LoanChecksTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:37.607+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.validation.LoanChecksTest
+2026-11-24T00:41:37.607+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.validation.LoanChecksTest]: LoanChecksTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:37.608+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.validation.LoanChecksTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

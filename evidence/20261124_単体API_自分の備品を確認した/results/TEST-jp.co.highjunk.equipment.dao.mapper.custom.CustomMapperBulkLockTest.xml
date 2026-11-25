@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="まとめて押さえるメソッドが、行を押さえていること" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-23T15:41:37.878Z" hostname="DESKTOP-32H5PQ0" time="3.091">
+  <properties/>
+  <testcase name="備品：押さえている間、別の接続は、その備品の行を押さえられない。送っていない備品は押さえられる" classname="jp.co.highjunk.equipment.dao.mapper.custom.CustomMapperBulkLockTest" time="0.03"/>
+  <testcase name="貸出履歴：押さえている間、別の接続は、その貸出履歴の行を押さえられない。押さえていない貸出履歴（送っていない備品）は押さえられる" classname="jp.co.highjunk.equipment.dao.mapper.custom.CustomMapperBulkLockTest" time="0.053"/>
+  <testcase name="貸出履歴：借りられていない備品の ID を送ると、その備品の「今借りている貸出履歴」の隙間を押さえる。別の接続が、その備品の貸出履歴を足そうとすると、待たされる（B-02 との行き違い防止）。放したあとは、足せる" classname="jp.co.highjunk.equipment.dao.mapper.custom.CustomMapperBulkLockTest" time="1.05"/>
+  <testcase name="備品を押さえる順が、備品の ID の昇順なので、逆の順で送る2つのまとまりを、何度同時に動かしても、デッドロックしない" classname="jp.co.highjunk.equipment.dao.mapper.custom.CustomMapperBulkLockTest" time="1.898"/>
+  <system-out><![CDATA[2026-11-24T00:41:37.879+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.mapper.custom.CustomMapperBulkLockTest]: CustomMapperBulkLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:37.935+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.mapper.custom.CustomMapperBulkLockTest
+2026-11-24T00:41:37.935+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.mapper.custom.CustomMapperBulkLockTest]: CustomMapperBulkLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:37.937+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.mapper.custom.CustomMapperBulkLockTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

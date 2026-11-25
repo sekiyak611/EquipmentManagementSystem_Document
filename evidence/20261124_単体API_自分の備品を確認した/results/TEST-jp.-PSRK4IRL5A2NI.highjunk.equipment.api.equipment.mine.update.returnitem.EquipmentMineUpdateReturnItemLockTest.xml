@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="B-03 備品を返す：同時に操作されたとき" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-23T15:41:25.689Z" hostname="DESKTOP-32H5PQ0" time="2.143">
+  <properties/>
+  <testcase name="備品の行を別の人が押さえていても、B-03 は先に貸出履歴の行を押さえている（貸出履歴 → 備品の順）。備品が空いたら返せる" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemLockTest" time="1.067"/>
+  <testcase name="先の人が貸出履歴の行を押さえている間、B-03 は待たされ、先の人が返したあとで確かめて 409（二重に返さない）。先に普通の SELECT で古い記録を読んでいても、二重に返さない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemLockTest" time="1.071"/>
+  <system-out><![CDATA[2026-11-24T00:41:25.690+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemLockTest]: EquipmentMineUpdateReturnItemLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:25.691+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemLockTest
+2026-11-24T00:41:25.691+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemLockTest]: EquipmentMineUpdateReturnItemLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:25.692+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.returnitem.EquipmentMineUpdateReturnItemLockTest
+2026-11-24T00:41:25.710+09:00 INFO  userId=- [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=122, managementNo=RLOCK0）
+2026-11-24T00:41:26.740+09:00 INFO  userId=- [pool-12-thread-2] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=123, managementNo=RLOCK2）
+2026-11-24T00:41:26.776+09:00 INFO  userId=- [Test worker] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=124, managementNo=RLOCK0）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="A-01 ログイン：失敗の回数とロック" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-23T15:40:53.984Z" hostname="DESKTOP-32H5PQ0" time="3.892">
+  <properties/>
+  <testcase name="失敗を数えたとき、updated_by と version は変えない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.299"/>
+  <testcase name="5回目の間違いでロックする。401・同じ文のまま。LOCK のリンクを作り、本人にDMを1通だけ送る" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.285"/>
+  <testcase name="メールアドレスの大文字・小文字がちがっても、同じユーザの失敗として数える" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.303"/>
+  <testcase name="登録のないメールアドレスで何度間違えても、だれの回数も増えない。DMもない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.33"/>
+  <testcase name="4回続けて間違えても、まだロックしない（境界値）。DMもない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.288"/>
+  <testcase name="ロックしたとき、前のリンクがあれば無効になる" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.285"/>
+  <testcase name="ほかのユーザの回数には影響しない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.364"/>
+  <testcase name="削除されたユーザは、数えない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.335"/>
+  <testcase name="回数が0のときにログインに成功しても、ユーザの行は書き換えない（updated_at が変わらない）" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.062"/>
+  <testcase name="パスワードがまだない人（最初の総務の担当者）は、数えない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.313"/>
+  <testcase name="ログインに成功すると、失敗の回数が0に戻る。そのあと4回間違えても、ロックしない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.444"/>
+  <testcase name="ロックされたあとは、正しいパスワードでも 401。間違いを続けても、回数は増えず、DMも送らない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.507"/>
+  <testcase name="パスワードを間違えると、回数が1増える。画面の文・401 は変わらず、ロックもDMもない" classname="jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest" time="0.067"/>
+  <system-out><![CDATA[2026-11-24T00:40:53.985+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest]: AuthLoginLockApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:40:53.986+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest
+2026-11-24T00:40:53.987+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest]: AuthLoginLockApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:40:53.987+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:40:53.988+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.auth.login.AuthLoginLockApiTest
+2026-11-24T00:40:54.047+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.104+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.160+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.218+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.274+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.276+09:00 WARN  userId=- [Test worker] j.c.h.e.c.s.LoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-24T00:40:54.278+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+2026-11-24T00:40:54.343+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.398+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.453+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.507+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.561+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.564+09:00 WARN  userId=- [Test worker] j.c.h.e.c.s.LoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-24T00:40:54.566+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+2026-11-24T00:40:54.635+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.692+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.748+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.806+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.865+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:54.869+09:00 WARN  userId=- [Test worker] j.c.h.e.c.s.LoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-24T00:40:54.870+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+2026-11-24T00:40:54.936+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:54.995+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:55.047+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:55.099+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:55.151+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:55.205+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:55.261+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.319+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.374+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.430+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.488+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-24T00:40:55.554+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.609+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.664+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.719+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.774+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.775+09:00 WARN  userId=- [Test worker] j.c.h.e.c.s.LoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-24T00:40:55.776+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+2026-11-24T00:40:55.836+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.893+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:55.952+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:56.013+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:56.072+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:56.075+09:00 WARN  userId=- [Test worker] j.c.h.e.c.s.LoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-24T00:40:56.076+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+2026-11-24T00:40:56.139+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=2）
+2026-11-24T00:40:56.207+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:56.259+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:56.311+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:56.366+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:56.419+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:56.476+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（登録のないメールアドレス）
+2026-11-24T00:40:56.538+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-24T00:40:56.598+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードがまだない userId=1）
+2026-11-24T00:40:56.649+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードがまだない userId=1）
+2026-11-24T00:40:56.700+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードがまだない userId=1）
+2026-11-24T00:40:56.751+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードがまだない userId=1）
+2026-11-24T00:40:56.803+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードがまだない userId=1）
+2026-11-24T00:40:56.855+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードがまだない userId=1）
+2026-11-24T00:40:56.913+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:56.967+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.024+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.079+09:00 INFO  userId=- [Test worker] j.c.h.e.a.a.l.s.AuthLoginServiceImpl - ログインしました（userId=3）
+2026-11-24T00:40:57.134+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.188+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.241+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.295+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.357+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.413+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.471+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.526+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.582+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.585+09:00 WARN  userId=- [Test worker] j.c.h.e.c.s.LoginFailureRecorder - アカウントをロックしました（userId=3、失敗の回数=5）
+2026-11-24T00:40:57.587+09:00 INFO  userId=- [Test worker] j.c.h.e.c.p.PasswordLinkIssuer - パスワード設定用のリンクを作りました（userId=3、用途=LOCK）
+2026-11-24T00:40:57.642+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.697+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.749+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+2026-11-24T00:40:57.801+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（ロック中 userId=3）
+2026-11-24T00:40:57.869+09:00 WARN  userId=- [Test worker] j.c.h.e.a.a.l.v.AuthLoginValidator - ログインできませんでした（パスワードの誤り userId=3）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

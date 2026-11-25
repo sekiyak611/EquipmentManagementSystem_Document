@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.common.security.RememberMeApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.common.security.RememberMeApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>ログインしたままにする</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">24</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">2.841s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="autoLoginPermissions().html">自動ログインできた人の権限項目は、ログインのときと同じ（読み直して返す）</a>
+</td>
+<td class="path">autoLoginPermissions()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="66">0.066s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="autoLoginRotatesToken().html">セッションがなくても、クッキーだけで自動ログインできる。合言葉は新しいものに替わり（番号は同じ）、新しいクッキーが渡される</a>
+</td>
+<td class="path">autoLoginRotatesToken()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="62">0.062s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="deletedUser().html">削除されたユーザ：401。クッキーは消される</a>
+</td>
+<td class="path">deletedUser()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="60">0.060s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="expired().html">60日をすぎたクッキー（last_used が60日より前）：401。クッキーは消される</a>
+</td>
+<td class="path">expired()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="65">0.065s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="failedPasswordChangeKeepsAll().html">パスワードの変更（A-07）に失敗（現在のパスワードが違う）：「ログインしたまま」は、どれも消えない</a>
+</td>
+<td class="path">failedPasswordChangeKeepsAll()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="171">0.171s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">読めないクッキー・でたらめなクッキー：500 にならず 401。クッキーは消される</td>
+<td class="path">garbageCookie()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="3">0.003s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="lockedUserCanAutoLogin().html">ロックされている人でも、ログインしたままの端末は、自動ログインできる（画面設計 2.1 の6）</a>
+</td>
+<td class="path">lockedUserCanAutoLogin()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="65">0.065s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="lockLogoutRemovesThisDeviceOnly().html">現在のパスワードを5回間違えて、この端末をログアウトさせたとき：この端末の行とクッキーだけが消える。ほかの端末の分は残る</a>
+</td>
+<td class="path">lockLogoutRemovesThisDeviceOnly()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="421">0.421s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="loginAsAnotherUser().html">別の人のクッキーがある端末で、別の人としてログインすると、ログインした人として入る</a>
+</td>
+<td class="path">loginAsAnotherUser()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="127">0.127s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="loginWithoutBoxForgetsThisDevice().html">チェックを付けずにログインし直す：この端末の前のクッキーと行が消える。ほかの端末の分は残る</a>
+</td>
+<td class="path">loginWithoutBoxForgetsThisDevice()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="173">0.173s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="loginWithoutRememberMe().html">チェックを付けない・rememberMe がないログイン：クッキーも行もできない</a>
+</td>
+<td class="path">loginWithoutRememberMe()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="109">0.109s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="loginWithRememberMe().html">チェックを付けてログイン：クッキー remember-me（HttpOnly・60日間）を渡し、persistent_logins に、その人のメールアドレスの行ができる</a>
+</td>
+<td class="path">loginWithRememberMe()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="58">0.058s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="logoutRemovesThisDeviceOnly().html">ログアウト（A-02）：この端末の行とクッキーだけが消える。ほかの端末の「ログインしたまま」は残る</a>
+</td>
+<td class="path">logoutRemovesThisDeviceOnly()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="118">0.118s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="logoutWithoutCookie().html">ログアウトで、クッキーがない端末：何も消えない（ほかの端末の行は残る）</a>
+</td>
+<td class="path">logoutWithoutCookie()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="114">0.114s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="nonApiRequestDoesNotAutoLogin().html">画面のファイル（/api/ でないアドレス）では、自動ログインしない（クッキーの合言葉を替えない）</a>
+</td>
+<td class="path">nonApiRequestDoesNotAutoLogin()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="76">0.076s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ログイン状態もクッキーもなければ、401（自動ログインを試みない）</td>
+<td class="path">nothing()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="2">0.002s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="notYetExpired().html">59日前のクッキーは、まだ使える（境界値）</a>
+</td>
+<td class="path">notYetExpired()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="66">0.066s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="oldCookieMeansTheft().html">猶予（10秒）をすぎたあとに、替える前のクッキーをもう一度使うと（盗まれたと見る）：401。その人の行がすべて消える（ほかの端末の分も）</a>
+</td>
+<td class="path">oldCookieMeansTheft()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="121">0.121s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="oldCookieRightAfterRotationIsAccepted().html">合言葉を替えた直後（10秒以内）に、替える前のクッキーでもう一度来ても（画面を開いたときの、ほぼ同時の呼び出し）、盗まれたとは見ない：200。合言葉は替えず、新しいクッキーも渡さない</a>
+</td>
+<td class="path">oldCookieRightAfterRotationIsAccepted()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="84">0.084s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="passwordChangeKeepsThisDevice().html">パスワードを変更（A-07）：ほかの端末の「ログインしたまま」は消える。この端末が「ログインしたまま」だったときは、この端末の分だけ新しい番号で作り直す</a>
+</td>
+<td class="path">passwordChangeKeepsThisDevice()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="225">0.225s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="passwordChangeWithoutCookie().html">パスワードを変更（A-07）：この端末が「ログインしたまま」でなければ、新しく作らない。ほかの端末の分は消える</a>
+</td>
+<td class="path">passwordChangeWithoutCookie()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="223">0.223s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="passwordResetRemovesAll().html">パスワードを再設定（A-06）すると、その人の「ログインしたまま」がすべて消える。ほかの人の分は残る</a>
+</td>
+<td class="path">passwordResetRemovesAll()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="236">0.236s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="sessionContinuesAfterAutoLogin().html">自動ログインしたあとは、セッションで続く（クッキーなしでも、同じセッションなら使える。合言葉は、そのたびには替わらない）</a>
+</td>
+<td class="path">sessionContinuesAfterAutoLogin()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="118">0.118s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="unknownSeries().html">行がない（消された）番号のクッキー：401。クッキーは消される</a>
+</td>
+<td class="path">unknownSeries()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="66">0.066s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.common.security.RememberMeApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.common.security.RememberMeApiTest">2026-11-24T00:41:34.058+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.security.RememberMeApiTest]: RememberMeApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:34.059+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.security.RememberMeApiTest
+2026-11-24T00:41:34.060+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.common.security.RememberMeApiTest]: RememberMeApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:34.060+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.AuthApiTestBase]: AuthApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-24T00:41:34.061+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.common.security.RememberMeApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at 2026/11/24 0:41:41</p>
+</div>
+</div>
+</body>
+</html>
