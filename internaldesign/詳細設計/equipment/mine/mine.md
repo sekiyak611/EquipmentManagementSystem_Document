@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.3 2026-11-23 |
+| 版 | v1.4 2026-11-24 |
 | Jira | ZPOP-63（B-01）、ZPOP-65（B-03）、ZPOP-66（B-04）。B-02・B-05、S-05・S-06 は、作るときに書き足す |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.1 の1章・5章・7章（F-07・F-10・F-18・F-19）、API設計.md v1.4 の2.3〜2.5・3.2・4.5〜4.7、画面設計.md v1.7 の3章・4章・10章、画面一覧.md v1.1 の2章、データ設計.md v1.0 の2章・5.6・5.7 |
@@ -73,7 +73,7 @@ API ごとのパッケージ（api.equipment.mine の下。その中を controll
 | api.equipment.mine.update.returnitem.model | EquipmentMineUpdateReturnItemRestOutDto | B-03 で返す、返したあとの最新の一覧（B-01 と同じ形） | B-03 |
 | （テスト）api.equipment.mine.update.returnitem | EquipmentMineUpdateReturnItemApiTest | B-03 のテスト | B-03 |
 | api.equipment.mine.update.item.controller | EquipmentMineUpdateItemController・EquipmentMineUpdateItemRestInDto | B-04 の入口。RestInDto（equipmentIds）と形式のチェック（1つ以上）。ServiceInDto を作る | B-04 |
-| api.equipment.mine.update.item.service | EquipmentMineUpdateItemService（interface）・EquipmentMineUpdateItemServiceImpl・EquipmentMineUpdateItemServiceInDto | B-04 の業務の処理（`@Service`、`@Transactional`）。貸出履歴・備品を FOR UPDATE で読み、Validator で確かめ、まとめて更新する | B-04 |
+| api.equipment.mine.update.item.service | EquipmentMineUpdateItemService（interface）・EquipmentMineUpdateItemServiceImpl・EquipmentMineUpdateItemServiceInDto | B-04 の業務の処理（`@Service`、`@Transactional`）。備品を FOR UPDATE で押さえて読み、今借りている貸出履歴を押さえずに読み、Validator で確かめ、まとめて更新する | B-04 |
 | api.equipment.mine.update.item.validator | EquipmentMineUpdateItemValidator・EquipmentMineUpdateItemValidatorDto | 業務チェック（備品がある・自分が借りている・管理中）。ServiceImpl が読んだ行を渡して確かめる（読むだけ） | B-04 |
 | api.equipment.mine.update.item.model | EquipmentMineUpdateItemRestOutDto | B-04 で返す、確認したあとの最新の一覧（B-01 と同じ形） | B-04 |
 | （テスト）api.equipment.mine.update.item | EquipmentMineUpdateItemApiTest | B-04 のテスト | B-04 |
@@ -150,3 +150,4 @@ B-01 では作らない（S-05 は ZPOP-107）。
 | v1.1 | 2026-11-23 | ZPOP-65：B-03 の分を足した（1.1 のリンク、2.1 のクラス・dao・共通部品、3章の No.4・5） |
 | v1.2 | 2026-11-23 | ZPOP-66：B-04 の分を足した（1.1 のリンク、2.1 のクラス・dao、3章の No.6・7、4章の No.2）。3章の No.5 に、C-05・D-02・D-03・I-03 と、B-02 の順を足した |
 | v1.3 | 2026-11-23 | 障害 ZPOP-434：B-04 は備品の行だけを押さえる形に直した（2.1 の dao、3章の No.5・6、4章の No.3）。LoanCustomMapper#selectCurrentByEquipmentIdsForUpdate は削除する。貸出履歴の押さえ方の一般の決まりは、未確定として残した |
+| v1.4 | 2026-11-24 | 2.1 の B-04 の service の説明を、備品だけを押さえる形（障害 ZPOP-434）に直した（直し漏れ） |
