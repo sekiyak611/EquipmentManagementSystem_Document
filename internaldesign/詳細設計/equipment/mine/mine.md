@@ -2,10 +2,10 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.9 2026-11-26 |
-| Jira | ZPOP-63（B-01）、ZPOP-65（B-03）、ZPOP-66（B-04）、ZPOP-107（S-05）、ZPOP-67（B-05）。B-02、S-06 は、作るときに書き足す |
+| 版 | v1.11 2026-11-26 |
+| Jira | ZPOP-63（B-01）、ZPOP-65（B-03）、ZPOP-66（B-04）、ZPOP-107（S-05）、ZPOP-67（B-05）、ZPOP-64（B-02）。S-06 は、作るときに書き足す |
 | 状態 | 作成中 |
-| もとにした設計書 | 機能一覧.md v1.1 の1章・5章・7章（F-07・F-10・F-18・F-19）、API設計.md v1.4 の2.3〜2.5・3.2・4.5〜4.7、画面設計.md v1.8 の3章・4章・10章、画面一覧.md v1.1 の2章、データ設計.md v1.0 の2章・5.6・5.7。B-05 の分は、API設計.md v1.5 の2.5・3.2、画面設計.md v1.10 の4章（B-05 の詳細設計のもとにした設計書を見る） |
+| もとにした設計書 | 機能一覧.md v1.1 の1章・5章・7章（F-07・F-10・F-18・F-19）、API設計.md v1.4 の2.3〜2.5・3.2・4.5〜4.7、画面設計.md v1.8 の3章・4章・10章、画面一覧.md v1.1 の2章、データ設計.md v1.0 の2章・5.6・5.7。B-02・B-05 の分は、API設計.md v1.5 の2.5・3.2・4.6、画面設計.md v1.10 の4章、機能一覧.md v1.2 の5章（それぞれの詳細設計のもとにした設計書を見る） |
 
 ## 1. 概要
 
@@ -20,7 +20,7 @@
 | ID | 操作 | URL | 内容 | 権限項目 | 画面 | パッケージ（クラス名の頭） | 詳細設計 |
 |---|---|---|---|---|---|---|---|
 | B-01 | GET | /api/me/loans | 自分が借りている備品の一覧と、今月の確認の案内を返す | LOAN_SELF | S-05 | api.equipment.mine.search.item（EquipmentMineSearchItem） | [B-01_自分の備品の一覧.md](B-01_自分の備品の一覧.md) |
-| B-02 | POST | /api/me/loans | 備品を借りる | LOAN_SELF | S-06 | api.equipment.mine.entry.item（EquipmentMineEntryItem） | まだ（ZPOP-64） |
+| B-02 | POST | /api/me/loans | 備品を借りる | LOAN_SELF | S-06 | api.equipment.mine.entry.item（EquipmentMineEntryItem） | [B-02_備品を借りる.md](B-02_備品を借りる.md) |
 | B-03 | POST | /api/me/loans/{貸出履歴のID}/return | 借りている備品を返す | LOAN_SELF | S-05 | api.equipment.mine.update.returnitem（EquipmentMineUpdateReturnItem） | [B-03_備品を返す.md](B-03_備品を返す.md) |
 | B-04 | POST | /api/me/confirmations | 自分が借りている備品を「確認した」にする | CONFIRM_SELF | S-05 | api.equipment.mine.update.item（EquipmentMineUpdateItem） | [B-04_確認した.md](B-04_確認した.md) |
 | B-05 | GET | /api/me/available-equipment | 借りられる備品を探す | LOAN_SELF | S-06 | api.equipment.mine.search.availableitem（EquipmentMineSearchAvailableItem） | [B-05_借りられる備品を探す.md](B-05_借りられる備品を探す.md) |
@@ -47,8 +47,9 @@
 | R-5 | 催促日は毎月25日（土日祝日なら前の平日）。催促の日時は、その日の催促の時刻（毎朝9:00）（common.md 3.18） | 機能一覧 7章、API設計 4.5 |
 | R-6 | 一覧に出す備品の管理状態は「管理中」（催促の対象・確認できる備品と同じ。詳細設計 B-01 の12章の No.2） | 機能一覧 7章の3 |
 | R-7 | 借りられるのは、管理中で、保管中（貸出中でない）の備品だけ。管理番号の順に、20件ずつ出す | 機能一覧 5章の1、画面設計 4章 |
+| R-8 | 借りるとき、借用者はログインしている人、貸出日は登録した日（選べない）。返却予定日は任意で、入れるなら今日以降。貸出を登録した日は、その備品の最終確認日も更新する。1つの備品に、貸出中の行は1つだけ | 機能一覧 5章の1・3・6、画面設計 4章、データ設計 5.7 |
 
-B-01 で使うのは R-1〜R-6。B-05 で使うのは R-7（ほかに、B-01 と同じ「今借りている」の条件）。
+B-01 で使うのは R-1〜R-6。B-05 で使うのは R-7 の「借りられる備品の条件」と「20件ずつ」。B-02 で使うのは、R-7 の「借りられる備品の条件」と R-8。
 
 ### 1.4 定期実行
 
@@ -56,7 +57,7 @@ B-01 で使うのは R-1〜R-6。B-05 で使うのは R-7（ほかに、B-01 と
 
 ## 2. クラス・ファイル構成
 
-パッケージの頭の `jp.co.highjunk.equipment` は省いて書く。名前の付け方は CLAUDE.md 5章の命名規則。B-01・B-03・B-04・B-05（Server）の分を書く。
+パッケージの頭の `jp.co.highjunk.equipment` は省いて書く。名前の付け方は CLAUDE.md 5章の命名規則。B-01・B-02・B-03・B-04・B-05（Server）の分を書く。
 
 ### 2.1 Server
 
@@ -78,6 +79,11 @@ API ごとのパッケージ（api.equipment.mine の下。その中を controll
 | api.equipment.mine.update.item.validator | EquipmentMineUpdateItemValidator・EquipmentMineUpdateItemValidatorDto | 業務チェック（備品がある・自分が借りている・管理中）。ServiceImpl が読んだ行を渡して確かめる（読むだけ） | B-04 |
 | api.equipment.mine.update.item.model | EquipmentMineUpdateItemRestOutDto | B-04 で返す、確認したあとの最新の一覧（B-01 と同じ形） | B-04 |
 | （テスト）api.equipment.mine.update.item | EquipmentMineUpdateItemApiTest | B-04 のテスト | B-04 |
+| api.equipment.mine.entry.item.controller | EquipmentMineEntryItemController・EquipmentMineEntryItemRestInDto | B-02 の入口。RestInDto（equipmentId・dueOn）と形式のチェック。ServiceInDto を作る。201 で返す | B-02 |
+| api.equipment.mine.entry.item.service | EquipmentMineEntryItemService（interface）・EquipmentMineEntryItemServiceImpl・EquipmentMineEntryItemServiceInDto | B-02 の業務の処理（`@Service`、`@Transactional`）。貸出中を普通の SELECT で確かめ、備品を FOR UPDATE で押さえ、Validator で確かめ、貸出履歴を足し、備品の最終確認日・version を更新する | B-02 |
+| api.equipment.mine.entry.item.validator | EquipmentMineEntryItemValidator・EquipmentMineEntryItemValidatorDto | 業務チェック（管理中か・返却予定日が今日以降か。今日の日付と、押さえて読んだ備品が要る）。読むだけ | B-02 |
+| api.equipment.mine.entry.item.model | EquipmentMineEntryItemRestOutDto | B-02 で返す、作った貸出履歴の1件（B-01 の items の1件と同じ形） | B-02 |
+| （テスト）api.equipment.mine.entry.item | EquipmentMineEntryItemApiTest・EquipmentMineEntryItemLockTest | B-02 のテストと、同時に借りた・返した・確認したときの結果のテスト | B-02 |
 | api.equipment.mine.search.availableitem.controller | EquipmentMineSearchAvailableItemController・EquipmentMineSearchAvailableItemRestInDto | B-05 の入口と、条件の形式のチェック（page。keyword の LIKE の形）。ServiceInDto を作る | B-05 |
 | api.equipment.mine.search.availableitem.service | EquipmentMineSearchAvailableItemService（interface）・EquipmentMineSearchAvailableItemServiceImpl・EquipmentMineSearchAvailableItemServiceInDto | B-05 の業務の処理（`@Service`。読むだけなので `@Transactional` は付けない）。業務チェックがないので validator は作らない | B-05 |
 | api.equipment.mine.search.availableitem.model | EquipmentMineSearchAvailableItemRestOutDto（items の1件は中の Item） | B-05 の返す値（API設計 2.5 の形） | B-05 |
@@ -95,6 +101,8 @@ API ごとのパッケージ（api.equipment.mine の下。その中を controll
 | dao.mapper.custom | LoanCustomMapper（新規。XML は dao/mapper/custom/） | selectByIdForUpdate（FOR UPDATE。Example では書けない）。common.md 3.20 | B-03 |
 | dao.mapper.custom | LoanCustomMapper | selectCurrentByEquipmentIdsForUpdate（初版の B-04 で足したが、使わなくなる。障害 ZPOP-434 の実装の修正で削除する） | （なし） |
 | dao.mapper | LoanMapper | 今借りている貸出履歴を読む（読むだけ。equipment_id だけ使う）（B-05） | B-05 |
+| dao.mapper | LoanMapper | その備品の今借りている貸出履歴を、普通の SELECT で読む（selectByExample）。貸出履歴を足す（insertSelective）（B-02） | B-02 |
+| dao.mapper・dao.mapper.custom | EquipmentMapper・EquipmentCustomMapper#selectByIdForUpdate | 備品を FOR UPDATE で押さえる（selectByIdForUpdate。B-03・C-06 で足したもの）。最終確認日・version を更新する（updateByExampleSelective）（B-02）。**B-02 のために、dao に足すものは、ない** | B-02 |
 | dao.mapper | CategoryMapper | ページの種別の名前を IN でまとめて読む（B-05） | B-05 |
 | dao.mapper.custom | EquipmentCustomMapper | countAvailableBySearch・selectAvailableBySearch（新規。管理中・保管中の備品を、種別・キーワードで絞って数える・20件読む。NOT IN とキーワードの OR は Example では書けない。B-05 の詳細設計の7章） | B-05 |
 | dao.entity.custom | AvailableEquipmentSearchCondition（新規） | B-05 の探す条件（EquipmentCustomMapper に渡す。テーブルの行ではない） | B-05 |
@@ -144,13 +152,14 @@ S-05（ZPOP-107）の分。フォルダは features/equipment/mine/（CLAUDE.md 
 | 2 | common に足した部品 | common.equipment に MyLoanList・MyLoanItem・MyLoanListAssembler、common.calendar の ReminderCalendar に isReminderPassed | 2人で共有するファイル（CLAUDE.md 9章） | 相手に伝える（プルリクエストの説明に書く） |
 | 3 | Flyway | 変えない | ― | ― |
 | 4 | common に足す部品 | ForbiddenException・ServiceErrorType.Forbidden（403 の返し方）、貸出履歴のチェック用アノテーション4つ、LoanCustomMapper（common.md 3.20） | 2人で共有するファイル（CLAUDE.md 9章） | 実装の工程の前に、相手に伝える。common の変更として、その変更だけの小さな MR にして、先に main に入れる（B-03 の実装 MR は、それがマージされてから） |
-| 5 | 同じルール | 返却のルール（自分の分だけ返せる、返却日は今日、最終確認日を更新する）と、行を押さえる順（貸出履歴 → 備品。複数なら、備品の ID の小さい順） | equipment.management の C-07・C-08・C-05（備品の削除）・D-02・D-03（貸出履歴の直し・取り消し）・I-03（今貸出中の取り込み）、equipment.mine の B-02 | それぞれの詳細設計を書くとき、同じ順にする。B-02 は、貸出履歴を足す・変える処理は、確定する前に、その備品の行を FOR UPDATE で押さえる（B-04 は、この約束に頼っている。B-04 の8章）。B-04 は、備品の行だけを押さえ、貸出履歴は押さえない（障害 ZPOP-434）。貸出履歴を FOR UPDATE で押さえるときの索引（主キーか、備品の ID の索引か）は、B-03（主キーで押さえてから、備品の ID の索引を書き換える）と行き違うと、同じ障害（デッドロック）になる。**未確定（人の確認がまだ。4章 No.3）**。B-02 は、B-04・C-06 との同時実行を、実機で確かめて、押さえる順を、B-02 の詳細設計で決める（外部キーのために、貸出履歴の追加は、備品の行を共有ロックで押さえる）。I-03・E-02 のように、複数の備品を書き換えるものは、備品の ID の昇順で書き換える |
+| 5 | 同じルール | 返却のルール（自分の分だけ返せる、返却日は今日、最終確認日を更新する）と、行を押さえる順（貸出履歴 → 備品。複数なら、備品の ID の小さい順） | equipment.management の C-07・C-08・C-05（備品の削除）・D-02・D-03（貸出履歴の直し・取り消し）・I-03（今貸出中の取り込み）、equipment.mine の B-02 | それぞれの詳細設計を書くとき、同じ順にする。B-02 は、貸出履歴を足す・変える処理は、確定する前に、その備品の行を FOR UPDATE で押さえる（B-04 は、この約束に頼っている。B-04 の8章）。B-04 は、備品の行だけを押さえ、貸出履歴は押さえない（障害 ZPOP-434）。貸出履歴を FOR UPDATE で押さえるときの索引（主キーか、備品の ID の索引か）は、B-03（主キーで押さえてから、備品の ID の索引を書き換える）と行き違うと、同じ障害（デッドロック）になる。**未確定（人の確認がまだ。4章 No.3）**。**B-02 の詳細設計で決めた（v1.11）：備品の行だけを FOR UPDATE で押さえ、そのあとで、貸出中の確かめを普通の SELECT で行い（B-04 と同じ読み方）、貸出履歴の行を待たない。最後の守りは DB の重複禁止（当たったら 409）。これで、貸出履歴を押さえる一般の決まり（4章 No.3）に頼らずに済む。実機での確かめは、実装の単体テストで行う（B-02 の8章）**。I-03・E-02 のように、複数の備品を書き換えるものは、備品の ID の昇順で書き換える |
 | 6 | dao に足す部品 | EquipmentCustomMapper#selectByIdsForUpdate・#updateLastConfirmedOnByIds（B-04 の詳細設計の7章。`version = version + 1` の式で、1つの SQL でまとめて更新する）。初版で足した LoanCustomMapper#selectCurrentByEquipmentIdsForUpdate は、使わなくなるので、削除する（ほかの機能は使っていない）。**実装の修正（ZPOP-436）の MR のあとで、dao の変更だけの小さな MR にして、先に main に入れる**（2人で相談。dao のテスト（LoanCustomMapperTest の該当、CustomMapperBulkLockTest の貸出履歴の分）も一緒に直す） | 2人で共有するファイル（CLAUDE.md 9章。dao） | 実装の工程の前に、相手に伝える。dao の変更として、その変更だけの小さな MR にして、先に main に入れる（B-04 の実装 MR は、それがマージされてから） |
 | 7 | 同じルール | 確認のルール（最終確認日は今日、保存のたびに version +1、今月すでに確認済みでも誤りにしない、管理中の備品だけ、複数の行を押さえるときは備品の ID の小さい順） | equipment.management の C-06・E-02 | C-06 は作成済み。E-02（CSV で確認日を更新）の詳細設計を書くとき、同じにする（日付は CSV の値）。B-04 を直したら、C-06 も同じに直す。別件：C-06・B-03 は、読んだ version に 1 を足した値を Example で書き、B-04 は式（`version + 1`）。結果は同じだが、そろえるかは、実装の工程で、人に相談する |
 | 8 | 共有ファイルへの足し（Client） | src/routes.tsx に S-05 の1行（/my-equipment）、src/common/components/menuItems.ts にメニュー「自分の備品」の1行（LOAN_SELF） | 2人で共有するファイル（CLAUDE.md 9章：routes.tsx・共通ヘッダーのメニューは「1行足すだけにする」） | 実装の MR の説明に書いて、相手に伝える |
 | 9 | 共有ファイル（common）の変更 | src/common/components/TopPlaceholderPage.tsx に、homePage が MY_EQUIPMENT のとき /my-equipment に移す処理（S-05 の詳細設計の6章・10章 No.14）。影響する既存のテスト：tests/auth/login.spec.ts・tests/common/error-page.spec.ts・tests/common/shell.spec.ts（`top-placeholder` を見ている） | common の変更（CLAUDE.md 9章：2人で相談し、その変更だけの小さな作業にして、先に main に入れる） | 実装の MR とは別の小さな MR にする（人の確認は、まだ）。「S-05・S-07 ができたら置き換える」と決まっていた分の一部（S-07 の分は、S-07 のとき） |
 | 10 | dao に足す部品 | EquipmentCustomMapper#countAvailableBySearch・#selectAvailableBySearch と、dao.entity.custom.AvailableEquipmentSearchCondition（B-05 の詳細設計の7章。管理中・保管中の備品を探す SQL。C-01 の countBySearch・selectBySearch は変えない） | 2人で共有するファイル（CLAUDE.md 9章。dao） | 実装の工程の前に、相手に伝える。dao の変更として、その変更だけの小さな MR にして、先に main に入れる（B-05 の実装 MR は、それがマージされてから）。進め方は、人が決めた（2026-11-26）。**もう1人への連絡は、実装の前** |
 | 11 | 同じ弱点 | page が非常に大きいとき、飛ばす件数 `(page - 1) × 件数` を int で計算すると溢れ、500 になるおそれがある（独立レビューで見つけた）。B-05 の設計は、long で計算し、count 以上なら読まない形にした。C-01 の実装（EquipmentManagementSearchItemServiceImpl）にも同じ計算がある | equipment.management の C-01（実装済み）。ほかに、ページ分けのある API（D-01・E-04・G-01 など）を書くとき | C-01 は、別の小さな作業で直す（2026-11-26 に人が決めた。ZPOP-68 の実装の修正として、Jira の扱いは、そのとき決める）。ほかは、詳細設計を書くとき、同じ形にする |
+| 12 | 同じルールの食い違い | B-02 は、貸出履歴を押さえず、備品だけを押さえる。common.md 3.20 と B-03 の8章は、「貸出履歴 → 備品の順に、B-02・C-07・C-08 でもそろえる」と読める。D-02・D-03（備品を押さえずに貸出履歴を直す・取り消す）は、重複禁止に当たる最後の守りの経路で、行き違う可能性がある（推測。B-02 の独立レビュー） | common.md 3.20（2人で共有するファイル）、B-03 の8章、equipment.management の C-07・C-08・D-02・D-03 | common.md 3.20 と B-03 に、「B-02 は貸出履歴を押さえない」と一言足すかは、人に確かめる（2人で共有するファイル）。D-02・D-03 の詳細設計を書くとき、備品を先に押さえるか確かめる |
 
 ## 4. 設計書にない判断
 
@@ -176,3 +185,5 @@ S-05（ZPOP-107）の分。フォルダは features/equipment/mine/（CLAUDE.md 
 | v1.7 | 2026-11-26 | ZPOP-67：B-05 の分を足した（1.1 のリンク、1.3 の R-7、2.1 のクラス・dao、3章の No.10）。B-05 のもとにした設計書を、画面設計 v1.10・API設計 v1.5 にした |
 | v1.8 | 2026-11-26 | ZPOP-177：B-05 の独立レビューの指摘を直した（2章・2.1 の説明文を B-01 だけの言い方から一般の言い方に直した、3章に No.11） |
 | v1.9 | 2026-11-26 | 人の確認：3章 No.10（dao の足しの進め方）と No.11（C-01 の直し）を、人が決めた |
+| v1.10 | 2026-11-26 | ZPOP-64：B-02 の分を足した（1.1 のリンク、1.3 の R-8、2.1 のクラスと dao、3章の No.5 に B-02 で決めたこと） |
+| v1.11 | 2026-11-26 | ZPOP-165：B-02 の独立レビューの指摘を直した（備品 → 貸出履歴（普通の SELECT）の順にした。3章の No.5 の古い文を整理し、No.12 を足した。2章・冒頭の書き方を B-02 まで含めた） |
