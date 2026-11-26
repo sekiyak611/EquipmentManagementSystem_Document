@@ -1,9 +1,9 @@
-# API設計（v1.4）
+# API設計（v1.5）
 
 | 項目 | 内容 |
 |---|---|
 | システム | 備品管理システム（equipment_management_system） |
-| 版 | v1.4 2026-11-15 |
+| 版 | v1.5 2026-11-26 |
 | もとにした資料 | 機能一覧 v1.0、画面設計 v1.1、データ設計 v1.0、基本設計書 v1.3 |
 | 状態 | 確定（2026-11-03、開発者2人のレビュー済み）。v1.1 でレスポンスの形を正常時・エラー時で統一した（2.4）。要件定義書の総務との合意で変更が出た場合は、版を上げて直す |
 
@@ -171,7 +171,7 @@ message に入れる文
 | No. | 操作 | アドレス | 内容 | 権限 | 画面 |
 |---|---|---|---|---|---|
 | C-01 | GET | /api/equipment | 備品を探す（絞り込み・並び替え・ページ分け） | EQUIPMENT_VIEW | S-07 |
-| C-02 | GET | /api/equipment/{備品のID} | 備品1件と、その備品の貸出履歴（新しい順に5件）を返す | EQUIPMENT_VIEW | S-08、S-09（編集） |
+| C-02 | GET | /api/equipment/{備品のID} | 備品1件と、その備品の貸出履歴（新しい順に5件）を返す | EQUIPMENT_VIEW、EQUIPMENT_UPDATE のどちらか | S-08、S-09（編集） |
 | C-03 | POST | /api/equipment | 備品を登録する | EQUIPMENT_CREATE | S-09 |
 | C-04 | PUT | /api/equipment/{備品のID} | 備品を変える | EQUIPMENT_UPDATE | S-09 |
 | C-05 | DELETE | /api/equipment/{備品のID} | 備品を削除する | EQUIPMENT_DELETE | S-08 |
@@ -210,7 +210,7 @@ message に入れる文
 | No. | 操作 | アドレス | 内容 | 権限 | 画面 |
 |---|---|---|---|---|---|
 | G-01 | GET | /api/users | ユーザを探す | USER_VIEW | S-14 |
-| G-02 | GET | /api/users/{ユーザのID} | ユーザ1人を返す | USER_VIEW | S-15（編集） |
+| G-02 | GET | /api/users/{ユーザのID} | ユーザ1人を返す | USER_VIEW、USER_UPDATE のどちらか | S-15（編集） |
 | G-03 | POST | /api/users | ユーザを登録する。パスワード設定用のリンクをDMで送る | USER_CREATE | S-15 |
 | G-04 | PUT | /api/users/{ユーザのID} | ユーザを変える。権限（roleId）を変えるには PERMISSION_MANAGE も要る | USER_UPDATE | S-15 |
 | G-05 | DELETE | /api/users/{ユーザのID} | ユーザを削除する | USER_DELETE | S-14 |
@@ -221,12 +221,12 @@ message に入れる文
 
 | No. | 操作 | アドレス | 内容 | 権限 | 画面 |
 |---|---|---|---|---|---|
-| H-01 | GET | /api/roles | 権限の一覧（含む権限項目・人数つき） | PERMISSION_VIEW、USER_CREATE、USER_UPDATE のどれか | S-16、S-15の選択 |
-| H-02 | GET | /api/roles/{権限のID} | 権限1つを返す | PERMISSION_VIEW | S-17（編集） |
+| H-01 | GET | /api/roles | 権限の一覧（含む権限項目・人数つき） | PERMISSION_VIEW、USER_VIEW、USER_CREATE、USER_UPDATE のどれか | S-16、S-15の選択、S-14の絞り込み |
+| H-02 | GET | /api/roles/{権限のID} | 権限1つを返す | PERMISSION_VIEW、PERMISSION_MANAGE のどちらか | S-17（編集） |
 | H-03 | POST | /api/roles | 権限を作る | PERMISSION_MANAGE | S-17 |
 | H-04 | PUT | /api/roles/{権限のID} | 権限を変える | PERMISSION_MANAGE | S-17 |
 | H-05 | DELETE | /api/roles/{権限のID} | 権限を消す | PERMISSION_MANAGE | S-17 |
-| H-06 | GET | /api/permissions | 権限項目の一覧（18件） | PERMISSION_VIEW | S-17 |
+| H-06 | GET | /api/permissions | 権限項目の一覧（18件） | PERMISSION_VIEW、PERMISSION_MANAGE のどちらか | S-17 |
 
 ### 3.9 一括登録（移行）
 
@@ -447,3 +447,4 @@ S-18・S-20・S-21 の一括登録（I-01〜I-03）も、同じ形で返す。
 | v1.2 | 2026-11-10 | GitHub の Document リポジトリに v1.1 の中身が入っていなかったため、入れ直した（2026-11-09 に、v1.0 の中身のまま Docker の直しをして「v1.1」と付けた版は、この版で置き換える）。あわせて、開発のPCの MySQL を Docker で動かす形に合わせた（5章、9章 Q1。基本設計書 v1.2）。API の中身は v1.1 から変えていない |
 | v1.3 | 2026-11-14 | 開発のPCの MySQL を、Docker で動かす形から、PC に直接入れる形に戻したので、5章と9章 Q1 の書き方を合わせた（基本設計書 v1.3）。API の中身は v1.2 から変えていない |
 | v1.4 | 2026-11-15 | S-18 一括登録（移行）を、ユーザ（S-18）・備品（S-20）・今貸出中の情報（S-21）の3つの画面に分けた（2026-11-15 に人が決めた。サーバーのパッケージ構成の変更で、I-01 は api.user、I-02・I-03 は api.equipment.management に分かれたため）。取り込む中身・チェック・メッセージは変えていない。3.9 の I-02・I-03 の画面の欄、2章のアップロード、4章の文を直した。API の中身は変えていない |
+| v1.5 | 2026-11-26 | 画面を開く権限と、API の権限がそろっていなかった所を直した（2026-11-26 に人が決めた）。C-02 は EQUIPMENT_UPDATE でも、G-02 は USER_UPDATE でも、H-02・H-06 は PERMISSION_MANAGE でも呼べるようにした。H-01 は USER_VIEW でも呼べるようにし、「画面」の列に S-14 を足した。理由：編集・管理の画面を開ける人が、中の読み込みで 403 にならないようにするため（権限の対応表 v1.0 の 6章）。対象の API はまだ実装していない |
