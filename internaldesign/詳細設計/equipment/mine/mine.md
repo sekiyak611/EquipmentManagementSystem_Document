@@ -2,7 +2,7 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v1.8 2026-11-26 |
+| 版 | v1.9 2026-11-26 |
 | Jira | ZPOP-63（B-01）、ZPOP-65（B-03）、ZPOP-66（B-04）、ZPOP-107（S-05）、ZPOP-67（B-05）。B-02、S-06 は、作るときに書き足す |
 | 状態 | 作成中 |
 | もとにした設計書 | 機能一覧.md v1.1 の1章・5章・7章（F-07・F-10・F-18・F-19）、API設計.md v1.4 の2.3〜2.5・3.2・4.5〜4.7、画面設計.md v1.8 の3章・4章・10章、画面一覧.md v1.1 の2章、データ設計.md v1.0 の2章・5.6・5.7。B-05 の分は、API設計.md v1.5 の2.5・3.2、画面設計.md v1.10 の4章（B-05 の詳細設計のもとにした設計書を見る） |
@@ -149,8 +149,8 @@ S-05（ZPOP-107）の分。フォルダは features/equipment/mine/（CLAUDE.md 
 | 7 | 同じルール | 確認のルール（最終確認日は今日、保存のたびに version +1、今月すでに確認済みでも誤りにしない、管理中の備品だけ、複数の行を押さえるときは備品の ID の小さい順） | equipment.management の C-06・E-02 | C-06 は作成済み。E-02（CSV で確認日を更新）の詳細設計を書くとき、同じにする（日付は CSV の値）。B-04 を直したら、C-06 も同じに直す。別件：C-06・B-03 は、読んだ version に 1 を足した値を Example で書き、B-04 は式（`version + 1`）。結果は同じだが、そろえるかは、実装の工程で、人に相談する |
 | 8 | 共有ファイルへの足し（Client） | src/routes.tsx に S-05 の1行（/my-equipment）、src/common/components/menuItems.ts にメニュー「自分の備品」の1行（LOAN_SELF） | 2人で共有するファイル（CLAUDE.md 9章：routes.tsx・共通ヘッダーのメニューは「1行足すだけにする」） | 実装の MR の説明に書いて、相手に伝える |
 | 9 | 共有ファイル（common）の変更 | src/common/components/TopPlaceholderPage.tsx に、homePage が MY_EQUIPMENT のとき /my-equipment に移す処理（S-05 の詳細設計の6章・10章 No.14）。影響する既存のテスト：tests/auth/login.spec.ts・tests/common/error-page.spec.ts・tests/common/shell.spec.ts（`top-placeholder` を見ている） | common の変更（CLAUDE.md 9章：2人で相談し、その変更だけの小さな作業にして、先に main に入れる） | 実装の MR とは別の小さな MR にする（人の確認は、まだ）。「S-05・S-07 ができたら置き換える」と決まっていた分の一部（S-07 の分は、S-07 のとき） |
-| 10 | dao に足す部品 | EquipmentCustomMapper#countAvailableBySearch・#selectAvailableBySearch と、dao.entity.custom.AvailableEquipmentSearchCondition（B-05 の詳細設計の7章。管理中・保管中の備品を探す SQL。C-01 の countBySearch・selectBySearch は変えない） | 2人で共有するファイル（CLAUDE.md 9章。dao） | 実装の工程の前に、相手に伝える。dao の変更として、その変更だけの小さな MR にして、先に main に入れる（B-05 の実装 MR は、それがマージされてから）。**2人の相談は、まだ** |
-| 11 | 同じ弱点 | page が非常に大きいとき、飛ばす件数 `(page - 1) × 件数` を int で計算すると溢れ、500 になるおそれがある（独立レビューで見つけた）。B-05 の設計は、long で計算し、count 以上なら読まない形にした。C-01 の実装（EquipmentManagementSearchItemServiceImpl）にも同じ計算がある | equipment.management の C-01（実装済み）。ほかに、ページ分けのある API（D-01・E-04・G-01 など）を書くとき | C-01 は、直すかを人に相談する（別の小さな作業）。ほかは、詳細設計を書くとき、同じ形にする |
+| 10 | dao に足す部品 | EquipmentCustomMapper#countAvailableBySearch・#selectAvailableBySearch と、dao.entity.custom.AvailableEquipmentSearchCondition（B-05 の詳細設計の7章。管理中・保管中の備品を探す SQL。C-01 の countBySearch・selectBySearch は変えない） | 2人で共有するファイル（CLAUDE.md 9章。dao） | 実装の工程の前に、相手に伝える。dao の変更として、その変更だけの小さな MR にして、先に main に入れる（B-05 の実装 MR は、それがマージされてから）。進め方は、人が決めた（2026-11-26）。**もう1人への連絡は、実装の前** |
+| 11 | 同じ弱点 | page が非常に大きいとき、飛ばす件数 `(page - 1) × 件数` を int で計算すると溢れ、500 になるおそれがある（独立レビューで見つけた）。B-05 の設計は、long で計算し、count 以上なら読まない形にした。C-01 の実装（EquipmentManagementSearchItemServiceImpl）にも同じ計算がある | equipment.management の C-01（実装済み）。ほかに、ページ分けのある API（D-01・E-04・G-01 など）を書くとき | C-01 は、別の小さな作業で直す（2026-11-26 に人が決めた。ZPOP-68 の実装の修正として、Jira の扱いは、そのとき決める）。ほかは、詳細設計を書くとき、同じ形にする |
 
 ## 4. 設計書にない判断
 
@@ -175,3 +175,4 @@ S-05（ZPOP-107）の分。フォルダは features/equipment/mine/（CLAUDE.md 
 | v1.6 | 2026-11-25 | 3章：TopPlaceholderPage の変更を、No.8 から No.9 に分けた（common の変更。小さな別の MR にする） |
 | v1.7 | 2026-11-26 | ZPOP-67：B-05 の分を足した（1.1 のリンク、1.3 の R-7、2.1 のクラス・dao、3章の No.10）。B-05 のもとにした設計書を、画面設計 v1.10・API設計 v1.5 にした |
 | v1.8 | 2026-11-26 | ZPOP-177：B-05 の独立レビューの指摘を直した（2章・2.1 の説明文を B-01 だけの言い方から一般の言い方に直した、3章に No.11） |
+| v1.9 | 2026-11-26 | 人の確認：3章 No.10（dao の足しの進め方）と No.11（C-01 の直し）を、人が決めた |
