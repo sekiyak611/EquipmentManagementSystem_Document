@@ -30,10 +30,7 @@ argument-hint: "[design|impl|ut] [タスク名かサブタスクの課題キー�
 | impl | Server・Client の**すでにあるテストを全部**（壊れていないかの確認。ArchitectureTest を含む）。新しい機能のテストは、書かない（次の工程） |
 | ut | Server・Client の**テストを全部**。証跡は、この最後の結果から作る |
 
-| どこで | コマンド |
-|---|---|
-| Server のフォルダ | `.\gradlew.bat test --rerun` |
-| Client のフォルダ | `npx playwright test`（その前に、Eclipse で動かしているサーバー（8080）を止める。MySQL は動かしておく） |
+コマンドと、動かす前にすること（サーバー（8080）を止める）は、CLAUDE.md 6章のとおり。Server は、結果を使い回さないよう `--rerun` を付ける（`.\gradlew.bat test --rerun`）。
 
 1件でも失敗していたら、commit・push・MR に進まない。テストを消したり、期待する結果を書き換えたりしない。人に知らせる。件数は、結果のファイルから数える（覚えている数を書かない）。
 

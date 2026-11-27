@@ -102,4 +102,4 @@ Server のフォルダで、本体とテストのコードが組み立てられ�
 - [ ] 「確認してほしい点」（設計書にない判断を、確定／推測／未確定に分けて）を、報告にまとめた。
 - [ ] すでにあるテストと組み立てが通る（ArchitectureTest などを含む）。新しい機能のテストは、次の工程（単体テスト）で書く。
 
-次の流れ：①独立した AI レビュー（`/backend-review <ブランチ>`。指摘は直す）→ ②人がチェック（直しは AI に頼むか手で直す。手で直したら `git diff` を読んで反映）→ ③`/deliver impl`（commit・push・MR。`DEV_ROLE=junior` は Draft）→ ④リーダーがマージ → 人が「マージした」と伝える（phase-gate の merged）→ ⑤`/backend-test`。
+次の流れ：`決まり/skill.md` の流れの図の②のとおり（次は `/backend-review <ブランチ>`。指摘は直す。人が手で直したら、`git diff` を読んで反映する。マージのあとは `/backend-test`）。
