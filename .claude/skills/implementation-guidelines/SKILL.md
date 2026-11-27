@@ -1,7 +1,7 @@
 ---
 name: implementation-guidelines
 description: 備品管理システムの実装・修正・テスト・レビューで、CLAUDE.md・.claude/rules・設計書に書いていない所の書き方で迷ったときの短い心得（正確さ、変える範囲、書く前の整理、テストの考え方、振る舞い）。
-when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backend-review・frontend-review・reverse-engineer の作業中に、CLAUDE.md や設計書に書いていない所の書き方で迷ったとき。
+when_to_use: backend-impl・frontend-impl・backend-test・frontend-test・backend-review・frontend-review・reverse-engineer の作業中に、CLAUDE.md・.claude/rules・設計書のどれにも載っていない書き方（名前、例外の扱い、型、テストの観点）を決めるとき。載っているものは、その決まりに従う。
 ---
 
 # 実装の心得（備品管理システム版）

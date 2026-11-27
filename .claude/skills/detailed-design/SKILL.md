@@ -22,7 +22,7 @@ argument-hint: "[まとまり（例：equipment.category）、API・画面の ID
 - [ ] phase-gate の 0章（`DEV_ROLE`・Jira・最新の release/main）を済ませた。先にやるタスクの `[詳細設計]` が完了しているかも見た。Jira の `[詳細設計]` を「進行中」にした。
 - [ ] 作業用のブランチ（Document。`feature/<[詳細設計] のサブタスクの課題キー>-<英語の機能名>-design`。release/main の最新から）で作業している。
 - [ ] 外から見える判断や、設計書のあいまいな所・食い違いがあれば、書き始める前に、spec-check の形で整理して、まとめて人に質問した。
-- 書き終えたら：①独立した AI レビュー（`/design-review`。指摘は直す）→ ②人がチェック（直しは AI に頼むか手で直す。手で直したら `git diff` を読んで反映）→ ③`/deliver design`（commit・push・MR。`DEV_ROLE=junior` は Draft）→ ④リーダーがマージ → 人が「マージした」と伝える（phase-gate の merged）→ ⑤実装の工程へ（ゲート A）、または別の機能の詳細設計。
+- 書き終えたら：`決まり/skill.md` の流れの図の①のとおり（次は `/design-review`。指摘は直す。人が手で直したら、`git diff` を読んで反映する。マージのあとは、実装の工程（ゲート A）か、別の機能の詳細設計）。
 
 ## 1. 何を書くかを決める
 
