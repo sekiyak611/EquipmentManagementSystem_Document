@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="MyBatis Generator が作った Mapper（dao.mapper）" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-28T09:17:57.489Z" hostname="DESKTOP-32H5PQ0" time="0.089">
+  <properties/>
+  <testcase name="足すと id が戻り、MySQL が作る列（name_active）にも値が入り、Criteria の条件で読める" classname="jp.co.highjunk.equipment.dao.DaoMapperTest" time="0.009"/>
+  <testcase name="自動で作った Mapper も、手で書く Mapper も、パッケージ込みの名前で見つけられる" classname="jp.co.highjunk.equipment.dao.DaoMapperTest" time="0.001"/>
+  <testcase name="Example で数えられる（権限項目は最初のデータで18件）" classname="jp.co.highjunk.equipment.dao.DaoMapperTest" time="0.002"/>
+  <system-out><![CDATA[2026-11-28T18:17:57.490+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.DaoMapperTest]: DaoMapperTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:57.559+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.DaoMapperTest
+2026-11-28T18:17:57.560+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.DaoMapperTest]: DaoMapperTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:57.561+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.DaoMapperTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

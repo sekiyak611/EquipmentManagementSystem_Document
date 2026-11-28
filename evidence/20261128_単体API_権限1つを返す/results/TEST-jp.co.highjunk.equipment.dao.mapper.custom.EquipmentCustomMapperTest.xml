@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="EquipmentCustomMapper（B-04 で足した、まとめて読む・更新するメソッド）" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-28T09:17:59.585Z" hostname="DESKTOP-32H5PQ0" time="0.026">
+  <properties/>
+  <testcase name="updateLastConfirmedOnByIds：送った備品だけ、最終確認日・version+1（行ごとの version に1を足す）・更新日時・更新者を変え、件数を返す。ほかの備品・削除済みは変えない" classname="jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperTest" time="0.012"/>
+  <testcase name="updateLastConfirmedOnByIds：ID の一覧が空・null なら、何も更新せず 0 を返す" classname="jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperTest" time="0.002"/>
+  <testcase name="selectByIdsForUpdate：送った ID の、削除されていない備品だけを、ID の昇順で返す（ない ID・削除済みは出ない）" classname="jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperTest" time="0.008"/>
+  <testcase name="selectByIdsForUpdate：ID の一覧が空・null なら、空を返す" classname="jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperTest" time="0.001"/>
+  <system-out><![CDATA[2026-11-28T18:17:59.586+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperTest]: EquipmentCustomMapperTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:59.587+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperTest
+2026-11-28T18:17:59.587+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperTest]: EquipmentCustomMapperTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:59.588+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

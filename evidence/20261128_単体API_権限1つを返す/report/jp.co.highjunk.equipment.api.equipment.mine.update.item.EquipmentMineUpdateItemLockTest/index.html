@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>B-04 自分が借りている備品を「確認した」にする：同時に操作されたとき</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">6</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">4.402s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="doesNotWaitForLoanRowOnly().html">場合分け③：返す人が、貸出履歴の行だけを押さえていて、備品の行はまだ：B-04 は、待たずに進み、成功する。そのあとで、返す人が進み、返す（確認が先、そのあとで返却。version は2つ増える）</a>
+</td>
+<td class="path">doesNotWaitForLoanRowOnly()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="80">0.080s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="locksInAscendingOrder().html">備品を、送られた順ではなく、ID の昇順に押さえる：小さい ID の備品を別の人が押さえている間、[大, 小] の順で送った B-04 は、大きい ID の備品を、まだ押さえていない（押さえていれば、行き違いになる）</a>
+</td>
+<td class="path">locksInAscendingOrder()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1102">1.102s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="returnAndConfirmDoNotDeadlock().html">B-03（返す）と B-04（確認する）を、同じ備品に、何度同時に動かしても、デッドロックしない。どちらが先でも、つじつまが合う（返しが先なら B-04 は 403、確認が先なら両方成功）</a>
+</td>
+<td class="path">returnAndConfirmDoNotDeadlock()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="608">0.608s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="returnWaitsForConfirm().html">場合分け④：B-04 が先に備品の行を押さえて、更新している間：返す人（B-03）は、備品の行で待たされ、B-04 が終わってから進んで、返す（確認が先、そのあとで返却。version は2つ増える）</a>
+</td>
+<td class="path">returnWaitsForConfirm()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1073">1.073s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="reversedOrderDoesNotDeadlock().html">逆の順で送る2つの B-04 を、何度同時に動かしても、デッドロックせず、両方成功する。version は、成功した回数だけ増える</a>
+</td>
+<td class="path">reversedOrderDoesNotDeadlock()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="453">0.453s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="waitsForReturnHoldingEquipment().html">場合分け②：返す人（B-03 や総務の C-08）が、備品の行を押さえて、返却を確定する前：B-04 は、備品の行で待たされ、返却が確定したあとで確かめて 403（借りていない）。確認は、されない</a>
+</td>
+<td class="path">waitsForReturnHoldingEquipment()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="1078">1.078s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest">2026-11-28T18:17:40.020+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest]: EquipmentMineUpdateItemLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:40.021+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest
+2026-11-28T18:17:40.021+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest]: EquipmentMineUpdateItemLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:40.022+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.EquipmentMineLockTestBase]: EquipmentMineLockTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:40.022+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at 2026/11/28 18:17:59</p>
+</div>
+</div>
+</body>
+</html>

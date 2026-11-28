@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemApiTest</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<span class="breadcrumb">jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemApiTest</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>B-04 自分が借りている備品を「確認した」にする</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">22</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">0.485s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<table class="test-results sortable">
+<thead>
+<tr>
+<th>Child</th>
+<th>Name</th>
+<th data-sort-default="desc">Tests</th>
+<th data-sort-default="desc">Failures</th>
+<th data-sort-default="desc">Skipped</th>
+<th data-sort-default="desc">Duration</th>
+<th>Success rate</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="success">
+<a href="afterReturn().html">B-03（返す）で返したあとの備品を、続けて確認しようとする：403。返したときの貸出履歴・備品は、そのまま</a>
+</td>
+<td class="path">afterReturn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="30">0.030s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="alreadyConfirmedThisMonthIsUpdated().html">今月すでに確認済み（今月の1日に確認）の備品を送っても、誤りにならず、最終確認日が今日になる（12章 No.4。今日が1日のときは、確かめられないので飛ばす）</a>
+</td>
+<td class="path">alreadyConfirmedThisMonthIsUpdated()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="21">0.021s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="confirmMany().html">まとめて確認する：重なった ID は1つにまとめる（version は1つしか増えない）。今月すでに確認済みの備品が混ざっていても成功で、今日になる。未確認の数は 0 になる</a>
+</td>
+<td class="path">confirmMany()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="22">0.022s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="confirmOne().html">1件確認する：200。備品の最終確認日が今日・version+1・更新日時・更新者。貸出履歴は変わらない（借りたまま）。一覧では、今月確認済みになり、未確認の数が減る</a>
+</td>
+<td class="path">confirmOne()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="18">0.018s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="dateIsIgnored().html">日付を送っても使わない：最終確認日は今日になる</a>
+</td>
+<td class="path">dateIsIgnored()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="15">0.015s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">備品が削除されている（貸出中のまま）：404。ほかの備品も更新しない</td>
+<td class="path">deletedEquipment()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="16">0.016s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">equipmentIds が空の配列・ない・{}：400（equipmentIds 欄のエラー「確認する備品を選んでください」）</td>
+<td class="path">emptyOrMissing()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ほかの人の備品と、自分の管理中でない備品が混ざっている：403（403 を 400 より先に）</td>
+<td class="path">forbiddenBeforeBusinessRule()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="16">0.016s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">本文がない・JSON の形の誤り・中身が null・数でない：400（入力内容に誤りがあります。errors は null）。何も変わらない</td>
+<td class="path">malformed()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="26">0.026s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">CSRF の合言葉がない：403（権限がない文）。何も変わらない</td>
+<td class="path">noCsrfToken()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="9">0.009s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">CONFIRM_SELF がない：403（権限がない文）。備品も貸出履歴も変わらない</td>
+<td class="path">noPermission()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">借りられていない備品（保管中）：403。管理中でも、貸出履歴がなければ、確認できない</td>
+<td class="path">notBorrowed()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="10">0.010s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">備品がない：404（対象が見つかりません）。送ったほかの備品も更新しない</td>
+<td class="path">notFound()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="12">0.012s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">備品がない備品と、自分の管理中でない備品が混ざっている：404（404 を 400 より先に）。3つ全部（備品がない・ほかの人の・管理中でない）が混ざっても 404</td>
+<td class="path">notFoundBeforeBusinessRuleAndAll()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="15">0.015s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">備品がない備品と、ほかの人の備品が混ざっている：404（404 を 403 より先に）</td>
+<td class="path">notFoundBeforeForbidden()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="12">0.012s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ログインしていない：401（ログインしてください）</td>
+<td class="path">notLoggedIn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="3">0.003s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">管理中でない備品（廃棄・所在不明）：400（管理中の備品だけ確認できます）。一緒に送った管理中の備品も更新しない</td>
+<td class="path">notManaged()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="20">0.020s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="othersAreUntouched().html">確認しても、ほかの人の貸出・備品は変わらない。確認した本人の一覧にだけ出る</a>
+</td>
+<td class="path">othersAreUntouched()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="16">0.016s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ほかの人の、管理中でない備品：403（借りていない備品として）</td>
+<td class="path">othersDisposed()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="13">0.013s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">ほかの人が借りている備品：403（借りていない備品が含まれているため）。一緒に送った自分の備品も更新しない。その人の備品も変わらない</td>
+<td class="path">othersEquipment()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="19">0.019s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">返却済みの備品（別の端末で返した）：403。取り消された貸出の備品：403。何も変わらない</td>
+<td class="path">returnedOrCancelled()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="17">0.017s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+<tr>
+<td class="success">
+<a href="soumuConfirmsOwn().html">総務も、自分が借りている分は確認できる</a>
+</td>
+<td class="path">soumuConfirmsOwn()</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td data-sort-value="14">0.014s</td>
+<td class="success" data-sort-value="100">100%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemApiTest">Copy</button>
+</div>
+<pre id="root-0-test-stdout-jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemApiTest">2026-11-28T18:17:39.534+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemApiTest]: EquipmentMineUpdateItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:39.659+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemApiTest
+2026-11-28T18:17:39.660+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemApiTest]: EquipmentMineUpdateItemApiTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:39.660+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.EquipmentMineApiTestBase]: EquipmentMineApiTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:39.661+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemApiTest
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at 2026/11/28 18:17:59</p>
+</div>
+</div>
+</body>
+</html>

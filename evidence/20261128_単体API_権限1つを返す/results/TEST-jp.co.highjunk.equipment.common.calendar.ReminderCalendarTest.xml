@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="ReminderCalendar（単体）" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-28T09:17:49.877Z" hostname="DESKTOP-32H5PQ0" time="0.007">
+  <properties/>
+  <testcase name="催促を送ってよい日：催促日の前は false、当日と、あとの平日は true" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.002"/>
+  <testcase name="今月の催促の日時を過ぎたか：催促日の前の日・当日の催促の時刻の前は false、ちょうどの時刻と、あとは true" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <testcase name="毎日1回の形でない cron（曜日の指定・毎時など）のときは、9:00" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.001"/>
+  <testcase name="cron の書き方が誤っていれば、作れない（起動のときに止まる）" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <testcase name="催促を送ってよい日：土日祝日は false（催促日があとの日でも）" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <testcase name="今月の催促日・催促の日時は、時計の今日から決まる" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <testcase name="催促を送ってよい日：月が替わると、また催促日の前に戻る" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <testcase name="催促の時刻は、設定の cron の時刻に従う（毎日1回の形のとき）" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <testcase name="25日が祝日なら、前の平日。その日も祝日なら、さらに前の平日" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.001"/>
+  <testcase name="25日が平日なら、その日が催促日" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <testcase name="25日が土曜なら金曜、日曜なら金曜（前の平日）" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <testcase name="催促の日時は、催促日の9:00（日本時間）" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <testcase name="今月の催促の日時を過ぎたか：25日が土日なら前の平日の9:00。設定の時刻にも従う" classname="jp.co.highjunk.equipment.common.calendar.ReminderCalendarTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

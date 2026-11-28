@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="クラスの置き場所と名前（CLAUDE.md 4.1・5章の命名規則）" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-28T09:16:58.418Z" hostname="DESKTOP-32H5PQ0" time="0.152">
+  <properties/>
+  <testcase name="名前が Controller で終わる API のクラスには @RestController が付いている" classname="jp.co.highjunk.equipment.ArchitectureTest$Naming" time="0.126"/>
+  <testcase name="Controller は controller、ServiceImpl・ServiceInDto は service、RestOutDto は model、Validator は validator のパッケージに置く" classname="jp.co.highjunk.equipment.ArchitectureTest$Naming" time="0.01"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
