@@ -2,10 +2,10 @@
 
 | 項目 | 内容 |
 |---|---|
-| 版 | v2.0 2026-11-15 |
-| Jira | ZPOP-68（C-01）、ZPOP-70（C-03）、ZPOP-73（C-06）。C-02・C-04・C-05・C-07・C-08、S-07〜S-09 は、作るときに書き足す |
+| 版 | v2.1 2026-11-28 |
+| Jira | ZPOP-68（C-01）、ZPOP-70（C-03）、ZPOP-73（C-06）、ZPOP-109（S-07）。C-02・C-04・C-05・C-07・C-08、S-08・S-09 は、作るときに書き足す |
 | 状態 | 作成中 |
-| もとにした設計書 | 機能一覧.md v1.0 の1章・4章（F-05〜F-07・F-09）、API設計.md v1.2 の2.3〜2.5・3.3・4.8、画面設計.md v1.3 の10〜12章、画面一覧.md v1.0 の2章・7章、データ設計.md v1.0 の2章・5.1・5.3・5.5〜5.7・6章 |
+| もとにした設計書 | 機能一覧.md v1.0 の1章・4章（F-05〜F-07・F-09）、API設計.md v1.2 の2.3〜2.5・3.3・4.8、画面設計.md v1.3 の10〜12章（S-07 は v1.11 の10章）、画面一覧.md v1.0 の2章・7章（S-07・S-08 は v1.4）、データ設計.md v1.0 の2章・5.1・5.3・5.5〜5.7・6章 |
 
 ## 1. 概要
 
@@ -19,8 +19,8 @@
 
 | ID | 操作 | URL | 内容 | 権限項目 | 画面 | 詳細設計 |
 |---|---|---|---|---|---|---|
-| C-01 | GET | /api/equipment | 備品を探す（絞り込み・並び替え・ページ分け） | EQUIPMENT_VIEW | S-07 | [C-01_備品を探す.md](C-01_備品を探す.md) |
-| C-02 | GET | /api/equipment/{備品のID} | 備品1件と、その備品の貸出履歴（新しい順に5件）を返す | EQUIPMENT_VIEW | S-08、S-09（編集） | まだ（ZPOP-69） |
+| C-01 | GET | /api/equipment | 備品を探す（絞り込み・並び替え・ページ分け） | ログイン（全員） | S-07 | [C-01_備品を探す.md](C-01_備品を探す.md) |
+| C-02 | GET | /api/equipment/{備品のID} | 備品1件と、その備品の貸出履歴（新しい順に5件）を返す | ログイン（全員） | S-08、S-09（編集） | まだ（ZPOP-69） |
 | C-03 | POST | /api/equipment | 備品を登録する | EQUIPMENT_CREATE | S-09 | [C-03_備品を登録する.md](C-03_備品を登録する.md) |
 | C-04 | PUT | /api/equipment/{備品のID} | 備品を変える | EQUIPMENT_UPDATE | S-09 | まだ（ZPOP-71） |
 | C-05 | DELETE | /api/equipment/{備品のID} | 備品を削除する | EQUIPMENT_DELETE | S-08 | まだ（ZPOP-72） |
@@ -30,12 +30,12 @@
 
 ### 1.2 画面一覧
 
-写したもと：画面一覧.md v1.0 の2章・7章
+写したもと：画面一覧.md v1.0 の2章・7章（S-07・S-08 の行は、画面一覧.md v1.4 の2章・7章）
 
 | ID | 名前 | URL | 使う人 | スマートフォン優先 | 詳細設計 |
 |---|---|---|---|---|---|
-| S-07 | 備品一覧 | まだ決めていない | 総務（備品一覧を見る） | いいえ（PCを前提。スマートフォンではカード） | まだ（ZPOP-109） |
-| S-08 | 備品詳細 | まだ決めていない | 総務 | いいえ | まだ（ZPOP-110） |
+| S-07 | 備品一覧 | /equipment | 社員全員（ログイン中なら全員） | はい（スマートフォン優先。PCでは表、スマートフォンではカード） | [S-07_備品一覧.md](S-07_備品一覧.md) |
+| S-08 | 備品詳細 | まだ決めていない（案：/equipment/:id） | 社員全員（ログイン中なら全員。ボタンごとに権限項目） | まだ決めていない（S-07 のカードから移るため、S-08 の詳細設計で決める） | まだ（ZPOP-110） |
 | S-09 | 備品登録・編集 | まだ決めていない | 総務 | いいえ（PCだけ） | まだ（ZPOP-111） |
 
 ### 1.3 業務のルール
@@ -95,7 +95,15 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。C-06 で使う
 
 ### 2.2 Client
 
-なし（S-07〜S-09 のときに書く）
+S-07 の分を書く（S-08・S-09 は、そのときに書く）。フォルダは src/features/equipment/management/、テストは tests/equipment/management/。
+
+| ファイル | 役割 | 使う画面 |
+|---|---|---|
+| pages/EquipmentListPage.tsx | S-07 の画面全体 | S-07 |
+| components/EquipmentSearchForm.tsx・EquipmentTable.tsx・EquipmentCard.tsx・searchConditions.ts | 探す条件、PC の表、スマートフォンのカード、探す条件の型と URL との変換 | S-07 |
+| api.ts・types.ts | getEquipmentList（C-01）・getCategoryOptions（K-01）・confirmEquipment（C-06）と、その型 | S-07 |
+| （共有）routes.tsx・common/components/menuItems.ts | `/equipment` の1行、メニュー「備品一覧」（権限項目なし。全員）の1行を足す | S-07 |
+| （共有）common/components/TopPlaceholderPage.tsx | `/` を開いたとき、homePage に合わせて /equipment・/my-equipment に移す。別の小さな MR にして先に main に入れる（S-07 の10章 No.3） | S-07（S-05 と共通） |
 
 ### 2.3 足す Enum（common.constant）
 
@@ -113,7 +121,7 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。C-06 で使う
 |---|---|
 | common.error.ApiResponse | 成功の返す値を ok で包む |
 | common.error.BusinessRuleException・ApiMessages | sort・page が決まった値でないとき 400「入力内容に誤りがあります。」 |
-| common.security | `@PreAuthorize("hasAuthority('EQUIPMENT_VIEW')")` |
+| common.security | C-01 は `@PreAuthorize("isAuthenticated()")`（ログイン中なら全員。2026-11-28 に人が決めた）。C-03 は EQUIPMENT_CREATE、C-06 は CONFIRM_ALL |
 | common.calendar.MonthlyConfirmationRule | 今月の1日（SQL の条件）、今月確認済みか（返す値。common.md 3.11） |
 | common.error.FieldErrorException | C-03 の業務チェックの誤りを、入力欄のエラー（400）で返す |
 | common.security.LoginUserId・common.config（Clock） | C-03 で、作った人のユーザIDと、作った日時・今日 |
@@ -126,6 +134,7 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。C-06 で使う
 | 2 | 同じルール | 貸出中の決め方（R-2） | mine（B-01〜B-03）、importer、equipment の C-07・C-08 | 変えるときは、同じように直す（CLAUDE.md 5章） |
 | 3 | 同じテーブルを読む | categories・users・loans を読むだけ | category・user・loan | 対応なし |
 | 4 | common・Flyway・Enum | 今月確認済みの判定は common.calendar（取り込み済み。common.md 3.11）。Enum を5つ足した（2.3）。Flyway は変更なし | ― | 足した Enum を相手に伝える（CLAUDE.md 9章） |
+| 5 | 共有ファイル・同じ API | S-07 が、routes.tsx（`/equipment`）・menuItems.ts（備品一覧）に1行ずつ足し、common/components の TopPlaceholderPage で `/` を /equipment・/my-equipment に移す。K-01（category）を、S-07 の中から呼ぶ | 共通部品・mine（S-05）・category | TopPlaceholderPage は、S-05 の分と一緒に、別の小さな MR にして先に main に入れる（S-07 の10章 No.3）。K-01 は読むだけで、対応なし |
 
 ## 4. 設計書にない判断
 
@@ -142,3 +151,5 @@ C-01 で使うのは R-1〜R-5。C-03 で使うのは R-6〜R-8。C-06 で使う
 | v1.1 | 2026-11-11 | C-03（ZPOP-70）の分を足した（1.1・1.3・2章） |
 | v1.2 | 2026-11-11 | C-06（ZPOP-73）の分を足した（1.1・1.3 の R-9・R-10・2章・3章）。C-01 の1件の形を作る処理を common.equipment.EquipmentSummaryAssembler にまとめた |
 | v2.0 | 2026-11-15 | パッケージ構成の変更で、api.equipment.management に作り直した（2026-11-15）。クラス名・パッケージ・Mapper のメソッドを新しい形（controller・service・validator・model、dao の Mapper と Example、手で書く Mapper、common の部品）に書き換えた。外から見た動きは変わらない。置き場所を equipment/management/management.md にし、2.1 のクラスの表を書き直した |
+| v2.1 | 2026-11-28 | S-07（ZPOP-109）の分を足した（版・Jira、1.2 の S-07、2.2）。あわせて、備品一覧を社員全員が使うことにしたため、C-01・C-02 の権限を「ログイン」にした（1.1・2.4。C-01 の詳細設計は v2.1） |
+
