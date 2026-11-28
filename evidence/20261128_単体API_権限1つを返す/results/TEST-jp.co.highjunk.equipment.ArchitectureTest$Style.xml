@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="書き方（CLAUDE.md 3章・5章）" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-28T09:16:58.585Z" hostname="DESKTOP-32H5PQ0" time="0.136">
+  <properties/>
+  <testcase name="今の日時を、直接取らない（LocalDate.now()・LocalDateTime.now()・Instant.now()・new Date() など。java.time.Clock から取る）" classname="jp.co.highjunk.equipment.ArchitectureTest$Style" time="0.057"/>
+  <testcase name="@Transactional は、Controller・Mapper・Service の interface に付けない（ServiceImpl などに付ける）" classname="jp.co.highjunk.equipment.ArchitectureTest$Style" time="0.072"/>
+  <testcase name="record は使わない（例外は、RECORD_EXCEPTIONS の4つだけ）" classname="jp.co.highjunk.equipment.ArchitectureTest$Style" time="0.005"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

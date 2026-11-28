@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="B-04 自分が借りている備品を「確認した」にする：同時に操作されたとき" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-28T09:17:40.019Z" hostname="DESKTOP-32H5PQ0" time="4.401">
+  <properties/>
+  <testcase name="備品を、送られた順ではなく、ID の昇順に押さえる：小さい ID の備品を別の人が押さえている間、[大, 小] の順で送った B-04 は、大きい ID の備品を、まだ押さえていない（押さえていれば、行き違いになる）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest" time="1.102"/>
+  <testcase name="場合分け③：返す人が、貸出履歴の行だけを押さえていて、備品の行はまだ：B-04 は、待たずに進み、成功する。そのあとで、返す人が進み、返す（確認が先、そのあとで返却。version は2つ増える）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest" time="0.08"/>
+  <testcase name="場合分け④：B-04 が先に備品の行を押さえて、更新している間：返す人（B-03）は、備品の行で待たされ、B-04 が終わってから進んで、返す（確認が先、そのあとで返却。version は2つ増える）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest" time="1.073"/>
+  <testcase name="場合分け②：返す人（B-03 や総務の C-08）が、備品の行を押さえて、返却を確定する前：B-04 は、備品の行で待たされ、返却が確定したあとで確かめて 403（借りていない）。確認は、されない" classname="jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest" time="1.078"/>
+  <testcase name="B-03（返す）と B-04（確認する）を、同じ備品に、何度同時に動かしても、デッドロックしない。どちらが先でも、つじつまが合う（返しが先なら B-04 は 403、確認が先なら両方成功）" classname="jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest" time="0.608"/>
+  <testcase name="逆の順で送る2つの B-04 を、何度同時に動かしても、デッドロックせず、両方成功する。version は、成功した回数だけ増える" classname="jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest" time="0.453"/>
+  <system-out><![CDATA[2026-11-28T18:17:40.020+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest]: EquipmentMineUpdateItemLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:40.021+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest
+2026-11-28T18:17:40.021+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest]: EquipmentMineUpdateItemLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:40.022+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.testsupport.EquipmentMineLockTestBase]: EquipmentMineLockTestBase does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:40.022+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest
+2026-11-28T18:17:40.041+09:00 INFO  userId=- [Test worker] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK0]）
+2026-11-28T18:17:41.102+09:00 INFO  userId=- [pool-6-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK6, CLOCK7]）
+2026-11-28T18:17:41.144+09:00 INFO  userId=- [Test worker] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK0]）
+2026-11-28T18:17:41.171+09:00 INFO  userId=- [pool-7-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK4]）
+2026-11-28T18:17:41.223+09:00 INFO  userId=- [Test worker] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK0]）
+2026-11-28T18:17:42.259+09:00 INFO  userId=- [pool-8-thread-2] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=67, managementNo=CLOCK5）
+2026-11-28T18:17:42.298+09:00 INFO  userId=- [Test worker] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK0]）
+2026-11-28T18:17:43.374+09:00 INFO  userId=- [Test worker] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK0]）
+2026-11-28T18:17:43.404+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR0]）
+2026-11-28T18:17:43.412+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=71, managementNo=CLOCKR0）
+2026-11-28T18:17:43.441+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR1]）
+2026-11-28T18:17:43.453+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=72, managementNo=CLOCKR1）
+2026-11-28T18:17:43.481+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR2]）
+2026-11-28T18:17:43.491+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=73, managementNo=CLOCKR2）
+2026-11-28T18:17:43.520+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR3]）
+2026-11-28T18:17:43.530+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=74, managementNo=CLOCKR3）
+2026-11-28T18:17:43.558+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR4]）
+2026-11-28T18:17:43.569+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=75, managementNo=CLOCKR4）
+2026-11-28T18:17:43.597+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR5]）
+2026-11-28T18:17:43.607+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=76, managementNo=CLOCKR5）
+2026-11-28T18:17:43.635+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR6]）
+2026-11-28T18:17:43.647+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=77, managementNo=CLOCKR6）
+2026-11-28T18:17:43.675+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR7]）
+2026-11-28T18:17:43.691+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=78, managementNo=CLOCKR7）
+2026-11-28T18:17:43.716+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR8]）
+2026-11-28T18:17:43.729+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=79, managementNo=CLOCKR8）
+2026-11-28T18:17:43.756+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR9]）
+2026-11-28T18:17:43.767+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=80, managementNo=CLOCKR9）
+2026-11-28T18:17:43.791+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR10]）
+2026-11-28T18:17:43.802+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=81, managementNo=CLOCKR10）
+2026-11-28T18:17:43.828+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR11]）
+2026-11-28T18:17:43.839+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=82, managementNo=CLOCKR11）
+2026-11-28T18:17:43.861+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR12]）
+2026-11-28T18:17:43.871+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=83, managementNo=CLOCKR12）
+2026-11-28T18:17:43.894+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR13]）
+2026-11-28T18:17:43.905+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=84, managementNo=CLOCKR13）
+2026-11-28T18:17:43.934+09:00 INFO  userId=- [pool-10-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCKR14]）
+2026-11-28T18:17:43.945+09:00 INFO  userId=- [pool-10-thread-1] j.c.h.e.a.e.m.u.r.s.EquipmentMineUpdateReturnItemServiceImpl - 備品を返却しました（loanId=85, managementNo=CLOCKR14）
+2026-11-28T18:17:43.998+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.007+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.018+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.027+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.047+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.056+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.066+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.075+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.084+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.094+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.104+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.113+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.122+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.132+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.142+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.153+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.163+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.173+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.183+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.194+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.204+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.213+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.223+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.233+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.243+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.253+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.262+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.272+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.282+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.292+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.305+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.314+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.325+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.333+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.346+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.356+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.366+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.376+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.388+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.398+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

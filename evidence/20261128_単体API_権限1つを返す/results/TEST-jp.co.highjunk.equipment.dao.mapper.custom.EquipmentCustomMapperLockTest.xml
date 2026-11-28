@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="EquipmentCustomMapper#selectByIdsForUpdate が、行を押さえていること" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-28T09:17:57.579Z" hostname="DESKTOP-32H5PQ0" time="2.006">
+  <properties/>
+  <testcase name="押さえている間、別の接続は、その備品の行を押さえられない。送っていない備品は押さえられる。放したあとは押さえられる" classname="jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperLockTest" time="0.029"/>
+  <testcase name="備品を昇順に押さえるので、逆の順で送る2つのまとまりを、何度同時に動かしても、デッドロックしない" classname="jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperLockTest" time="1.881"/>
+  <system-out><![CDATA[2026-11-28T18:17:57.580+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperLockTest]: EquipmentCustomMapperLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:57.672+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperLockTest
+2026-11-28T18:17:57.673+09:00 INFO  userId=- [Test worker] o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperLockTest]: EquipmentCustomMapperLockTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-28T18:17:57.673+09:00 INFO  userId=- [Test worker] o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration jp.co.highjunk.equipment.EquipmentApplication for test class jp.co.highjunk.equipment.dao.mapper.custom.EquipmentCustomMapperLockTest
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

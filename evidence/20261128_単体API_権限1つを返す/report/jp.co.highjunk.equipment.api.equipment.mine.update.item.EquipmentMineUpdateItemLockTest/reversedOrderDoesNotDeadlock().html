@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=edge"/>
+<title>Test results - reversedOrderDoesNotDeadlock()</title>
+<link href="../css/base-style.css" rel="stylesheet" type="text/css"/>
+<link href="../css/style.css" rel="stylesheet" type="text/css"/>
+<script src="../js/report.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="content">
+<div class="breadcrumbs">
+<a class="breadcrumb" href="../index.html">all</a> &gt; 
+<a class="breadcrumb" href="index.html">jp.co.highjunk.equipment.api.equipment.mine.update.item.EquipmentMineUpdateItemLockTest</a> &gt; 
+<span class="breadcrumb">reversedOrderDoesNotDeadlock()</span>
+</div>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="successGroup" href="#">Gradle Test Run :test</a>
+</li>
+</ul>
+<div class="tab">
+<h2>Gradle Test Run :test</h2>
+<h1>逆の順で送る2つの B-04 を、何度同時に動かしても、デッドロックせず、両方成功する。version は、成功した回数だけ増える</h1>
+<div class="tab-container">
+<ul class="tabLinks">
+<li>
+<a class="" href="#">summary</a>
+</li>
+<li>
+<a class="" href="#">standard output</a>
+</li>
+</ul>
+<div class="tab">
+<h2>summary</h2>
+<div>
+<div class="summary">
+<table>
+<tr>
+<td>
+<div class="summaryGroup">
+<table>
+<tr>
+<td>
+<div class="infoBox">
+<div class="counter">1</div>
+<p>tests</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>failures</p>
+</div>
+</td>
+<td>
+<div class="infoBox">
+<div class="counter">0</div>
+<p>skipped</p>
+</div>
+</td>
+<td>
+<div class="infoBox duration">
+<div class="counter">0.453s</div>
+<p>duration</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</td>
+<td>
+<div class="infoBox success successRate">
+<div class="percent">100%</div>
+<p>successful</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="tab">
+<h2>standard output</h2>
+<span class="code">
+<div class="clipboard-copy-btn-container">
+<button class="clipboard-copy-btn" aria-label="Copy to clipboard" data-copy-element-id="root-0-test-stdout-reversedOrderDoesNotDeadlock()">Copy</button>
+</div>
+<pre id="root-0-test-stdout-reversedOrderDoesNotDeadlock()">2026-11-28T18:17:43.998+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.007+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.018+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.027+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.047+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.056+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.066+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.075+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.084+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.094+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.104+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.113+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.122+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.132+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.142+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.153+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.163+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.173+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.183+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.194+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.204+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.213+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.223+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.233+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.243+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.253+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.262+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.272+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.282+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.292+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.305+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.314+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.325+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.333+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.346+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.356+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.366+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.376+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.388+09:00 INFO  userId=- [pool-11-thread-1] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+2026-11-28T18:17:44.398+09:00 INFO  userId=- [pool-11-thread-2] j.c.h.e.a.e.m.u.i.s.EquipmentMineUpdateItemServiceImpl - 備品を確認しました（managementNo=[CLOCK2, CLOCK3]）
+</pre>
+</span>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<p>
+<div>
+<label class="hidden" id="label-for-line-wrapping-toggle" for="line-wrapping-toggle">Wrap lines
+<input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
+</label>
+</div>Generated by 
+<a href="https://www.gradle.org">Gradle 9.8.2</a> at 2026/11/28 18:17:59</p>
+</div>
+</div>
+</body>
+</html>
